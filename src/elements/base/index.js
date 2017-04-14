@@ -23,7 +23,7 @@
 /*eslint no-bitwise: "off", no-console: "off"*/
 /*global HTMLElement, CustomEvent, MutationObserver*/
 
-import ol from '../../third-party/ol-v4.0.1-dist.js';
+import ol from 'openlayers';
 
 export default class HTMLMapBaseClass extends HTMLElement {
 

@@ -5,6 +5,10 @@ import {
 
 import HTMLMapLayerBase from '../map-layer-base';
 
+import {
+  elementName,
+} from './config';
+
 /**
  * Usage:
  * <HTMLMapLayerTWMS
@@ -161,3 +165,5 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
    */
 
 } // HTMLMapLayerTWMS
+
+customElements.define(elementName, HTMLMapLayerTWMS);

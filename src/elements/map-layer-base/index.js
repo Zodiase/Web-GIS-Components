@@ -5,8 +5,10 @@ import {
 
 import BaseClass from '../base';
 
-export const defaultOpacity = 1;
-export const defaultProjection = 'EPSG:3857';
+import {
+  defaultLayerOpacity,
+  defaultLayerProjection,
+} from './config';
 
 /**
  * Usage:
@@ -231,7 +233,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   // @property {number} opacity
   get opacity () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('opacity'));
-    return propValFromAttr === null ? defaultOpacity : propValFromAttr;
+    return propValFromAttr === null ? defaultLayerOpacity : propValFromAttr;
   }
   set opacity (val) {
     if (!typeCheck('Number | Null', val)) {
@@ -333,7 +335,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   // @property {string|null} projection
   get projection () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('projection'));
-    return propValFromAttr === null ? defaultProjection : propValFromAttr;
+    return propValFromAttr === null ? defaultLayerProjection : propValFromAttr;
   }
   set projection (val) {
     if (!typeCheck('String | Null', val)) {

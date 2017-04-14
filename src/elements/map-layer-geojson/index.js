@@ -5,7 +5,10 @@ import {
 
 import HTMLMapLayerBase from '../map-layer-base';
 
-const defaultDataProjection = 'EPSG:4326';
+import {
+  elementName,
+  defaultDataProjection,
+} from './config';
 
 /**
  * Usage:
@@ -244,3 +247,5 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerBase {
    */
 
 } // HTMLMapLayerGeoJSON
+
+customElements.define(elementName, HTMLMapLayerGeoJSON);

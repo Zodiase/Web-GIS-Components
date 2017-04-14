@@ -1,5 +1,9 @@
 import HTMLMapLayerBase from '../map-layer-base';
 
+import {
+  elementName,
+} from './config';
+
 /**
  * Usage:
  * <HTMLMapLayerGroup
@@ -94,3 +98,5 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
   }
 
 } // HTMLMapLayerGroup
+
+customElements.define(elementName, HTMLMapLayerGroup);

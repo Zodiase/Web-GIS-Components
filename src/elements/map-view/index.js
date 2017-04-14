@@ -5,17 +5,15 @@ import {
 
 import BaseClass from '../base';
 
-import {
-  defaultProjection
-} from '../map-layer-base';
-
 import HTMLMapLayerGroup from '../map-layer-group';
 
 import {
-  html as shadowRootHTML,
-} from './template';
-import {
+  elementName,
   defaultMapType,
+  defaultViewProjection,
+} from './config';
+import template from './template';
+import {
   getBaseMap,
 } from './basemap';
 
@@ -133,7 +131,7 @@ export default class HTMLMapView extends BaseClass {
 
     // Attach a shadow root to <fancy-tabs>.
     const shadowRoot = this.attachShadow({mode: 'open'});
-    shadowRoot.innerHTML = shadowRootHTML;
+    shadowRoot.appendChild(document.importNode(template.content, true));
 
     // Define bound/debounced/callback functions before the rest stuff.
     this.boundViewChangeCenterHandler_ = _.debounce(this.viewChangeCenterHandler_.bind(this), 30);
@@ -175,7 +173,7 @@ export default class HTMLMapView extends BaseClass {
       enableRotation: true,
       maxZoom: 28,
       minZoom: 0,
-      projection: defaultProjection,
+      projection: defaultViewProjection,
       rotation: 0,
       zoom: 3,
       zoomFactor: 2,
@@ -229,6 +227,10 @@ export default class HTMLMapView extends BaseClass {
    */
   connectedCallback () {
     super.connectedCallback();
+
+    if ('ShadyCSS' in window) {
+      window.ShadyCSS.styleElement(this);
+    }
 
     // Reconnect the view.
     this.mountView_();
@@ -296,7 +298,7 @@ export default class HTMLMapView extends BaseClass {
   // @property {string} projection
   get projection () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('projection'));
-    return propValFromAttr === null ? defaultProjection : propValFromAttr;
+    return propValFromAttr === null ? defaultViewProjection : propValFromAttr;
   }
   set projection (val) {
     if (!typeCheck('String | Null', val)) {
@@ -452,3 +454,5 @@ export default class HTMLMapView extends BaseClass {
   }
 
 } // HTMLMapView
+
+customElements.define(elementName, HTMLMapView);

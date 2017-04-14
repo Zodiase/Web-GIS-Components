@@ -22,6 +22,8 @@ This library requires browser support for [Custom Elements](https://developer.mo
 
 It also requires `native-shim` [available here](https://github.com/webcomponents/custom-elements/blob/master/src/native-shim.js) to allow use of Custom Elements in transpiled ES5 code.
 
+The polyfills are already bundled in `web-gis-components.js`. Use `web-gis-components-lite.js` if the polyfills are provided separately.
+
 ## Versions
 
 This project follows [Semantic Versioning](http://semver.org/). See `History.md` for release changes.

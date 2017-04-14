@@ -1,5 +1,10 @@
 ## v.NEXT
 
+- Replace "babel-cli + browserify" with webpack.
+- Include `web components` polyfills in bundle.
+- Build another bundle which does not include the polyfills.
+- Load openlayers from npm. Update it from v4.0.1 to v4.1.0.
+
 ## v0.1.0
 
 - Features:

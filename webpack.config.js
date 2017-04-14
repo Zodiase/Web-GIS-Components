@@ -1,5 +1,15 @@
 const path = require('path');
+const _ = require('lodash');
 const BabiliPlugin = require("babili-webpack-plugin");
+
+const globalIncludeExcludeRules = {
+  include: [
+    path.resolve(__dirname, "src"),
+  ],
+  exclude: [
+    path.resolve(__dirname, "src/third-party"),
+  ],
+};
 
 module.exports = {
   entry: {
@@ -12,31 +22,29 @@ module.exports = {
   },
   module: {
     rules: [
-      {
+
+      // # Loaders for our source code.
+
+      _.merge({}, globalIncludeExcludeRules, {
+        test: /\.css$/,
+        use: [
+          "css-loader",
+        ],
+      }),
+      _.merge({}, globalIncludeExcludeRules, {
         test: /\.html$/,
-        include: [
-          path.resolve(__dirname, "src"),
-        ],
-        exclude: [
-          path.resolve(__dirname, "src/third-party"),
-        ],
         use: [
           "html-loader",
         ],
-      },
-      {
+      }),
+      _.merge({}, globalIncludeExcludeRules, {
         test: /\.js$/,
-        include: [
-          path.resolve(__dirname, "src"),
-        ],
-        exclude: [
-          path.resolve(__dirname, "src/third-party"),
-        ],
         use: [
           "babel-loader",
           "eslint-loader",
         ],
-      },
+      }),
+
     ],
   },
   target: "web",

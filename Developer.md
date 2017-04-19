@@ -42,6 +42,7 @@ To group layers, use the dedicated custom element `<map-layer-group />`, which m
 - Pick a good base class to start.
     - A new layer? Probably start from `HTMLMapLayerBase` in `map-layer-base`.
     - A new control? Probably start from `HTMLMapControlBase` in `map-control-base`.
+    - A new interaction? Probably start from `HTMLMapInteractionBase` in `map-interaction-base`.
     - Something else? Can't be wrong to base off `HTMLElement`.
 - Create a folder in `/src/elements/` with a expressive name.
     - A layer should have a folder name starting with `map-layer-`.

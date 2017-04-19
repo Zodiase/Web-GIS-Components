@@ -6,6 +6,7 @@ import {
 import BaseClass from '../base';
 
 import HTMLMapControlBase from '../map-control-base';
+import HTMLMapInteractionBase from '../map-interaction-base';
 
 import HTMLMapLayerGroup from '../map-layer-group';
 
@@ -175,7 +176,30 @@ export default class HTMLMapView extends BaseClass {
     // Overlays are tied to geolocations.
     this.mapOverlays_ = new ol.Collection();
 
-    this.mapInteractions_ = new ol.Collection();
+    // Interactions are tied to the map view.
+    // @type {ol.Collection.<ol.interaction.Interaction>}
+    this.mapInteractionCollection_ = new ol.Collection();
+
+    // Interaction Elements in this map view.
+    // @type {ol.Collection.<HTMLMapInteractionBase>}
+    this.mapInteractionElementCollection_ = this.getLiveChildElementCollection(HTMLMapInteractionBase);
+
+    this.mapInteractionElementCollection_.on('change', ({/*type, */target}) => {
+      const interactionElements = target.getArray();
+      const interactions = interactionElements.map((el) => el.interaction)
+                                      .reduce((acc, obj) => [
+                                        ...acc,
+                                        ...(
+                                          (obj instanceof this.ol.Collection)
+                                          ? obj.getArray()
+                                          : [obj]
+                                        ),
+                                      ], []);
+
+      this.mapInteractionCollection_.clear();
+      this.mapInteractionCollection_.extend(interactions);
+      this.mapInteractionCollection_.changed();
+    });
 
     // This collection holds the child layers so it's easier to do batch updates.
     // @type {ol.Collection.<ol.layer.Base>}
@@ -209,7 +233,7 @@ export default class HTMLMapView extends BaseClass {
 
     this.olMap_ = new ol.Map({
       controls: this.mapControlCollection_,
-      interactions: this.mapInteractions_,
+      interactions: this.mapInteractionCollection_,
       keyboardEventTarget: this.mapElement_,
       layers: [
         new ol.layer.Group({

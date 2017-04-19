@@ -59,12 +59,6 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
    * Getters and Setters (for properties).
    */
 
-  // @property {ol.control.Control} control
-  // @readonly
-  get control () {
-    return this.olControl_;
-  }
-
 } // HTMLMapDefaultControls
 
 customElements.define(elementName, HTMLMapDefaultControls);

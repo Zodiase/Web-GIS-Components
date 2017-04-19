@@ -5,6 +5,8 @@ import {
 
 import BaseClass from '../base';
 
+import HTMLMapControlBase from '../map-control-base';
+
 import HTMLMapLayerGroup from '../map-layer-group';
 
 import {
@@ -67,8 +69,8 @@ export default class HTMLMapView extends BaseClass {
       'center': (isSet, val) => (
         isSet
         ? val.split(',')
-            .map((v) => v.trim())
-            .map((v) => parseFloat(v))
+             .map((v) => v.trim())
+             .map((v) => parseFloat(v))
         : null
       ),
       'zoom': (isSet, val) => (
@@ -146,7 +148,29 @@ export default class HTMLMapView extends BaseClass {
     this.viewCache_ = {}; //! Not used at the moment.
 
     // Controls are tied to the map view.
-    this.mapControls_ = new ol.Collection();
+    // @type {ol.Collection.<ol.control.Control>}
+    this.mapControlCollection_ = new ol.Collection();
+
+    // Control Elements in this map view.
+    // @type {ol.Collection.<HTMLMapControlBase>}
+    this.mapControlElementCollection_ = this.getLiveChildElementCollection(HTMLMapControlBase);
+
+    this.mapControlElementCollection_.on('change', ({/*type, */target}) => {
+      const controlElements = target.getArray();
+      const controls = controlElements.map((el) => el.control)
+                                      .reduce((acc, obj) => [
+                                        ...acc,
+                                        ...(
+                                          (obj instanceof this.ol.Collection)
+                                          ? obj.getArray()
+                                          : [obj]
+                                        ),
+                                      ], []);
+
+      this.mapControlCollection_.clear();
+      this.mapControlCollection_.extend(controls);
+      this.mapControlCollection_.changed();
+    });
 
     // Overlays are tied to geolocations.
     this.mapOverlays_ = new ol.Collection();
@@ -159,7 +183,7 @@ export default class HTMLMapView extends BaseClass {
 
     // This collection holds the child layer elements.
     // @type {ol.Collection.<HTMLMapLayerBase>}
-    this.childLayerElementsCollection_ = HTMLMapLayerGroup.setupChildLayerElementsObserver(this, this.childMapLayerCollection_);
+    this.childLayerElementsCollection_ = HTMLMapLayerGroup.getLiveChildLayerElementCollection(this, this.childMapLayerCollection_);
 
     // This collection holds the base map.
     this.baseMapLayerCollection_ = new ol.Collection([
@@ -184,7 +208,7 @@ export default class HTMLMapView extends BaseClass {
     this.updateView_();
 
     this.olMap_ = new ol.Map({
-      controls: this.mapControls_,
+      controls: this.mapControlCollection_,
       interactions: this.mapInteractions_,
       keyboardEventTarget: this.mapElement_,
       layers: [

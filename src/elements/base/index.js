@@ -220,13 +220,14 @@ export default class HTMLMapBaseClass extends HTMLElement {
   }
 
   /**
-   * A static helper function for setting up observers for monitoring child element changes.
+   * Returns a collection of the child elements of the specified type.
+   * The collection is auto-updated until `.disconnect()` is called.
    * Does it potentially leak observers?
    * @param {HTMLElement} element
    * @param {function} constructor
    * @returns {ol.Collection.<function>}
    */
-  static setupChildElementsObserver (element, constructor) {
+  static getLiveChildElementCollection (element, constructor) {
     const collection = new this.ol.Collection(),
           updateFunction = this.updateChildElements_.bind(this, element, constructor, collection),
           observer = new MutationObserver(updateFunction);
@@ -243,6 +244,11 @@ export default class HTMLMapBaseClass extends HTMLElement {
     if (element.children.length > 0) {
       setTimeout(updateFunction, 0);
     }
+
+    // Attach a function to stop the observer.
+    collection.disconnect = () => {
+      observer.disconnect();
+    };
 
     return collection;
   }
@@ -566,6 +572,13 @@ export default class HTMLMapBaseClass extends HTMLElement {
     clearTimeout(timerID);
 
     this.removeTimeoutID_(timerID);
+  }
+
+  /**
+   * Instance level helper for the static method with the same name.
+   */
+  getLiveChildElementCollection (constructor) {
+    return this.constructor.getLiveChildElementCollection(this, constructor);
   }
 
 } // HTMLMapBaseClass

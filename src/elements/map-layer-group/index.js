@@ -37,14 +37,16 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
   }
 
   /**
-   * A static helper function for setting up observers for monitoring child layer element changes.
+   * Returns a collection of the child layer elements.
+   * The provided layer collection will also be auto-populated with all the layers.
+   * The collection is auto-updated until `.disconnect()` is called.
    * Does it potentially leak observers?
    * @param {HTMLElement} element
    * @param {ol.Collection.<ol.layer.Base>} [layerCollection]
    * @returns {ol.Collection.<HTMLMapLayerBase>}
    */
-  static setupChildLayerElementsObserver (element, layerCollection) {
-    const elementCollection = this.setupChildElementsObserver(element, HTMLMapLayerBase);
+  static getLiveChildLayerElementCollection (element, layerCollection) {
+    const elementCollection = this.getLiveChildElementCollection(element, HTMLMapLayerBase);
 
     elementCollection.on('change', ({/*type, */target}) => {
       const layerElements = target.getArray();
@@ -73,7 +75,7 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
 
     // This collection holds the child layer elements.
     // @type {ol.Collection.<HTMLMapLayerBase>}
-    this.childLayerElementsCollection_ = this.constructor.setupChildLayerElementsObserver(this, this.layer.getLayers());
+    this.childLayerElementsCollection_ = this.constructor.getLiveChildLayerElementCollection(this, this.layer.getLayers());
   } // constructor
 
   /**

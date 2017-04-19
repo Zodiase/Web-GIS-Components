@@ -89,12 +89,12 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
       }),
       'params': (val) => ({
         isSet: !(val === null),
-        value: (val === null) ? '' : Object.keys(val)
-                                     .map((key) => [key, val[key]]
-                                                   .map((x) => encodeURIComponent(x))
-                                                   .join('=')
-                                         )
-                                     .join('&'),
+        value: (val === null)
+               ? ''
+               : Object.keys(val)
+                       .map((key) => [key, val[key]].map((x) => encodeURIComponent(x))
+                                                    .join('='))
+                       .join('&'),
       }),
       //@see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
 //       'server-type'

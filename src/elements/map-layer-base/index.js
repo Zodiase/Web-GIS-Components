@@ -86,8 +86,8 @@ export default class HTMLMapLayerBase extends BaseClass {
       'extent': (isSet, val) => (
         isSet
         ? val.split(',')
-            .map((v) => v.trim())
-            .map((v) => parseFloat(v))
+             .map((v) => v.trim())
+             .map((v) => parseFloat(v))
         : null
       ),
       'invisible': (isSet/*, val*/) => isSet,

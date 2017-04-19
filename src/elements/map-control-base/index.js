@@ -4,7 +4,7 @@ import BaseClass from '../base';
 
 /**
  * Usage:
- * <HTMLMapControl />
+ * <HTMLMapControlBase />
  */
 export default class HTMLMapControlBase extends BaseClass {
 
@@ -61,4 +61,4 @@ export default class HTMLMapControlBase extends BaseClass {
     return this.olControl_;
   }
 
-} // HTMLMapControl
+} // HTMLMapControlBase

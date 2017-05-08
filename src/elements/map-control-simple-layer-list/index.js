@@ -1,9 +1,14 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
 
-import HTMLMapControlBase from '../map-control-base';
+import webGisComponents from 'namespace';
+
+import BaseClass from '../map-control-base';
 
 import {
   elementName,
@@ -14,53 +19,41 @@ import template from './template';
  * Usage:
  * <HTMLMapSimpleLayerListControl></HTMLMapSimpleLayerListControl>
  */
-export default class HTMLMapSimpleLayerListControl extends HTMLMapControlBase {
+export default class HTMLMapSimpleLayerListControl extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      'collapsed',
-    ]);
-  }
+  static observedAttributes = concat(BaseClass.observedAttributes, [
+    'collapsed',
+  ]);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'collapsed': 'collapsed',
-    });
-  }
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'collapsed': 'collapsed',
+  });
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'collapsed': 'collapsed',
-    });
-  }
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'collapsed': 'collapsed',
+  });
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'collapsed': (isSet/*, val*/) => isSet,
-    });
-  }
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+    'collapsed': (isSet/*, val*/) => isSet,
+  });
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {boolean|null} val - Boolean value to set or unset, null to unset.
-      'collapsed': (val) => ({
-        isSet: Boolean(val),
-        value: 'collapsed',
-      }),
-    });
-  }
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {boolean|null} val - Boolean value to set or unset, null to unset.
+    'collapsed': (val) => ({
+      isSet: Boolean(val),
+      value: 'collapsed',
+    }),
+  });
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'collapsed': (a, b) => a === b,
-    });
-  }
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
+    'collapsed': (a, b) => a === b,
+  });
 
   constructor () {
     super();
@@ -74,7 +67,7 @@ export default class HTMLMapSimpleLayerListControl extends HTMLMapControlBase {
     shadowRoot.appendChild(document.importNode(template.content, true));
 
     // @override
-    this.olControl_ = new this.ol.control.Control({
+    this.olControl_ = new webGisComponents.ol.control.Control({
       element: this.controlElement_,
     });
 

@@ -1,7 +1,13 @@
-import _ from 'lodash';
+import {
+  clone,
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../base';
 
@@ -32,155 +38,145 @@ import {
 export default class HTMLMapLayerBase extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      'name',
-      'opacity',
-      'extent',
-      'invisible',
-      'min-resolution',
-      'max-resolution',
-      'projection',
-    ]);
-  }
+  static observedAttributes = concat(BaseClass.observedAttributes, [
+    'name',
+    'opacity',
+    'extent',
+    'invisible',
+    'min-resolution',
+    'max-resolution',
+    'projection',
+  ]);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'name': 'name',
-      'opacity': 'opacity',
-      'extent': 'extent',
-      'invisible': 'invisible',
-      'min-resolution': 'minResolution',
-      'max-resolution': 'maxResolution',
-      'projection': 'projection',
-    });
-  }
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'name': 'name',
+    'opacity': 'opacity',
+    'extent': 'extent',
+    'invisible': 'invisible',
+    'min-resolution': 'minResolution',
+    'max-resolution': 'maxResolution',
+    'projection': 'projection',
+  });
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'name': 'name',
-      'opacity': 'opacity',
-      'extent': 'extent',
-      'invisible': 'invisible',
-      'minResolution': 'min-resolution',
-      'maxResolution': 'max-resolution',
-      'projection': 'projection',
-    });
-  }
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'name': 'name',
+    'opacity': 'opacity',
+    'extent': 'extent',
+    'invisible': 'invisible',
+    'minResolution': 'min-resolution',
+    'maxResolution': 'max-resolution',
+    'projection': 'projection',
+  });
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'name': (isSet, val) => (
-        isSet
-        ? val.trim()
-        : null
-      ),
-      'opacity': (isSet, val) => (
-        isSet
-        ? parseFloat(val)
-        : null
-      ),
-      'extent': (isSet, val) => (
-        isSet
-        ? val.split(',')
-             .map((v) => v.trim())
-             .map((v) => parseFloat(v))
-        : null
-      ),
-      'invisible': (isSet/*, val*/) => isSet,
-      'min-resolution': (isSet, val) => (
-        isSet
-        ? parseFloat(val)
-        : null
-      ),
-      'max-resolution': (isSet, val) => (
-        isSet
-        ? parseFloat(val)
-        : null
-      ),
-      'projection': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-    });
-  }
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+    'name': (isSet, val) => (
+      isSet
+      ? val.trim()
+      : null
+    ),
+    'opacity': (isSet, val) => (
+      isSet
+      ? parseFloat(val)
+      : null
+    ),
+    'extent': (isSet, val) => (
+      isSet
+      ? val.split(',')
+           .map((v) => v.trim())
+           .map((v) => parseFloat(v))
+      : null
+    ),
+    'invisible': (isSet/*, val*/) => isSet,
+    'min-resolution': (isSet, val) => (
+      isSet
+      ? parseFloat(val)
+      : null
+    ),
+    'max-resolution': (isSet, val) => (
+      isSet
+      ? parseFloat(val)
+      : null
+    ),
+    'projection': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+  });
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {string|null} val - String value to be set, null to unset.
-      'name': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      // @param {number|null} val - Number value to be set, null to unset.
-      'opacity': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : String(val),
-      }),
-      // @param {Array.<number>|null} val - Array of 4 numbers value to be set, null to unset.
-      'extent': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val.join(', '),
-      }),
-      // @param {boolean|null} val - Boolean value to set or unset, null to unset.
-      'invisible': (val) => ({
-        isSet: Boolean(val),
-        value: 'invisible',
-      }),
-      // @param {number|null} val - Number value to be set, null to unset.
-      'min-resolution': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : String(val),
-      }),
-      // @param {number|null} val - Number value to be set, null to unset.
-      'max-resolution': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : String(val),
-      }),
-      // @param {string|null} val - String value to be set, null to unset.
-      'projection': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-    });
-  }
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {string|null} val - String value to be set, null to unset.
+    'name': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    // @param {number|null} val - Number value to be set, null to unset.
+    'opacity': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : String(val),
+    }),
+    // @param {Array.<number>|null} val - Array of 4 numbers value to be set, null to unset.
+    'extent': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val.join(', '),
+    }),
+    // @param {boolean|null} val - Boolean value to set or unset, null to unset.
+    'invisible': (val) => ({
+      isSet: Boolean(val),
+      value: 'invisible',
+    }),
+    // @param {number|null} val - Number value to be set, null to unset.
+    'min-resolution': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : String(val),
+    }),
+    // @param {number|null} val - Number value to be set, null to unset.
+    'max-resolution': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : String(val),
+    }),
+    // @param {string|null} val - String value to be set, null to unset.
+    'projection': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+  });
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'name': (a, b) => a === b,
-      'opacity': (a, b) => a === b,
-      'extent': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
-      'invisible': (a, b) => a === b,
-      'min-resolution': (a, b) => a === b,
-      'max-resolution': (a, b) => a === b,
-      'projection': (a, b) => a === b,
-    });
-  }
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
+    'name': (a, b) => a === b,
+    'opacity': (a, b) => a === b,
+    'extent': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
+    'invisible': (a, b) => a === b,
+    'min-resolution': (a, b) => a === b,
+    'max-resolution': (a, b) => a === b,
+    'projection': (a, b) => a === b,
+  });
 
   /**
-   * Returns the class that should be used for the layer instance.
+   * The class that should be used for the layer instance.
+   * Child classes should override this.
    * @property {ol.layer.Base}
    * @readonly
+   * @static
    */
   static get layerClass () {
-    // Child classes should override this.
-    return this.ol.layer.Base;
+    return webGisComponents.ol.layer.Base;
   }
 
   /**
-   * Returns the class that should be used for the layer source instance.
+   * The class that should be used for the layer source instance.
+   * Child classes should override this.
    * @property {ol.source.Source}
    * @readonly
+   * @static
    */
   static get layerSourceClass () {
-    // Child classes should override this.
-    return this.ol.source.Source;
+    return webGisComponents.ol.source.Source;
   }
 
   constructor () {
@@ -359,7 +355,7 @@ export default class HTMLMapLayerBase extends BaseClass {
       throw new TypeError('Should not call updateSource before initializing the layer.');
     }
 
-    const olSourceOptions = _.clone(this.olSourceOptions_);
+    const olSourceOptions = clone(this.olSourceOptions_);
     Object.keys(options).forEach((key) => {
       const value = options[key];
 

@@ -1,6 +1,6 @@
 {
   "name": "web-gis-elements",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Custom elements for Web GIS applications.",
   "repository": {
     "type": "git",
@@ -8,7 +8,10 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run build:dist",
+    "build:dev": "webpack --env=dev --progress --profile --colors",
+    "build:dist": "webpack --env=prod --progress --profile --colors",
+    "watch": "webpack --env=dev --progress --profile --colors --watch",
     "demo": "node demo/server.js 5000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +21,7 @@
     "babel-core": "^6.24.1",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.4.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babili-webpack-plugin": "0.0.11",
@@ -25,12 +29,18 @@
     "eslint": "^3.19.0",
     "eslint-loader": "^1.7.1",
     "express": "^4.15.2",
+    "file-loader": "^0.11.1",
     "html-loader": "^0.4.5",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "lodash": "^4.17.4",
+    "lodash.clone": "^4.5.0",
+    "lodash.concat": "^4.5.0",
+    "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
+    "lodash.merge": "^4.6.0",
     "openlayers": "^4.1.0",
     "url-loader": "^0.5.8",
-    "webpack": "^2.3.3"
+    "webpack": "^2.5.1"
   }
 }

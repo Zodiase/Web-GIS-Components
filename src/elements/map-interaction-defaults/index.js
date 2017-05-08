@@ -1,6 +1,11 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 
-import HTMLMapInteractionBase from '../map-interaction-base';
+import webGisComponents from 'namespace';
+
+import BaseClass from '../map-interaction-base';
 
 import {
   elementName,
@@ -10,43 +15,31 @@ import {
  * Usage:
  * <HTMLMapDefaultInteractions></HTMLMapDefaultInteractions>
  */
-export default class HTMLMapDefaultInteractions extends HTMLMapInteractionBase {
+export default class HTMLMapDefaultInteractions extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, []);
-  }
+  static observedAttributes = concat(BaseClass.observedAttributes, []);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {});
-  }
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {});
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {});
-  }
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {});
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {});
-  }
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {});
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {});
-  }
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {});
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {});
-  }
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {});
 
   constructor () {
     super();
 
     // @type {ol.Collection.<ol.interaction.Interaction>}
-    this.olInteraction_ = new this.ol.interaction.defaults({});
+    this.olInteraction_ = new webGisComponents.ol.interaction.defaults({});
   }
 
   /**

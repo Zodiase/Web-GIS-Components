@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 
 import BaseClass from '../base';
 
@@ -9,34 +12,22 @@ import BaseClass from '../base';
 export default class HTMLMapInteractionBase extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, []);
-  }
+  static observedAttributes = concat(BaseClass.observedAttributes, []);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {});
-  }
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {});
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {});
-  }
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {});
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {});
-  }
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {});
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {});
-  }
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {});
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {});
-  }
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {});
 
   /**
    * Getters and Setters (for properties).

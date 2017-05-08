@@ -1,6 +1,11 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 
-import HTMLMapControlBase from '../map-control-base';
+import webGisComponents from 'namespace';
+
+import BaseClass from '../map-control-base';
 
 import {
   elementName,
@@ -10,43 +15,31 @@ import {
  * Usage:
  * <HTMLMapDefaultControls></HTMLMapDefaultControls>
  */
-export default class HTMLMapDefaultControls extends HTMLMapControlBase {
+export default class HTMLMapDefaultControls extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, []);
-  }
+  static observedAttributes = concat(BaseClass.observedAttributes, []);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {});
-  }
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {});
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {});
-  }
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {});
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {});
-  }
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {});
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {});
-  }
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {});
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {});
-  }
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {});
 
   constructor () {
     super();
 
     // @type {ol.Collection.<ol.control.Control>}
-    this.olControl_ = new this.ol.control.defaults({});
+    this.olControl_ = new webGisComponents.ol.control.defaults({});
   }
 
   /**

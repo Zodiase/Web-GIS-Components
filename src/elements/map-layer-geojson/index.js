@@ -1,9 +1,14 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
 
-import HTMLMapLayerBase from '../map-layer-base';
+import webGisComponents from 'namespace';
+
+import BaseClass from '../map-layer-base';
 
 import {
   elementName,
@@ -25,94 +30,82 @@ import {
  *   <HTMLMapLayerVectorStyle ...></HTMLMapLayerVectorStyle>
  * </HTMLMapLayerGeoJSON>
  */
-export default class HTMLMapLayerGeoJSON extends HTMLMapLayerBase {
+export default class HTMLMapLayerGeoJSON extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      'src-url',
-      'src-json',
-      'src-projection',
-    ]);
-  }
+  static observedAttributes = concat(BaseClass.observedAttributes, [
+    'src-url',
+    'src-json',
+    'src-projection',
+  ]);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'src-url': 'srcUrl',
-      'src-json': 'srcJson',
-      'src-projection': 'srcProjection',
-    });
-  }
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'src-url': 'srcUrl',
+    'src-json': 'srcJson',
+    'src-projection': 'srcProjection',
+  });
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'srcUrl': 'src-url',
-      'srcJson': 'src-json',
-      'srcProjection': 'src-projection',
-    });
-  }
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'srcUrl': 'src-url',
+    'srcJson': 'src-json',
+    'srcProjection': 'src-projection',
+  });
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'src-url': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-      'src-json': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-      'src-projection': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-    });
-  }
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+    'src-url': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+    'src-json': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+    'src-projection': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+  });
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {string|null} val - String value to be set, null to unset.
-      'src-url': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      // @param {string|null} val - String value to be set, null to unset.
-      'src-json': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      // @param {string|null} val - String value to be set, null to unset.
-      'src-projection': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-    });
-  }
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {string|null} val - String value to be set, null to unset.
+    'src-url': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    // @param {string|null} val - String value to be set, null to unset.
+    'src-json': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    // @param {string|null} val - String value to be set, null to unset.
+    'src-projection': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+  });
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'srcUrl': (a, b) => a === b,
-      'srcJson': (a, b) => a === b,
-      'srcProjection': (a, b) => a === b,
-    });
-  }
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
+    'srcUrl': (a, b) => a === b,
+    'srcJson': (a, b) => a === b,
+    'srcProjection': (a, b) => a === b,
+  });
 
   // @override
   static get layerClass () {
-    return this.ol.layer.Vector;
+    return webGisComponents.ol.layer.Vector;
   }
 
   // @override
   static get layerSourceClass () {
-    return this.ol.source.Vector;
+    return webGisComponents.ol.source.Vector;
   }
 
   /**
@@ -143,7 +136,7 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerBase {
       // Update internal models.
       this.updateSource({
         url: val,
-        format: new this.ol.format.GeoJSON({
+        format: new webGisComponents.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
         }),
@@ -177,7 +170,7 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerBase {
 
       // Update internal models.
       this.updateSource({
-        features: (new this.ol.format.GeoJSON({
+        features: (new webGisComponents.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
         })).readFeatures(JSON.parse(val)),

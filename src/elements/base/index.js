@@ -23,7 +23,7 @@
 /*eslint no-bitwise: "off", no-console: "off"*/
 /*global HTMLElement, CustomEvent, MutationObserver*/
 
-import ol from 'openlayers';
+import webGisComponents from 'namespace';
 
 export default class HTMLMapBaseClass extends HTMLElement {
 
@@ -39,65 +39,69 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * - [...]
    */
 
-  static get observedAttributes () {
-    // Child classes should implement this.
-    return [];
-  }
+  /**
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements#Observed_attributes}
+   * Child classes should extend this.
+   * @property {Array.<string>} observedAttributes
+   * @readonly
+   * @static
+   */
+  static observedAttributes = [];
 
   /**
+   * Mapping used to convert attribute names to property names.
    * Keys are attribute names.
    * Values are property names.
-   * @property {Object.<string>}
+   * Child classes should extend this.
+   * @property {Object.<string>} attributeNameToPropertyNameMapping
    * @readonly
+   * @static
    */
-  static get attributeNameToPropertyNameMapping () {
-    // Child classes should implement this.
-    return {};
-  }
+  static attributeNameToPropertyNameMapping = {};
 
   /**
+   * Mapping used to convert property names to attribute names.
    * Keys are property names.
    * Values are attribute names.
-   * @property {Object.<string>}
+   * Child classes should extend this.
+   * @property {Object.<string>} propertyNameToAttributeNameMapping
    * @readonly
+   * @static
    */
-  static get propertyNameToAttributeNameMapping () {
-    // Child classes should implement this.
-    return {};
-  }
+  static propertyNameToAttributeNameMapping = {};
 
   /**
+   * A map of functions for converting attribute values to property values.
    * Keys are attribute names.
    * Values are functions that convert attribute configs to property values.
-   * @property {Object.<isSet: boolean, val: string -> *>}
+   * Child classes should extend this.
+   * @property {Object.<isSet: boolean, val: string -> *>} attributeToPropertyConverters
    * @readonly
+   * @static
    */
-  static get attributeToPropertyConverters () {
-    // Child classes should implement this.
-    return {};
-  }
+  static attributeToPropertyConverters = {};
 
   /**
+   * A map of functions for converting property values to attribute values.
    * Keys are attribute names.
    * Values are functions that convert property values to attribute configs.
+   * Child classes should extend this.
    * @property {Object.<* -> {isSet: boolean, value: string}>}
    * @readonly
+   * @static
    */
-  static get propertyToAttributeConverters () {
-    // Child classes should implement this.
-    return {};
-  }
+  static propertyToAttributeConverters = {};
 
   /**
+   * A map of functions for comparing two property values.
    * Keys are property names.
    * Values are functions that compare two property values and return whether they are considered identical.
+   * Child classes should extend this.
    * @property {Object.<a: *, b: * -> boolean>}
    * @readonly
+   * @static
    */
-  static get propertyComparators () {
-    // Child classes should implement this.
-    return {};
-  }
+  static propertyComparators = {};
 
   /**
    * string -> string
@@ -117,7 +121,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
   // Attach the openlayers library.
   static get ol () {
-    return ol;
+    return webGisComponents.ol;
   }
 
   /**
@@ -161,7 +165,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
       return [...acc, point, ...points];
     }, []);
 
-    const allPointsInDestination = allPoints.map((point) => this.ol.proj.transform(point, source, destination));
+    const allPointsInDestination = allPoints.map((point) => webGisComponents.ol.proj.transform(point, source, destination));
 
     // The source data used for aggregation has to contain the head again in the end to prevent overflow.
     const aggSrcData = [...allPointsInDestination, allPointsInDestination[0]];
@@ -209,7 +213,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {boolean}
    */
   static isValidProjection (val) {
-    return this.ol.proj.get(val) !== null;
+    return webGisComponents.ol.proj.get(val) !== null;
   }
 
   /**
@@ -228,7 +232,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {ol.Collection.<function>}
    */
   static getLiveChildElementCollection (element, constructor) {
-    const collection = new this.ol.Collection(),
+    const collection = new webGisComponents.ol.Collection(),
           updateFunction = this.updateChildElements_.bind(this, element, constructor, collection),
           observer = new MutationObserver(updateFunction);
 
@@ -290,9 +294,6 @@ export default class HTMLMapBaseClass extends HTMLElement {
     // `this` is the container HTMLElement.
     // It has no attributes or children at construction time.
 
-    // Attach the openlayers library.
-    this.ol = ol;
-
     // Indicate whether this custom element is in DOM or not.
     this.connected_ = false;
 
@@ -304,6 +305,15 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
     // Used by `this.setTimeout`.
     this.timeoutIDs_ = new Set();
+
+    // Setup logging functions.
+    this.log_ = this.logInfo_ = () => { /*NOOP*/ };
+    if (VERBOSE) {
+      this.log_ = console.log.bind(console, `${this.constructor.name}_${this.id}`);
+      this.logInfo_ = console.info.bind(console, `${this.constructor.name}_${this.id}`);
+    }
+    this.logWarn_ = console.warn.bind(console, `${this.constructor.name}_${this.id}`);
+    this.logError_ = console.error.bind(console, `${this.constructor.name}_${this.id}`);
   } // constructor
 
   /**
@@ -433,26 +443,14 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * Getters and Setters (for properties).
    */
 
+  // Attach the openlayers library.
+  get ol () {
+    return webGisComponents.ol;
+  }
+
   /**
    * Customized public/private methods.
    */
-
-  log_ (...args) {
-    if (VERBOSE) {
-      console.log(`${this.constructor.name}_${this.id}`, ...args);
-    }
-  }
-  logInfo_ (...args) {
-    if (VERBOSE) {
-      console.info(`${this.constructor.name}_${this.id}`, ...args);
-    }
-  }
-  logWarn_ (...args) {
-    console.warn(`${this.constructor.name}_${this.id}`, ...args);
-  }
-  logError_ (...args) {
-    console.error(`${this.constructor.name}_${this.id}`, ...args);
-  }
 
   /**
    * string, *, * -> boolean

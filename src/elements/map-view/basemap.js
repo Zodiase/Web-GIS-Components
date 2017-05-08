@@ -1,4 +1,4 @@
-import ol from 'openlayers';
+import webGisComponents from 'namespace';
 
 /**
  * A map from types to functions that generate layers.
@@ -6,10 +6,10 @@ import ol from 'openlayers';
  */
 const layerGenerators = {
   // Use an empty layer group to pretend it's an invisible layer.
-  'none': () => (new ol.layer.Group()),
-  'osm': () => (new ol.layer.Tile({source: new ol.source.OSM()})),
-  'arcgis': () => (new ol.layer.Tile({
-    source: new ol.source.XYZ({
+  'none': () => (new webGisComponents.ol.layer.Group()),
+  'osm': () => (new webGisComponents.ol.layer.Tile({source: new webGisComponents.ol.source.OSM()})),
+  'arcgis': () => (new webGisComponents.ol.layer.Tile({
+    source: new webGisComponents.ol.source.XYZ({
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
     })
   })),

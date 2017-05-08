@@ -22,7 +22,7 @@ import {
  *   min-zoom="{number}"
  *   // The maximum zoom level the source supports.
  *   max-zoom="{number}"
- * />
+ * ></HTMLMapLayerXYZ>
  */
 export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
 

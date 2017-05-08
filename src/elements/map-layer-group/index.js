@@ -8,7 +8,7 @@ import {
  * Usage:
  * <HTMLMapLayerGroup
  *   // @inheritdoc
- * />
+ * ></HTMLMapLayerGroup>
  */
 export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
 
@@ -48,8 +48,24 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
   static getLiveChildLayerElementCollection (element, layerCollection) {
     const elementCollection = this.getLiveChildElementCollection(element, HTMLMapLayerBase);
 
-    elementCollection.on('change', ({/*type, */target}) => {
-      const layerElements = target.getArray();
+    // Cache loaded items for comparison when items are updated.
+    elementCollection._cachedItems = new Set();
+    elementCollection._childLayerGroupOnChange = (function () {
+      // When any child layer group has been changed, this layer group is also changed.
+      this.changed();
+    }).bind(elementCollection);
+
+    elementCollection.on('change', ({/*type, */target: collection}) => {
+      const layerElements = collection.getArray();
+
+      // Find out what's added and what's removed.
+      const layerElementSet = new Set(layerElements);
+      const addedElements = layerElements.filter((el) => !elementCollection._cachedItems.has(el));
+      const removedElements = Array.from(elementCollection._cachedItems).filter((el) => !layerElementSet.has(el));
+
+      // Update the cache.
+      elementCollection._cachedItems.clear();
+      elementCollection._cachedItems = new Set(layerElements);
 
       // Children should have the same projection as the parent.
       this.alignLayerElementProjections(element, layerElements);
@@ -62,25 +78,42 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
         layerCollection.extend(layers);
         layerCollection.changed();
       }
+
+      // Remove listeners from removed elements.
+      removedElements
+        .filter((el) => el instanceof HTMLMapLayerGroup)
+        .forEach((el) => el.removeEventListener('change:layers', elementCollection._childLayerGroupOnChange));
+
+      // Add listeners to added elements.
+      addedElements
+        .filter((el) => el instanceof HTMLMapLayerGroup)
+        .forEach((el) => el.addEventListener('change:layers', elementCollection._childLayerGroupOnChange));
+
+      element.dispatchEvent(new Event('change:layers'));
     });
 
     return elementCollection;
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
+    super();
 
     // This collection holds the child layer elements.
     // @type {ol.Collection.<HTMLMapLayerBase>}
     this.childLayerElementsCollection_ = this.constructor.getLiveChildLayerElementCollection(this, this.layer.getLayers());
-  } // constructor
+  }
 
   /**
    * Getters and Setters (for properties).
    */
+
+  /**
+   * @readonly
+   * @property {Array.<HTMLMapLayerBase>} layerElements
+   */
+  get layerElements () {
+    return this.childLayerElementsCollection_.getArray();
+  }
 
   /**
    * Customized public/private methods.

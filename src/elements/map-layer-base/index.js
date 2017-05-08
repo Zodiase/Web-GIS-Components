@@ -27,7 +27,7 @@ import {
  *   max-resolution="{number}"
  *   // The current projection used by this layer. This should match the map view projection. Default value is "EPSG:3857".
  *   projection="{string}"
- * />
+ * ></HTMLMapLayerBase>
  */
 export default class HTMLMapLayerBase extends BaseClass {
 
@@ -183,14 +183,8 @@ export default class HTMLMapLayerBase extends BaseClass {
     return this.ol.source.Source;
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
-
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
+    super();
 
     // Used in constructor of ol.source.Source.
     this.olSourceOptions_ = {};

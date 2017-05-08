@@ -10,4 +10,6 @@ import './elements/map-layer-xyz';
 import './elements/map-layer-geojson';
 
 import './elements/map-control-defaults';
+import './elements/map-control-simple-layer-list';
+
 import './elements/map-interaction-defaults';

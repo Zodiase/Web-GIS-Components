@@ -4,7 +4,7 @@ import BaseClass from '../base';
 
 /**
  * Usage:
- * <HTMLMapControlBase />
+ * <HTMLMapControlBase></HTMLMapControlBase>
  */
 export default class HTMLMapControlBase extends BaseClass {
 
@@ -38,27 +38,59 @@ export default class HTMLMapControlBase extends BaseClass {
     return _.merge({}, super.propertyComparators, {});
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
+    super();
 
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
+    // @type {HTMLMapView|null} - Reference to the map element.
+    this.mapElement_ = null;
 
-    // @type {ol.control.Control}
-    this.olControl_ = new this.ol.control.Control({});
+    // @type {Object.<function>} - A map of event handlers.
+    this.mapElementEvents_ = {};
   }
 
   /**
    * Getters and Setters (for properties).
    */
 
-  // @property {ol.control.Control} control
+  // @property {Array.<ol.control.Control>} controls
   // @readonly
-  get control () {
-    return this.olControl_;
+  get controls () {
+    throw new Error('Subclass should implement this.');
+  }
+
+  /**
+   * @property {HTMLMapView|null} mapElement
+   */
+  get mapElement () {
+    return this.mapElement_;
+  }
+  /**
+   * Bind this control element to a new map element.
+   */
+  set mapElement (newMapElement) {
+    const oldMapElement = this.mapElement_;
+
+    if (newMapElement === oldMapElement) {
+      return;
+    }
+
+    if (oldMapElement) {
+      // Clean up the old map.
+
+      Object.keys(this.mapElementEvents_).forEach((eventName) => {
+        oldMapElement.removeEventListener(eventName, this.mapElementEvents_[eventName]);
+      });
+    }
+
+    this.mapElement_ = newMapElement;
+
+    if (newMapElement) {
+      // Bind the new map.
+
+      Object.keys(this.mapElementEvents_).forEach((eventName) => {
+        newMapElement.addEventListener(eventName, this.mapElementEvents_[eventName]);
+      });
+    }
   }
 
 } // HTMLMapControlBase

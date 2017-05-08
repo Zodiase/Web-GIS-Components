@@ -438,10 +438,14 @@ export default class HTMLMapBaseClass extends HTMLElement {
    */
 
   log_ (...args) {
-    console.log(`${this.constructor.name}_${this.id}`, ...args);
+    if (VERBOSE) {
+      console.log(`${this.constructor.name}_${this.id}`, ...args);
+    }
   }
   logInfo_ (...args) {
-    console.info(`${this.constructor.name}_${this.id}`, ...args);
+    if (VERBOSE) {
+      console.info(`${this.constructor.name}_${this.id}`, ...args);
+    }
   }
   logWarn_ (...args) {
     console.warn(`${this.constructor.name}_${this.id}`, ...args);

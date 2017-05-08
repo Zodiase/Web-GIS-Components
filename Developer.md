@@ -18,7 +18,7 @@ When a layer element property changes, it should update the internal models and 
 
 A map instance monitors its child list for layer instances.
 
-To group layers, use the dedicated custom element `<map-layer-group />`, which monitors its children just like the map.
+To group layers, use the dedicated custom element `<map-layer-group></map-layer-group>`, which monitors its children just like the map.
 
 ## Attribute change flow:
 

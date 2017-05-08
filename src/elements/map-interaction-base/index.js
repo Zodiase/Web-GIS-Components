@@ -4,7 +4,7 @@ import BaseClass from '../base';
 
 /**
  * Usage:
- * <HTMLMapInteractionBase />
+ * <HTMLMapInteractionBase></HTMLMapInteractionBase>
  */
 export default class HTMLMapInteractionBase extends BaseClass {
 
@@ -39,26 +39,13 @@ export default class HTMLMapInteractionBase extends BaseClass {
   }
 
   /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
-  constructor () {
-    super(); // always call super() first in the ctor.
-
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
-
-    // @type {ol.interaction.Interaction}
-    this.olInteraction_ = new this.ol.interaction.Interaction({});
-  }
-
-  /**
    * Getters and Setters (for properties).
    */
 
-  // @property {ol.interaction.Interaction} interaction
+  // @property {Array.<ol.interaction.Interaction>} interaction
   // @readonly
-  get interaction () {
-    return this.olInteraction_;
+  get interactions () {
+    throw new Error('Subclass should implement this.');
   }
 
 } // HTMLMapInteractionBase

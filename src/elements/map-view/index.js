@@ -119,14 +119,8 @@ export default class HTMLMapView extends BaseClass {
     });
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
-
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
+    super();
 
     const {
       ol
@@ -158,19 +152,22 @@ export default class HTMLMapView extends BaseClass {
 
     this.mapControlElementCollection_.on('change', ({/*type, */target}) => {
       const controlElements = target.getArray();
-      const controls = controlElements.map((el) => el.control)
-                                      .reduce((acc, obj) => [
+      const controls = controlElements.map((el) => el.controls)
+                                      .reduce((acc, controlArray) => [
                                         ...acc,
-                                        ...(
-                                          (obj instanceof this.ol.Collection)
-                                          ? obj.getArray()
-                                          : [obj]
-                                        ),
+                                        ...controlArray,
                                       ], []);
 
       this.mapControlCollection_.clear();
       this.mapControlCollection_.extend(controls);
       this.mapControlCollection_.changed();
+
+      // All `control.setMap`s have been called at this point.
+      controlElements.forEach((element) => {
+        element.mapElement = this;
+      });
+
+      this.dispatchEvent(new Event('change:controls'));
     });
 
     // Overlays are tied to geolocations.
@@ -186,19 +183,17 @@ export default class HTMLMapView extends BaseClass {
 
     this.mapInteractionElementCollection_.on('change', ({/*type, */target}) => {
       const interactionElements = target.getArray();
-      const interactions = interactionElements.map((el) => el.interaction)
-                                      .reduce((acc, obj) => [
+      const interactions = interactionElements.map((el) => el.interactions)
+                                      .reduce((acc, controlArray) => [
                                         ...acc,
-                                        ...(
-                                          (obj instanceof this.ol.Collection)
-                                          ? obj.getArray()
-                                          : [obj]
-                                        ),
+                                        ...controlArray,
                                       ], []);
 
       this.mapInteractionCollection_.clear();
       this.mapInteractionCollection_.extend(interactions);
       this.mapInteractionCollection_.changed();
+
+      this.dispatchEvent(new Event('change:interactions'));
     });
 
     // This collection holds the child layers so it's easier to do batch updates.
@@ -208,6 +203,10 @@ export default class HTMLMapView extends BaseClass {
     // This collection holds the child layer elements.
     // @type {ol.Collection.<HTMLMapLayerBase>}
     this.childLayerElementsCollection_ = HTMLMapLayerGroup.getLiveChildLayerElementCollection(this, this.childMapLayerCollection_);
+
+    this.childLayerElementsCollection_.on('change', (/*{type, target}*/) => {
+      this.dispatchEvent(new Event('change:layers'));
+    });
 
     // This collection holds the base map.
     this.baseMapLayerCollection_ = new ol.Collection([
@@ -303,6 +302,22 @@ export default class HTMLMapView extends BaseClass {
   /**
    * Getters and Setters (for properties).
    */
+
+  /**
+   * @readonly
+   * @property {ol.Map} olMap
+   */
+  get olMap () {
+    return this.olMap_;
+  }
+
+  /**
+   * @readonly
+   * @property {Array.<HTMLMapLayerBase>} layerElements
+   */
+  get layerElements () {
+    return this.childLayerElementsCollection_.getArray();
+  }
 
   // @property {boolean} disabled
   get disabled () {

@@ -22,7 +22,7 @@ import {
  *   // Not currently used.
  *   // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
  *   server-type="{string}"
- * />
+ * ></HTMLMapLayerTWMS>
  */
 export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
 

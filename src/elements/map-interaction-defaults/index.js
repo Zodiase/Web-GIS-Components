@@ -8,7 +8,7 @@ import {
 
 /**
  * Usage:
- * <HTMLMapDefaultInteractions />
+ * <HTMLMapDefaultInteractions></HTMLMapDefaultInteractions>
  */
 export default class HTMLMapDefaultInteractions extends HTMLMapInteractionBase {
 
@@ -42,22 +42,21 @@ export default class HTMLMapDefaultInteractions extends HTMLMapInteractionBase {
     return _.merge({}, super.propertyComparators, {});
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
+    super();
 
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
-
-    // @type {ol.interaction.Interaction}
+    // @type {ol.Collection.<ol.interaction.Interaction>}
     this.olInteraction_ = new this.ol.interaction.defaults({});
   }
 
   /**
    * Getters and Setters (for properties).
    */
+
+  // @override
+  get interactions () {
+    return this.olInteraction_.getArray();
+  }
 
 } // HTMLMapDefaultInteractions
 

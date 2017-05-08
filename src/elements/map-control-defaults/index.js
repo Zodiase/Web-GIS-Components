@@ -8,7 +8,7 @@ import {
 
 /**
  * Usage:
- * <HTMLMapDefaultControls />
+ * <HTMLMapDefaultControls></HTMLMapDefaultControls>
  */
 export default class HTMLMapDefaultControls extends HTMLMapControlBase {
 
@@ -42,22 +42,34 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
     return _.merge({}, super.propertyComparators, {});
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
+    super();
 
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
-
-    // @type {ol.control.Control}
+    // @type {ol.Collection.<ol.control.Control>}
     this.olControl_ = new this.ol.control.defaults({});
   }
 
   /**
    * Getters and Setters (for properties).
    */
+
+  // @override
+  get controls () {
+    return this.olControl_.getArray();
+  }
+
+  // @override
+  set mapElement (newMapElement) {
+    super.mapElement = newMapElement;
+
+    if (newMapElement) {
+      this.olControl_.getArray().forEach((control) => {
+        if (control.getMap() !== newMapElement.olMap) {
+          control.setMap(newMapElement.olMap);
+        }
+      });
+    }
+  }
 
 } // HTMLMapDefaultControls
 

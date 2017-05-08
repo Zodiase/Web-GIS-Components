@@ -22,7 +22,7 @@ import {
  *   // Specify the projection the source data coordinates are in. It will only be used when no CRS is available in the data. Default value is "EPSG:4326".
  *   src-projection="{string}"
  * >
- *   <HTMLMapLayerVectorStyle ... />
+ *   <HTMLMapLayerVectorStyle ...></HTMLMapLayerVectorStyle>
  * </HTMLMapLayerGeoJSON>
  */
 export default class HTMLMapLayerGeoJSON extends HTMLMapLayerBase {

@@ -26,8 +26,11 @@
     "eslint-loader": "^1.7.1",
     "express": "^4.15.2",
     "html-loader": "^0.4.5",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.3",
     "lodash": "^4.17.4",
     "openlayers": "^4.1.0",
+    "url-loader": "^0.5.8",
     "webpack": "^2.3.3"
   }
 }

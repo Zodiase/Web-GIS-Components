@@ -1,8 +1,10 @@
 <!-- This wrapper exists so its children can rely on its "position: relative", without worrying user styling overriding it. -->
 <div id="wrapper">
   <div id="map" class="map" tabindex="0"></div>
-  <div id="layer-list">
-    <slot name="layer-list"></slot>
+  <div id="left-dock">
+    <slot name="left-dock"></slot>
   </div>
-  <slot>Some Default Value for the Default Slot. Delete this.</slot>
+  <div id="right-dock">
+    <slot name="right-dock"></slot>
+  </div>
 </div>

@@ -1,6 +1,7 @@
 const path = require('path');
 const _ = require('lodash');
-const BabiliPlugin = require("babili-webpack-plugin");
+const webpack = require('webpack');
+const BabiliPlugin = require('babili-webpack-plugin');
 
 const globalIncludeExcludeRules = {
   include: [
@@ -32,6 +33,26 @@ module.exports = {
         ],
       }),
       _.merge({}, globalIncludeExcludeRules, {
+        test: /\.less$/,
+        use: [
+          "css-loader",
+          {
+            loader: "less-loader",
+            options: {
+              strictMath: true,
+              noIeCompat: true,
+            },
+          },
+        ],
+      }),
+      _.merge({}, globalIncludeExcludeRules, {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        loader: "url-loader",
+        options: {
+          limit: 10000
+        },
+      }),
+      _.merge({}, globalIncludeExcludeRules, {
         test: /\.html$/,
         use: [
           "html-loader",
@@ -47,8 +68,18 @@ module.exports = {
 
     ],
   },
+  resolve: {
+    modules: [
+      path.resolve('./src'),
+      path.resolve('./node_modules'),
+    ],
+  },
   target: "web",
   plugins:[
+    new webpack.DefinePlugin({
+        // Set to `true` to dramatically increase the logs.
+        VERBOSE: false,
+    }),
 //     new BabiliPlugin(),
   ],
 };

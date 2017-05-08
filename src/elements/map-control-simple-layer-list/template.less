@@ -1,0 +1,99 @@
+:host {
+  position: absolute;
+  top: .5em;
+  right: .5em;
+  max-width: calc(100% - 1.3em);
+  max-height: calc(100% - 1.3em);
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#wrapper {
+  position: relative;
+  border-radius: 4px;
+  padding: 2px;
+  background-color: rgba(255,255,255,.4);
+}
+
+#toggleButton {
+  display: inline-block;
+  vertical-align: top;
+  width: 1.375em;
+  height: 1.375em;
+  margin: 1px;
+  border: none;
+  border-radius: 2px;
+  padding: 0;
+  font-size: 1.14em;
+  background-color: rgba(0,60,136,.5);
+  background-image: url(./images/ic_layers_white_24px.svg);
+  background-position: center;
+  background-size: 80% 80%;
+  background-repeat: no-repeat;
+}
+
+#list-container {
+  display: inline-block;
+  margin: 1px;
+  padding: 5px;
+  text-align: left;
+}
+
+#list-container ol,
+#list-container ul, {
+  margin: 0;
+  padding-left: 2em;
+}
+
+#list-container .layer-item {
+  @contentHeight: 18px;
+
+  padding: (@contentHeight * 0.1);
+  font-size: (@contentHeight * 0.9);
+  line-height: @contentHeight;
+}
+
+// Positioning between wrapper and its children.
+#wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row-reverse;
+  -ms-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-align-content: flex-start;
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+
+  #toggleButton {
+    @flex: 1 0 auto;
+
+    -webkit-flex: @flex;
+    -ms-flex: @flex;
+    flex: @flex;
+  }
+}
+
+// When collapsed, the list container is hidden.
+#wrapper.collapsed #list-container {
+  display: none;
+}
+
+// When not collapsed, the wrapper should have a different background color.
+#wrapper:not(.collapsed) {
+  background-color: rgba(255,255,255,.8);
+}

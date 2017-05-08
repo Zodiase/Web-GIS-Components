@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.2.1
+
 - Add another build:
     - `web-gis-components` - Full bundle with all dependencies included.
     - `web-gis-components-lite` - Lite bundle with no dependency included. User must provide Web Components polyfill and OpenLayers.

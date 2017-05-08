@@ -1,4 +1,4 @@
-import HTMLMapLayerBase from '../map-layer-base';
+import BaseClass from '../map-layer-base';
 
 import {
   elementName,
@@ -10,12 +10,10 @@ import {
  *   // @inheritdoc
  * ></HTMLMapLayerGroup>
  */
-export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
+export default class HTMLMapLayerGroup extends BaseClass {
 
   // @override
-  static get layerClass () {
-    return this.ol.layer.Group;
-  }
+  static layerClass = BaseClass.ol.layer.Group;
 
   /**
    * Make the target elements have the same projection as the source element.
@@ -46,7 +44,7 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
    * @returns {ol.Collection.<HTMLMapLayerBase>}
    */
   static getLiveChildLayerElementCollection (element, layerCollection) {
-    const elementCollection = this.getLiveChildElementCollection(element, HTMLMapLayerBase);
+    const elementCollection = this.getLiveChildElementCollection(element, BaseClass);
 
     // Cache loaded items for comparison when items are updated.
     elementCollection._cachedItems = new Set();

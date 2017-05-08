@@ -3,7 +3,7 @@ import {
   typeCheck
 } from 'type-check';
 
-import HTMLMapLayerBase from '../map-layer-base';
+import BaseClass from '../map-layer-base';
 
 import {
   elementName,
@@ -25,95 +25,79 @@ import {
  *   <HTMLMapLayerVectorStyle ...></HTMLMapLayerVectorStyle>
  * </HTMLMapLayerGeoJSON>
  */
-export default class HTMLMapLayerGeoJSON extends HTMLMapLayerBase {
+export default class HTMLMapLayerGeoJSON extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      'src-url',
-      'src-json',
-      'src-projection',
-    ]);
-  }
+  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+    'src-url',
+    'src-json',
+    'src-projection',
+  ]);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'src-url': 'srcUrl',
-      'src-json': 'srcJson',
-      'src-projection': 'srcProjection',
-    });
-  }
+  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'src-url': 'srcUrl',
+    'src-json': 'srcJson',
+    'src-projection': 'srcProjection',
+  });
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'srcUrl': 'src-url',
-      'srcJson': 'src-json',
-      'srcProjection': 'src-projection',
-    });
-  }
+  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'srcUrl': 'src-url',
+    'srcJson': 'src-json',
+    'srcProjection': 'src-projection',
+  });
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'src-url': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-      'src-json': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-      'src-projection': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-    });
-  }
+  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+    'src-url': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+    'src-json': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+    'src-projection': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+  });
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {string|null} val - String value to be set, null to unset.
-      'src-url': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      // @param {string|null} val - String value to be set, null to unset.
-      'src-json': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      // @param {string|null} val - String value to be set, null to unset.
-      'src-projection': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-    });
-  }
+  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {string|null} val - String value to be set, null to unset.
+    'src-url': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    // @param {string|null} val - String value to be set, null to unset.
+    'src-json': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    // @param {string|null} val - String value to be set, null to unset.
+    'src-projection': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+  });
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'srcUrl': (a, b) => a === b,
-      'srcJson': (a, b) => a === b,
-      'srcProjection': (a, b) => a === b,
-    });
-  }
+  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+    'srcUrl': (a, b) => a === b,
+    'srcJson': (a, b) => a === b,
+    'srcProjection': (a, b) => a === b,
+  });
 
   // @override
-  static get layerClass () {
-    return this.ol.layer.Vector;
-  }
+  static layerClass = BaseClass.ol.layer.Vector;
 
   // @override
-  static get layerSourceClass () {
-    return this.ol.source.Vector;
-  }
+  static layerSourceClass = BaseClass.ol.source.Vector;
 
   /**
    * Getters and Setters (for properties).

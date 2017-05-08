@@ -3,7 +3,7 @@ import {
   typeCheck
 } from 'type-check';
 
-import HTMLMapLayerBase from '../map-layer-base';
+import BaseClass from '../map-layer-base';
 
 import {
   defaultMinZoom,
@@ -24,104 +24,88 @@ import {
  *   max-zoom="{number}"
  * ></HTMLMapLayerXYZ>
  */
-export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
+export default class HTMLMapLayerXYZ extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      // Url template of the layer source.
-      // Required.
-      // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
-      'url',
-      // Minimum zoom level.
-      // Optional.
-      // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
-      'min-zoom',
-      // Maximum zoom level.
-      // Optional.
-      // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
-      'max-zoom',
-    ]);
-  }
+  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+    // Url template of the layer source.
+    // Required.
+    // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
+    'url',
+    // Minimum zoom level.
+    // Optional.
+    // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
+    'min-zoom',
+    // Maximum zoom level.
+    // Optional.
+    // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
+    'max-zoom',
+  ]);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'url': 'url',
-      'min-zoom': 'minZoom',
-      'max-zoom': 'maxZoom',
-    });
-  }
+  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'url': 'url',
+    'min-zoom': 'minZoom',
+    'max-zoom': 'maxZoom',
+  });
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'url': 'url',
-      'minZoom': 'min-zoom',
-      'maxZoom': 'max-zoom',
-    });
-  }
+  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'url': 'url',
+    'minZoom': 'min-zoom',
+    'maxZoom': 'max-zoom',
+  });
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'url': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-      'min-zoom': (isSet, val) => (
-        isSet
-        ? parseFloat(val)
-        : null
-      ),
-      'max-zoom': (isSet, val) => (
-        isSet
-        ? parseFloat(val)
-        : null
-      ),
-    });
-  }
+  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+    'url': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+    'min-zoom': (isSet, val) => (
+      isSet
+      ? parseFloat(val)
+      : null
+    ),
+    'max-zoom': (isSet, val) => (
+      isSet
+      ? parseFloat(val)
+      : null
+    ),
+  });
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {string|null} val - String value to be set, null to unset.
-      'url': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      // @param {number|null} val - Number value to be set, null to unset.
-      'min-zoom': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : String(val),
-      }),
-      // @param {number|null} val - Number value to be set, null to unset.
-      'max-zoom': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : String(val),
-      }),
-    });
-  }
+  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {string|null} val - String value to be set, null to unset.
+    'url': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    // @param {number|null} val - Number value to be set, null to unset.
+    'min-zoom': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : String(val),
+    }),
+    // @param {number|null} val - Number value to be set, null to unset.
+    'max-zoom': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : String(val),
+    }),
+  });
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'url': (a, b) => a === b,
-      'minZoom': (a, b) => a === b,
-      'maxZoom': (a, b) => a === b,
-    });
-  }
+  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+    'url': (a, b) => a === b,
+    'minZoom': (a, b) => a === b,
+    'maxZoom': (a, b) => a === b,
+  });
 
   // @override
-  static get layerClass () {
-    return this.ol.layer.Tile;
-  }
+  static layerClass = BaseClass.ol.layer.Tile;
 
   // @override
-  static get layerSourceClass () {
-    return this.ol.source.XYZ;
-  }
+  static layerSourceClass = BaseClass.ol.source.XYZ;
 
   /**
    * Getters and Setters (for properties).

@@ -24,100 +24,94 @@ const defaultCenter = [0, 0];
 
 export default class HTMLMapView extends BaseClass {
 
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      'disabled',
-      'basemap',
-      'projection',
-      'center',
-      'zoom',
-    ]);
-  }
+  // @override
+  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+    'disabled',
+    'basemap',
+    'projection',
+    'center',
+    'zoom',
+  ]);
 
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'disabled': 'disabled',
-      'basemap': 'basemap',
-      'projection': 'projection',
-      'center': 'center',
-      'zoom': 'zoom',
-    });
-  }
+  // @override
+  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'disabled': 'disabled',
+    'basemap': 'basemap',
+    'projection': 'projection',
+    'center': 'center',
+    'zoom': 'zoom',
+  });
 
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'disabled': 'disabled',
-      'basemap': 'basemap',
-      'projection': 'projection',
-      'center': 'center',
-      'zoom': 'zoom',
-    });
-  }
+  // @override
+  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'disabled': 'disabled',
+    'basemap': 'basemap',
+    'projection': 'projection',
+    'center': 'center',
+    'zoom': 'zoom',
+  });
 
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'disabled': (isSet/*, val*/) => isSet,
-      'basemap': (isSet, val) => (
-        isSet
-        ? val.trim()
-        : null
-      ),
-      'projection': (isSet, val) => (
-        isSet
-        ? val.trim()
-        : null
-      ),
-      'center': (isSet, val) => (
-        isSet
-        ? val.split(',')
-             .map((v) => v.trim())
-             .map((v) => parseFloat(v))
-        : null
-      ),
-      'zoom': (isSet, val) => (
-        isSet
-        ? parseFloat(val)
-        : null
-      ),
-    });
-  }
+  // @override
+  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+    'disabled': (isSet/*, val*/) => isSet,
+    'basemap': (isSet, val) => (
+      isSet
+      ? val.trim()
+      : null
+    ),
+    'projection': (isSet, val) => (
+      isSet
+      ? val.trim()
+      : null
+    ),
+    'center': (isSet, val) => (
+      isSet
+      ? val.split(',')
+           .map((v) => v.trim())
+           .map((v) => parseFloat(v))
+      : null
+    ),
+    'zoom': (isSet, val) => (
+      isSet
+      ? parseFloat(val)
+      : null
+    ),
+  });
 
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {boolean|null} val - Boolean value to set or unset, null to unset.
-      'disabled': (val) => ({
-        isSet: Boolean(val),
-        value: 'disabled',
-      }),
-      'basemap': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      'projection': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      'center': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val.join(', '),
-      }),
-      // @param {number|null} val - Number value to be set, null to unset.
-      'zoom': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : String(val),
-      }),
-    });
-  }
+  // @override
+  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {boolean|null} val - Boolean value to set or unset, null to unset.
+    'disabled': (val) => ({
+      isSet: Boolean(val),
+      value: 'disabled',
+    }),
+    'basemap': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    'projection': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    'center': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val.join(', '),
+    }),
+    // @param {number|null} val - Number value to be set, null to unset.
+    'zoom': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : String(val),
+    }),
+  });
 
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'disabled': (a, b) => a === b,
-      'basemap': (a, b) => a === b,
-      'projection': (a, b) => a === b,
-      'center': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
-      'zoom': (a, b) => a === b,
-    });
-  }
+  // @override
+  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+    'disabled': (a, b) => a === b,
+    'basemap': (a, b) => a === b,
+    'projection': (a, b) => a === b,
+    'center': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
+    'zoom': (a, b) => a === b,
+  });
 
   constructor () {
     super();

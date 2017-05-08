@@ -3,7 +3,7 @@ import {
   typeCheck
 } from 'type-check';
 
-import HTMLMapLayerBase from '../map-layer-base';
+import BaseClass from '../map-layer-base';
 
 import {
   elementName,
@@ -24,101 +24,85 @@ import {
  *   server-type="{string}"
  * ></HTMLMapLayerTWMS>
  */
-export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
+export default class HTMLMapLayerTWMS extends BaseClass {
 
   // @override
-  static get observedAttributes () {
-    return _.concat(super.observedAttributes, [
-      'url',
-      'params',
-      'server-type',
-    ]);
-  }
+  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+    'url',
+    'params',
+    'server-type',
+  ]);
 
   // @override
-  static get attributeNameToPropertyNameMapping () {
-    return _.merge({}, super.attributeNameToPropertyNameMapping, {
-      'url': 'url',
-      'params': 'params',
-      'server-type': 'serverType',
-    });
-  }
+  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+    'url': 'url',
+    'params': 'params',
+    'server-type': 'serverType',
+  });
 
   // @override
-  static get propertyNameToAttributeNameMapping () {
-    return _.merge({}, super.propertyNameToAttributeNameMapping, {
-      'url': 'url',
-      'params': 'params',
-      'serverType': 'server-type',
-    });
-  }
+  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+    'url': 'url',
+    'params': 'params',
+    'serverType': 'server-type',
+  });
 
   // @override
-  static get attributeToPropertyConverters () {
-    return _.merge({}, super.attributeToPropertyConverters, {
-      'url': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-      'params': (isSet, val) => (
-        isSet
-        ? val.split('&')
-             .map((pairStr) => pairStr.split('=').map((x) => decodeURIComponent(x)))
-             .reduce((acc, [key, value]) => ({
-               ...acc,
-               [key]: value
-             }), {})
-        : {}
-      ),
-      'server-type': (isSet, val) => (
-        isSet
-        ? val
-        : null
-      ),
-    });
-  }
+  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+    'url': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+    'params': (isSet, val) => (
+      isSet
+      ? val.split('&')
+           .map((pairStr) => pairStr.split('=').map((x) => decodeURIComponent(x)))
+           .reduce((acc, [key, value]) => ({
+             ...acc,
+             [key]: value
+           }), {})
+      : {}
+    ),
+    'server-type': (isSet, val) => (
+      isSet
+      ? val
+      : null
+    ),
+  });
 
   // @override
-  static get propertyToAttributeConverters () {
-    return _.merge({}, super.propertyToAttributeConverters, {
-      // @param {string|null} val - String value to be set, null to unset.
-      'url': (val) => ({
-        isSet: !(val === null),
-        value: (val === null) ? '' : val,
-      }),
-      'params': (val) => ({
-        isSet: !(val === null),
-        value: (val === null)
-               ? ''
-               : Object.keys(val)
-                       .map((key) => [key, val[key]].map((x) => encodeURIComponent(x))
-                                                    .join('='))
-                       .join('&'),
-      }),
-      //@see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
-//       'server-type'
-    });
-  }
+  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+    // @param {string|null} val - String value to be set, null to unset.
+    'url': (val) => ({
+      isSet: !(val === null),
+      value: (val === null) ? '' : val,
+    }),
+    'params': (val) => ({
+      isSet: !(val === null),
+      value: (val === null)
+             ? ''
+             : Object.keys(val)
+                     .map((key) => [key, val[key]].map((x) => encodeURIComponent(x))
+                                                  .join('='))
+                     .join('&'),
+    }),
+    //@see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
+//     'server-type'
+  });
 
   // @override
-  static get propertyComparators () {
-    return _.merge({}, super.propertyComparators, {
-      'url': (a, b) => a === b,
-      'params': (a, b) => _.isEqual(a, b),
-      'serverType': (a, b) => a === b,
-    });
-  }
+  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+    'url': (a, b) => a === b,
+    'params': (a, b) => _.isEqual(a, b),
+    'serverType': (a, b) => a === b,
+  });
 
   // @override
-  static get layerClass () {
-    return this.ol.layer.Tile;
-  }
+  static layerClass = BaseClass.ol.layer.Tile;
 
   // @override
-  static get layerSourceClass () {
-    return this.ol.source.TileWMS;
-  }
+  static layerSourceClass = BaseClass.ol.source.TileWMS;
 
   /**
    * Getters and Setters (for properties).

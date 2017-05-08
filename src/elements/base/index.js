@@ -39,65 +39,69 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * - [...]
    */
 
-  static get observedAttributes () {
-    // Child classes should implement this.
-    return [];
-  }
+  /**
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements#Observed_attributes}
+   * Child classes should extend this.
+   * @property {Array.<string>} observedAttributes
+   * @readonly
+   * @static
+   */
+  static observedAttributes = [];
 
   /**
+   * Mapping used to convert attribute names to property names.
    * Keys are attribute names.
    * Values are property names.
-   * @property {Object.<string>}
+   * Child classes should extend this.
+   * @property {Object.<string>} attributeNameToPropertyNameMapping
    * @readonly
+   * @static
    */
-  static get attributeNameToPropertyNameMapping () {
-    // Child classes should implement this.
-    return {};
-  }
+  static attributeNameToPropertyNameMapping = {};
 
   /**
+   * Mapping used to convert property names to attribute names.
    * Keys are property names.
    * Values are attribute names.
-   * @property {Object.<string>}
+   * Child classes should extend this.
+   * @property {Object.<string>} propertyNameToAttributeNameMapping
    * @readonly
+   * @static
    */
-  static get propertyNameToAttributeNameMapping () {
-    // Child classes should implement this.
-    return {};
-  }
+  static propertyNameToAttributeNameMapping = {};
 
   /**
+   * A map of functions for converting attribute values to property values.
    * Keys are attribute names.
    * Values are functions that convert attribute configs to property values.
-   * @property {Object.<isSet: boolean, val: string -> *>}
+   * Child classes should extend this.
+   * @property {Object.<isSet: boolean, val: string -> *>} attributeToPropertyConverters
    * @readonly
+   * @static
    */
-  static get attributeToPropertyConverters () {
-    // Child classes should implement this.
-    return {};
-  }
+  static attributeToPropertyConverters = {};
 
   /**
+   * A map of functions for converting property values to attribute values.
    * Keys are attribute names.
    * Values are functions that convert property values to attribute configs.
+   * Child classes should extend this.
    * @property {Object.<* -> {isSet: boolean, value: string}>}
    * @readonly
+   * @static
    */
-  static get propertyToAttributeConverters () {
-    // Child classes should implement this.
-    return {};
-  }
+  static propertyToAttributeConverters = {};
 
   /**
+   * A map of functions for comparing two property values.
    * Keys are property names.
    * Values are functions that compare two property values and return whether they are considered identical.
+   * Child classes should extend this.
    * @property {Object.<a: *, b: * -> boolean>}
    * @readonly
+   * @static
    */
-  static get propertyComparators () {
-    // Child classes should implement this.
-    return {};
-  }
+  static propertyComparators = {};
 
   /**
    * string -> string

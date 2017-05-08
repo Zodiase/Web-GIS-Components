@@ -1,3 +1,15 @@
+## Repository Operation Guidelines
+
+1. Only `master` branch is considered stable.
+2. Maintain a `master -> dev -> other-stuff` relationship.
+3. Branches must have names clearly indicating how they are going to affect the project.
+4. Branches must pass linting before merging.
+5. Branches should always be squash-merged.
+6. Merged branches should be "closed-off" and **never** re-used. Closing-off means:
+    1. Tag the branch, `foo` for example, with tag name `merged__foo`.
+    2. Don't forget step 1.
+    3. Delete the branch.
+
 ## Relationship between map and layers
 
 ### How simple can layer elements be?
@@ -18,7 +30,7 @@ When a layer element property changes, it should update the internal models and 
 
 A map instance monitors its child list for layer instances.
 
-To group layers, use the dedicated custom element `<map-layer-group />`, which monitors its children just like the map.
+To group layers, use the dedicated custom element `<map-layer-group></map-layer-group>`, which monitors its children just like the map.
 
 ## Attribute change flow:
 
@@ -36,3 +48,25 @@ To group layers, use the dedicated custom element `<map-layer-group />`, which m
         - revert attribute to the old value if one is available
     - else
         - done!
+
+## How to create a new custom element?
+
+- Pick a good base class to start.
+    - A new layer? Probably start from `HTMLMapLayerBase` in `map-layer-base`.
+    - A new control? Probably start from `HTMLMapControlBase` in `map-control-base`.
+    - A new interaction? Probably start from `HTMLMapInteractionBase` in `map-interaction-base`.
+    - Something else? Can't be wrong to base off `HTMLElement`.
+- Create a folder in `/src/elements/` with a expressive name.
+    - A layer should have a folder name starting with `map-layer-`.
+    - A control should have a folder name starting with `map-control-`.
+- Use a `config.js` to export any static configs. It makes these values easier to be used by other components.
+- Define and export the class in `index.js` as the default export.
+- If it's a custom element, `customElements.define` it in `index.js`.
+- Override these when needed:
+    - `observedAttributes`
+    - `attributeNameToPropertyNameMapping`
+    - `propertyNameToAttributeNameMapping`
+    - `attributeToPropertyConverters`
+    - `propertyToAttributeConverters`
+    - `propertyComparators`
+- Depending on what class it's basing off, there will be more things to override.

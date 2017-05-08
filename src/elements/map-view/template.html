@@ -1,0 +1,10 @@
+<!-- This wrapper exists so its children can rely on its "position: relative", without worrying user styling overriding it. -->
+<div id="wrapper">
+  <div id="map" class="map" tabindex="0"></div>
+  <div id="left-dock">
+    <slot name="left-dock"></slot>
+  </div>
+  <div id="right-dock">
+    <slot name="right-dock"></slot>
+  </div>
+</div>

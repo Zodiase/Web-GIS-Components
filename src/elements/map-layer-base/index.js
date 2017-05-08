@@ -5,8 +5,10 @@ import {
 
 import BaseClass from '../base';
 
-export const defaultOpacity = 1;
-export const defaultProjection = 'EPSG:3857';
+import {
+  defaultLayerOpacity,
+  defaultLayerProjection,
+} from './config';
 
 /**
  * Usage:
@@ -25,7 +27,7 @@ export const defaultProjection = 'EPSG:3857';
  *   max-resolution="{number}"
  *   // The current projection used by this layer. This should match the map view projection. Default value is "EPSG:3857".
  *   projection="{string}"
- * />
+ * ></HTMLMapLayerBase>
  */
 export default class HTMLMapLayerBase extends BaseClass {
 
@@ -84,8 +86,8 @@ export default class HTMLMapLayerBase extends BaseClass {
       'extent': (isSet, val) => (
         isSet
         ? val.split(',')
-            .map((v) => v.trim())
-            .map((v) => parseFloat(v))
+             .map((v) => v.trim())
+             .map((v) => parseFloat(v))
         : null
       ),
       'invisible': (isSet/*, val*/) => isSet,
@@ -181,14 +183,8 @@ export default class HTMLMapLayerBase extends BaseClass {
     return this.ol.source.Source;
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
-
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
+    super();
 
     // Used in constructor of ol.source.Source.
     this.olSourceOptions_ = {};
@@ -231,7 +227,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   // @property {number} opacity
   get opacity () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('opacity'));
-    return propValFromAttr === null ? defaultOpacity : propValFromAttr;
+    return propValFromAttr === null ? defaultLayerOpacity : propValFromAttr;
   }
   set opacity (val) {
     if (!typeCheck('Number | Null', val)) {
@@ -333,7 +329,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   // @property {string|null} projection
   get projection () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('projection'));
-    return propValFromAttr === null ? defaultProjection : propValFromAttr;
+    return propValFromAttr === null ? defaultLayerProjection : propValFromAttr;
   }
   set projection (val) {
     if (!typeCheck('String | Null', val)) {

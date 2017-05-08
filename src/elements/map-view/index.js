@@ -5,17 +5,18 @@ import {
 
 import BaseClass from '../base';
 
-import {
-  defaultProjection
-} from '../map-layer-base';
+import HTMLMapControlBase from '../map-control-base';
+import HTMLMapInteractionBase from '../map-interaction-base';
 
 import HTMLMapLayerGroup from '../map-layer-group';
 
 import {
-  html as shadowRootHTML,
-} from './template';
-import {
+  elementName,
   defaultMapType,
+  defaultViewProjection,
+} from './config';
+import template from './template';
+import {
   getBaseMap,
 } from './basemap';
 
@@ -69,8 +70,8 @@ export default class HTMLMapView extends BaseClass {
       'center': (isSet, val) => (
         isSet
         ? val.split(',')
-            .map((v) => v.trim())
-            .map((v) => parseFloat(v))
+             .map((v) => v.trim())
+             .map((v) => parseFloat(v))
         : null
       ),
       'zoom': (isSet, val) => (
@@ -118,14 +119,8 @@ export default class HTMLMapView extends BaseClass {
     });
   }
 
-  /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
-   */
   constructor () {
-    super(); // always call super() first in the ctor.
-
-    // `this` is the container HTMLElement.
-    // It has no attributes or children at construction time.
+    super();
 
     const {
       ol
@@ -133,7 +128,7 @@ export default class HTMLMapView extends BaseClass {
 
     // Attach a shadow root to <fancy-tabs>.
     const shadowRoot = this.attachShadow({mode: 'open'});
-    shadowRoot.innerHTML = shadowRootHTML;
+    shadowRoot.appendChild(document.importNode(template.content, true));
 
     // Define bound/debounced/callback functions before the rest stuff.
     this.boundViewChangeCenterHandler_ = _.debounce(this.viewChangeCenterHandler_.bind(this), 30);
@@ -148,12 +143,58 @@ export default class HTMLMapView extends BaseClass {
     this.viewCache_ = {}; //! Not used at the moment.
 
     // Controls are tied to the map view.
-    this.mapControls_ = new ol.Collection();
+    // @type {ol.Collection.<ol.control.Control>}
+    this.mapControlCollection_ = new ol.Collection();
+
+    // Control Elements in this map view.
+    // @type {ol.Collection.<HTMLMapControlBase>}
+    this.mapControlElementCollection_ = this.getLiveChildElementCollection(HTMLMapControlBase);
+
+    this.mapControlElementCollection_.on('change', ({/*type, */target}) => {
+      const controlElements = target.getArray();
+      const controls = controlElements.map((el) => el.controls)
+                                      .reduce((acc, controlArray) => [
+                                        ...acc,
+                                        ...controlArray,
+                                      ], []);
+
+      this.mapControlCollection_.clear();
+      this.mapControlCollection_.extend(controls);
+      this.mapControlCollection_.changed();
+
+      // All `control.setMap`s have been called at this point.
+      controlElements.forEach((element) => {
+        element.mapElement = this;
+      });
+
+      this.dispatchEvent(new Event('change:controls'));
+    });
 
     // Overlays are tied to geolocations.
     this.mapOverlays_ = new ol.Collection();
 
-    this.mapInteractions_ = new ol.Collection();
+    // Interactions are tied to the map view.
+    // @type {ol.Collection.<ol.interaction.Interaction>}
+    this.mapInteractionCollection_ = new ol.Collection();
+
+    // Interaction Elements in this map view.
+    // @type {ol.Collection.<HTMLMapInteractionBase>}
+    this.mapInteractionElementCollection_ = this.getLiveChildElementCollection(HTMLMapInteractionBase);
+
+    this.mapInteractionElementCollection_.on('change', ({/*type, */target}) => {
+      const interactionElements = target.getArray();
+      const interactions = interactionElements.map((el) => el.interactions)
+                                      .reduce((acc, controlArray) => [
+                                        ...acc,
+                                        ...controlArray,
+                                      ], []);
+
+      this.mapInteractionCollection_.clear();
+      this.mapInteractionCollection_.extend(interactions);
+      this.mapInteractionCollection_.changed();
+
+      this.dispatchEvent(new Event('change:interactions'));
+    });
 
     // This collection holds the child layers so it's easier to do batch updates.
     // @type {ol.Collection.<ol.layer.Base>}
@@ -161,7 +202,11 @@ export default class HTMLMapView extends BaseClass {
 
     // This collection holds the child layer elements.
     // @type {ol.Collection.<HTMLMapLayerBase>}
-    this.childLayerElementsCollection_ = HTMLMapLayerGroup.setupChildLayerElementsObserver(this, this.childMapLayerCollection_);
+    this.childLayerElementsCollection_ = HTMLMapLayerGroup.getLiveChildLayerElementCollection(this, this.childMapLayerCollection_);
+
+    this.childLayerElementsCollection_.on('change', (/*{type, target}*/) => {
+      this.dispatchEvent(new Event('change:layers'));
+    });
 
     // This collection holds the base map.
     this.baseMapLayerCollection_ = new ol.Collection([
@@ -175,7 +220,7 @@ export default class HTMLMapView extends BaseClass {
       enableRotation: true,
       maxZoom: 28,
       minZoom: 0,
-      projection: defaultProjection,
+      projection: defaultViewProjection,
       rotation: 0,
       zoom: 3,
       zoomFactor: 2,
@@ -186,8 +231,8 @@ export default class HTMLMapView extends BaseClass {
     this.updateView_();
 
     this.olMap_ = new ol.Map({
-      controls: this.mapControls_,
-      interactions: this.mapInteractions_,
+      controls: this.mapControlCollection_,
+      interactions: this.mapInteractionCollection_,
       keyboardEventTarget: this.mapElement_,
       layers: [
         new ol.layer.Group({
@@ -230,6 +275,10 @@ export default class HTMLMapView extends BaseClass {
   connectedCallback () {
     super.connectedCallback();
 
+    if ('ShadyCSS' in window) {
+      window.ShadyCSS.styleElement(this);
+    }
+
     // Reconnect the view.
     this.mountView_();
 
@@ -253,6 +302,22 @@ export default class HTMLMapView extends BaseClass {
   /**
    * Getters and Setters (for properties).
    */
+
+  /**
+   * @readonly
+   * @property {ol.Map} olMap
+   */
+  get olMap () {
+    return this.olMap_;
+  }
+
+  /**
+   * @readonly
+   * @property {Array.<HTMLMapLayerBase>} layerElements
+   */
+  get layerElements () {
+    return this.childLayerElementsCollection_.getArray();
+  }
 
   // @property {boolean} disabled
   get disabled () {
@@ -296,7 +361,7 @@ export default class HTMLMapView extends BaseClass {
   // @property {string} projection
   get projection () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('projection'));
-    return propValFromAttr === null ? defaultProjection : propValFromAttr;
+    return propValFromAttr === null ? defaultViewProjection : propValFromAttr;
   }
   set projection (val) {
     if (!typeCheck('String | Null', val)) {
@@ -452,3 +517,5 @@ export default class HTMLMapView extends BaseClass {
   }
 
 } // HTMLMapView
+
+customElements.define(elementName, HTMLMapView);

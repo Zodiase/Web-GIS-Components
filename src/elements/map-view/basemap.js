@@ -1,4 +1,4 @@
-import ol from '../../third-party/ol-v4.0.1-dist.js';
+import ol from 'openlayers';
 
 /**
  * A map from types to functions that generate layers.
@@ -23,8 +23,6 @@ const typeAliases = {
   'default': 'osm',
   '': 'none'
 };
-
-export const defaultMapType = '';
 
 /**
  * If the provided type is an alias, return the value that alias refers to.

@@ -1,7 +1,7 @@
 {
     "parser": "babel-eslint",
     "env": {
-        "node": true,
+        "browser": true,
         "es6": true
     },
     "extends": [
@@ -11,6 +11,7 @@
         "sourceType": "module"
     },
     "globals": {
+        "VERBOSE": false,
         "ol": false
     },
     "rules": {
@@ -133,6 +134,7 @@
         "no-console": "warn",
         "no-continue": "error",
         "no-div-regex": "error",
+        "no-debugger": "warn",
         "no-duplicate-imports": "error",
         "no-else-return": "off",
         "no-empty-function": "error",

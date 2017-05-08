@@ -5,8 +5,11 @@ import {
 
 import HTMLMapLayerBase from '../map-layer-base';
 
-const defaultMinZoom = 0;
-const defaultMaxZoom = 18;
+import {
+  defaultMinZoom,
+  defaultMaxZoom,
+  elementName,
+} from './config';
 
 /**
  * Usage:
@@ -19,7 +22,7 @@ const defaultMaxZoom = 18;
  *   min-zoom="{number}"
  *   // The maximum zoom level the source supports.
  *   max-zoom="{number}"
- * />
+ * ></HTMLMapLayerXYZ>
  */
 export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
 
@@ -193,3 +196,5 @@ export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
    */
 
 } // HTMLMapLayerXYZ
+
+customElements.define(elementName, HTMLMapLayerXYZ);

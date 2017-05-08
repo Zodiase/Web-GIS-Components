@@ -5,6 +5,10 @@ import {
 
 import HTMLMapLayerBase from '../map-layer-base';
 
+import {
+  elementName,
+} from './config';
+
 /**
  * Usage:
  * <HTMLMapLayerTWMS
@@ -18,7 +22,7 @@ import HTMLMapLayerBase from '../map-layer-base';
  *   // Not currently used.
  *   // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
  *   server-type="{string}"
- * />
+ * ></HTMLMapLayerTWMS>
  */
 export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
 
@@ -85,12 +89,12 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
       }),
       'params': (val) => ({
         isSet: !(val === null),
-        value: (val === null) ? '' : Object.keys(val)
-                                     .map((key) => [key, val[key]]
-                                                   .map((x) => encodeURIComponent(x))
-                                                   .join('=')
-                                         )
-                                     .join('&'),
+        value: (val === null)
+               ? ''
+               : Object.keys(val)
+                       .map((key) => [key, val[key]].map((x) => encodeURIComponent(x))
+                                                    .join('='))
+                       .join('&'),
       }),
       //@see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
 //       'server-type'
@@ -161,3 +165,5 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
    */
 
 } // HTMLMapLayerTWMS
+
+customElements.define(elementName, HTMLMapLayerTWMS);

@@ -6,6 +6,7 @@
 - Load openlayers from npm. Update it from v4.0.1 to v4.1.0.
 - Basic support for custom control elements.
 - Basic support for custom interaction elements.
+- Implement naive custom element for adding simple layer list onto the map.
 
 ## v0.1.0
 

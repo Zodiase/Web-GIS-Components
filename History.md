@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.2.0
+
 - Replace "babel-cli + browserify" with webpack.
 - Include `web components` polyfills in bundle.
 - Build another bundle which does not include the polyfills.

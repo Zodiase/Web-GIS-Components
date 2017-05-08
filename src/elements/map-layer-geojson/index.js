@@ -1,7 +1,12 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../map-layer-base';
 
@@ -28,28 +33,28 @@ import {
 export default class HTMLMapLayerGeoJSON extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(BaseClass.observedAttributes, [
     'src-url',
     'src-json',
     'src-projection',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
     'src-url': 'srcUrl',
     'src-json': 'srcJson',
     'src-projection': 'srcProjection',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
     'srcUrl': 'src-url',
     'srcJson': 'src-json',
     'srcProjection': 'src-projection',
   });
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'src-url': (isSet, val) => (
       isSet
       ? val
@@ -68,7 +73,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
     // @param {string|null} val - String value to be set, null to unset.
     'src-url': (val) => ({
       isSet: !(val === null),
@@ -87,17 +92,21 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
   });
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'srcUrl': (a, b) => a === b,
     'srcJson': (a, b) => a === b,
     'srcProjection': (a, b) => a === b,
   });
 
   // @override
-  static layerClass = BaseClass.ol.layer.Vector;
+  static get layerClass () {
+    return webGisComponents.ol.layer.Vector;
+  }
 
   // @override
-  static layerSourceClass = BaseClass.ol.source.Vector;
+  static get layerSourceClass () {
+    return webGisComponents.ol.source.Vector;
+  }
 
   /**
    * Getters and Setters (for properties).
@@ -127,7 +136,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
       // Update internal models.
       this.updateSource({
         url: val,
-        format: new this.ol.format.GeoJSON({
+        format: new webGisComponents.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
         }),
@@ -161,7 +170,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
 
       // Update internal models.
       this.updateSource({
-        features: (new this.ol.format.GeoJSON({
+        features: (new webGisComponents.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
         })).readFeatures(JSON.parse(val)),

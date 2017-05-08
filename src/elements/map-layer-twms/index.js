@@ -1,7 +1,13 @@
-import _ from 'lodash';
+import {
+  concat,
+  isEqual,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../map-layer-base';
 
@@ -27,28 +33,28 @@ import {
 export default class HTMLMapLayerTWMS extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(BaseClass.observedAttributes, [
     'url',
     'params',
     'server-type',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
     'url': 'url',
     'params': 'params',
     'server-type': 'serverType',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
     'url': 'url',
     'params': 'params',
     'serverType': 'server-type',
   });
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'url': (isSet, val) => (
       isSet
       ? val
@@ -72,7 +78,7 @@ export default class HTMLMapLayerTWMS extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
     // @param {string|null} val - String value to be set, null to unset.
     'url': (val) => ({
       isSet: !(val === null),
@@ -92,17 +98,21 @@ export default class HTMLMapLayerTWMS extends BaseClass {
   });
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'url': (a, b) => a === b,
-    'params': (a, b) => _.isEqual(a, b),
+    'params': (a, b) => isEqual(a, b),
     'serverType': (a, b) => a === b,
   });
 
   // @override
-  static layerClass = BaseClass.ol.layer.Tile;
+  static get layerClass () {
+    return webGisComponents.ol.layer.Tile;
+  }
 
   // @override
-  static layerSourceClass = BaseClass.ol.source.TileWMS;
+  static get layerSourceClass () {
+    return webGisComponents.ol.source.TileWMS;
+  }
 
   /**
    * Getters and Setters (for properties).

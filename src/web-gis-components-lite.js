@@ -2,6 +2,8 @@
  * The lite version doesn't include the web components polyfills.
  */
 
+import './namespace';
+
 import './elements/map-view';
 
 import './elements/map-layer-group';

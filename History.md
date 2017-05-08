@@ -1,5 +1,11 @@
 ## v.NEXT
 
+- Add another build:
+    - `web-gis-components` - Full bundle with all dependencies included.
+    - `web-gis-components-lite` - Lite bundle with no dependency included. User must provide Web Components polyfill and OpenLayers.
+    - `web-gis-components-lite-ol` - Similar to lite bundle but has OpenLayers included.
+- Greatly reduce the bundle size (from ~1.3MB to 973KB, unminified).
+
 ## v0.2.0
 
 - Replace "babel-cli + browserify" with webpack.

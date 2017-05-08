@@ -26,12 +26,18 @@
     "eslint": "^3.19.0",
     "eslint-loader": "^1.7.1",
     "express": "^4.15.2",
+    "file-loader": "^0.11.1",
     "html-loader": "^0.4.5",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "lodash": "^4.17.4",
+    "lodash.clone": "^4.5.0",
+    "lodash.concat": "^4.5.0",
+    "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
+    "lodash.merge": "^4.6.0",
     "openlayers": "^4.1.0",
     "url-loader": "^0.5.8",
-    "webpack": "^2.3.3"
+    "webpack": "^2.5.1"
   }
 }

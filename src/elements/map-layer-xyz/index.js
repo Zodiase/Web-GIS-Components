@@ -1,7 +1,12 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../map-layer-base';
 
@@ -27,7 +32,7 @@ import {
 export default class HTMLMapLayerXYZ extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(BaseClass.observedAttributes, [
     // Url template of the layer source.
     // Required.
     // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
@@ -43,21 +48,21 @@ export default class HTMLMapLayerXYZ extends BaseClass {
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
     'url': 'url',
     'min-zoom': 'minZoom',
     'max-zoom': 'maxZoom',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
     'url': 'url',
     'minZoom': 'min-zoom',
     'maxZoom': 'max-zoom',
   });
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'url': (isSet, val) => (
       isSet
       ? val
@@ -76,7 +81,7 @@ export default class HTMLMapLayerXYZ extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
     // @param {string|null} val - String value to be set, null to unset.
     'url': (val) => ({
       isSet: !(val === null),
@@ -95,17 +100,21 @@ export default class HTMLMapLayerXYZ extends BaseClass {
   });
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'url': (a, b) => a === b,
     'minZoom': (a, b) => a === b,
     'maxZoom': (a, b) => a === b,
   });
 
   // @override
-  static layerClass = BaseClass.ol.layer.Tile;
+  static get layerClass () {
+    return webGisComponents.ol.layer.Tile;
+  }
 
   // @override
-  static layerSourceClass = BaseClass.ol.source.XYZ;
+  static get layerSourceClass () {
+    return webGisComponents.ol.source.XYZ;
+  }
 
   /**
    * Getters and Setters (for properties).

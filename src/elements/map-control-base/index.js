@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 
 import BaseClass from '../base';
 
@@ -9,22 +12,22 @@ import BaseClass from '../base';
 export default class HTMLMapControlBase extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, []);
+  static observedAttributes = concat(BaseClass.observedAttributes, []);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {});
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {});
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {});
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {});
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {});
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {});
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {});
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {});
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {});
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {});
 
   constructor () {
     super();

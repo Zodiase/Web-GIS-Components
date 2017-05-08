@@ -23,7 +23,7 @@
 /*eslint no-bitwise: "off", no-console: "off"*/
 /*global HTMLElement, CustomEvent, MutationObserver*/
 
-import ol from 'openlayers';
+import webGisComponents from 'namespace';
 
 export default class HTMLMapBaseClass extends HTMLElement {
 
@@ -121,7 +121,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
   // Attach the openlayers library.
   static get ol () {
-    return ol;
+    return webGisComponents.ol;
   }
 
   /**
@@ -165,7 +165,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
       return [...acc, point, ...points];
     }, []);
 
-    const allPointsInDestination = allPoints.map((point) => this.ol.proj.transform(point, source, destination));
+    const allPointsInDestination = allPoints.map((point) => webGisComponents.ol.proj.transform(point, source, destination));
 
     // The source data used for aggregation has to contain the head again in the end to prevent overflow.
     const aggSrcData = [...allPointsInDestination, allPointsInDestination[0]];
@@ -213,7 +213,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {boolean}
    */
   static isValidProjection (val) {
-    return this.ol.proj.get(val) !== null;
+    return webGisComponents.ol.proj.get(val) !== null;
   }
 
   /**
@@ -232,7 +232,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {ol.Collection.<function>}
    */
   static getLiveChildElementCollection (element, constructor) {
-    const collection = new this.ol.Collection(),
+    const collection = new webGisComponents.ol.Collection(),
           updateFunction = this.updateChildElements_.bind(this, element, constructor, collection),
           observer = new MutationObserver(updateFunction);
 
@@ -293,9 +293,6 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
     // `this` is the container HTMLElement.
     // It has no attributes or children at construction time.
-
-    // Attach the openlayers library.
-    this.ol = ol;
 
     // Indicate whether this custom element is in DOM or not.
     this.connected_ = false;
@@ -436,6 +433,11 @@ export default class HTMLMapBaseClass extends HTMLElement {
   /**
    * Getters and Setters (for properties).
    */
+
+  // Attach the openlayers library.
+  get ol () {
+    return webGisComponents.ol;
+  }
 
   /**
    * Customized public/private methods.

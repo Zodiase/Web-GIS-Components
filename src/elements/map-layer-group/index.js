@@ -1,3 +1,5 @@
+import webGisComponents from 'namespace';
+
 import BaseClass from '../map-layer-base';
 
 import {
@@ -13,7 +15,9 @@ import {
 export default class HTMLMapLayerGroup extends BaseClass {
 
   // @override
-  static layerClass = BaseClass.ol.layer.Group;
+  static get layerClass () {
+    return webGisComponents.ol.layer.Group;
+  }
 
   /**
    * Make the target elements have the same projection as the source element.

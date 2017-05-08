@@ -1,7 +1,12 @@
-import _ from 'lodash';
+import {
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../map-control-base';
 
@@ -17,27 +22,27 @@ import template from './template';
 export default class HTMLMapSimpleLayerListControl extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(BaseClass.observedAttributes, [
     'collapsed',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
     'collapsed': 'collapsed',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
     'collapsed': 'collapsed',
   });
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'collapsed': (isSet/*, val*/) => isSet,
   });
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
     // @param {boolean|null} val - Boolean value to set or unset, null to unset.
     'collapsed': (val) => ({
       isSet: Boolean(val),
@@ -46,7 +51,7 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
   });
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'collapsed': (a, b) => a === b,
   });
 
@@ -62,7 +67,7 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
     shadowRoot.appendChild(document.importNode(template.content, true));
 
     // @override
-    this.olControl_ = new this.ol.control.Control({
+    this.olControl_ = new webGisComponents.ol.control.Control({
       element: this.controlElement_,
     });
 

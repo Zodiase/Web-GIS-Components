@@ -1,7 +1,13 @@
-import _ from 'lodash';
+import {
+  concat,
+  debounce,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../base';
 
@@ -25,7 +31,7 @@ const defaultCenter = [0, 0];
 export default class HTMLMapView extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(BaseClass.observedAttributes, [
     'disabled',
     'basemap',
     'projection',
@@ -34,7 +40,7 @@ export default class HTMLMapView extends BaseClass {
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
     'disabled': 'disabled',
     'basemap': 'basemap',
     'projection': 'projection',
@@ -43,7 +49,7 @@ export default class HTMLMapView extends BaseClass {
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
     'disabled': 'disabled',
     'basemap': 'basemap',
     'projection': 'projection',
@@ -52,7 +58,7 @@ export default class HTMLMapView extends BaseClass {
   });
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'disabled': (isSet/*, val*/) => isSet,
     'basemap': (isSet, val) => (
       isSet
@@ -79,7 +85,7 @@ export default class HTMLMapView extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
     // @param {boolean|null} val - Boolean value to set or unset, null to unset.
     'disabled': (val) => ({
       isSet: Boolean(val),
@@ -105,7 +111,7 @@ export default class HTMLMapView extends BaseClass {
   });
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'disabled': (a, b) => a === b,
     'basemap': (a, b) => a === b,
     'projection': (a, b) => a === b,
@@ -125,8 +131,8 @@ export default class HTMLMapView extends BaseClass {
     shadowRoot.appendChild(document.importNode(template.content, true));
 
     // Define bound/debounced/callback functions before the rest stuff.
-    this.boundViewChangeCenterHandler_ = _.debounce(this.viewChangeCenterHandler_.bind(this), 30);
-    this.boundViewChangeResolutionHanlder_ = _.debounce(this.viewChangeResolutionHanlder_.bind(this), 30);
+    this.boundViewChangeCenterHandler_ = debounce(this.viewChangeCenterHandler_.bind(this), 30);
+    this.boundViewChangeResolutionHanlder_ = debounce(this.viewChangeResolutionHanlder_.bind(this), 30);
 
     // Get references to all elements here.
     this.mapElement_ = shadowRoot.querySelector('#map');
@@ -427,14 +433,14 @@ export default class HTMLMapView extends BaseClass {
   updateView_ (options) {
     //! Worry about caching later.
 
-    const finalOptions = this.olViewOptions_ = _.merge(this.olViewOptions_, !this.mapView_ ? null : {
+    const finalOptions = this.olViewOptions_ = merge(this.olViewOptions_, !this.mapView_ ? null : {
       center: this.mapView_.getCenter(),
       projection: this.mapView_.getProjection().getCode(),
       rotation: this.mapView_.getRotation(),
       zoom: this.mapView_.getZoom(),
     }, options);
 
-    const newView = new this.ol.View(finalOptions);
+    const newView = new webGisComponents.ol.View(finalOptions);
     this.setView_(newView);
 
     if (this.connected_) {
@@ -496,7 +502,7 @@ export default class HTMLMapView extends BaseClass {
     });
 
     const oldCenter = this.center,
-          newCenter = this.ol.proj.transform(oldCenter, fromProj, toProj);
+          newCenter = webGisComponents.ol.proj.transform(oldCenter, fromProj, toProj);
 
     this.logInfo_({
       oldCenter,

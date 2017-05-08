@@ -15,6 +15,7 @@ const globalIncludeExcludeRules = {
 module.exports = {
   entry: {
     'web-gis-components-lite': './src/web-gis-components-lite.js',
+    'web-gis-components-lite-ol': './src/web-gis-components-lite-ol.js',
     'web-gis-components': './src/web-gis-components.js',
   },
   output: {
@@ -79,6 +80,10 @@ module.exports = {
     new webpack.DefinePlugin({
         // Set to `true` to dramatically increase the logs.
         VERBOSE: false,
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
     }),
 //     new BabiliPlugin(),
   ],

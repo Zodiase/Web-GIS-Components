@@ -1,7 +1,13 @@
-import _ from 'lodash';
+import {
+  clone,
+  concat,
+  merge,
+} from 'lodash.local';
 import {
   typeCheck
 } from 'type-check';
+
+import webGisComponents from 'namespace';
 
 import BaseClass from '../base';
 
@@ -32,7 +38,7 @@ import {
 export default class HTMLMapLayerBase extends BaseClass {
 
   // @override
-  static observedAttributes = _.concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(BaseClass.observedAttributes, [
     'name',
     'opacity',
     'extent',
@@ -43,7 +49,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = _.merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
     'name': 'name',
     'opacity': 'opacity',
     'extent': 'extent',
@@ -54,7 +60,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = _.merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
     'name': 'name',
     'opacity': 'opacity',
     'extent': 'extent',
@@ -65,7 +71,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   });
 
   // @override
-  static attributeToPropertyConverters = _.merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'name': (isSet, val) => (
       isSet
       ? val.trim()
@@ -102,7 +108,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = _.merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
     // @param {string|null} val - String value to be set, null to unset.
     'name': (val) => ({
       isSet: !(val === null),
@@ -141,7 +147,7 @@ export default class HTMLMapLayerBase extends BaseClass {
   });
 
   // @override
-  static propertyComparators = _.merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'name': (a, b) => a === b,
     'opacity': (a, b) => a === b,
     'extent': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
@@ -158,7 +164,9 @@ export default class HTMLMapLayerBase extends BaseClass {
    * @readonly
    * @static
    */
-  static layerClass = BaseClass.ol.layer.Base;
+  static get layerClass () {
+    return webGisComponents.ol.layer.Base;
+  }
 
   /**
    * The class that should be used for the layer source instance.
@@ -167,7 +175,9 @@ export default class HTMLMapLayerBase extends BaseClass {
    * @readonly
    * @static
    */
-  static layerSourceClass = BaseClass.ol.source.Source;
+  static get layerSourceClass () {
+    return webGisComponents.ol.source.Source;
+  }
 
   constructor () {
     super();
@@ -345,7 +355,7 @@ export default class HTMLMapLayerBase extends BaseClass {
       throw new TypeError('Should not call updateSource before initializing the layer.');
     }
 
-    const olSourceOptions = _.clone(this.olSourceOptions_);
+    const olSourceOptions = clone(this.olSourceOptions_);
     Object.keys(options).forEach((key) => {
       const value = options[key];
 

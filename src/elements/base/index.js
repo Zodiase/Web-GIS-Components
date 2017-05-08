@@ -305,6 +305,15 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
     // Used by `this.setTimeout`.
     this.timeoutIDs_ = new Set();
+
+    // Setup logging functions.
+    this.log_ = this.logInfo_ = () => { /*NOOP*/ };
+    if (VERBOSE) {
+      this.log_ = console.log.bind(console, `${this.constructor.name}_${this.id}`);
+      this.logInfo_ = console.info.bind(console, `${this.constructor.name}_${this.id}`);
+    }
+    this.logWarn_ = console.warn.bind(console, `${this.constructor.name}_${this.id}`);
+    this.logError_ = console.error.bind(console, `${this.constructor.name}_${this.id}`);
   } // constructor
 
   /**
@@ -442,23 +451,6 @@ export default class HTMLMapBaseClass extends HTMLElement {
   /**
    * Customized public/private methods.
    */
-
-  log_ (...args) {
-    if (VERBOSE) {
-      console.log(`${this.constructor.name}_${this.id}`, ...args);
-    }
-  }
-  logInfo_ (...args) {
-    if (VERBOSE) {
-      console.info(`${this.constructor.name}_${this.id}`, ...args);
-    }
-  }
-  logWarn_ (...args) {
-    console.warn(`${this.constructor.name}_${this.id}`, ...args);
-  }
-  logError_ (...args) {
-    console.error(`${this.constructor.name}_${this.id}`, ...args);
-  }
 
   /**
    * string, *, * -> boolean

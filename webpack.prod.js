@@ -13,6 +13,7 @@ const globalIncludeExcludeRules = {
 };
 
 module.exports = {
+  target: "web",
   entry: {
     'web-gis-components-lite': './src/web-gis-components-lite.js',
     'web-gis-components-lite-ol': './src/web-gis-components-lite-ol.js',
@@ -21,6 +22,12 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
+  },
+  resolve: {
+    modules: [
+      path.resolve('./src'),
+      path.resolve('./node_modules'),
+    ],
   },
   module: {
     rules: [
@@ -69,13 +76,7 @@ module.exports = {
 
     ],
   },
-  resolve: {
-    modules: [
-      path.resolve('./src'),
-      path.resolve('./node_modules'),
-    ],
-  },
-  target: "web",
+  devtool: "source-map",
   plugins:[
     new webpack.DefinePlugin({
         VERBOSE: false,

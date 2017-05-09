@@ -10,6 +10,8 @@ import webGisComponents from 'namespace';
 
 import BaseClass from '../map-control-base';
 
+import HTMLMapLayerGroup from '../map-layer-group';
+
 import {
   elementName,
 } from './config';
@@ -163,7 +165,7 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
    * Render a single layer item in the list.
    */
   renderLayerItem (layerElement) {
-    if (layerElement.constructor.name === 'HTMLMapLayerGroup') {
+    if (layerElement instanceof HTMLMapLayerGroup) {
       return layerElement.layerElements.map((element) => this.renderLayerItem(element)).join('');
     } else {
       return `<li class="layer-item">${layerElement.name}</li>`;

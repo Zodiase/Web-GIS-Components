@@ -62,14 +62,14 @@
     const trigger = document.querySelector('#trigger-switch-container'),
           container1 = document.querySelector('#demo-container-1 [role="inner"]'),
           container2 = document.querySelector('#demo-container-2 [role="inner"]'),
-          map = document.querySelector('#map');
+          mapElement = document.querySelector('#map');
     trigger.addEventListener('click', () => {
-      if (container1.contains(map)) {
-        container2.appendChild(map);
-      } else if (container2.contains(map)) {
-        container1.appendChild(map);
+      if (container1.contains(mapElement)) {
+        container2.appendChild(mapElement);
+      } else if (container2.contains(mapElement)) {
+        container1.appendChild(mapElement);
       } else {
-        container1.appendChild(map);
+        container1.appendChild(mapElement);
       }
     });
   </script>

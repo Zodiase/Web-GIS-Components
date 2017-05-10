@@ -259,14 +259,16 @@ export default class HTMLMapView extends BaseClass {
       view: null
     });
 
-    //! Test default property values.
-    this.logInfo_({
-      disabled: this.disabled,
-      basemap: this.basemap,
-      projection: this.projection,
-      center: this.center,
-      children: this.children,
-    });
+    if (VERBOSE) {
+      //! Test default property values.
+      this.logInfo_({
+        disabled: this.disabled,
+        basemap: this.basemap,
+        projection: this.projection,
+        center: this.center,
+        children: this.children,
+      });
+    }
   } // constructor
 
   /**

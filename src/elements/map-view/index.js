@@ -259,6 +259,36 @@ export default class HTMLMapView extends BaseClass {
       view: null
     });
 
+    /**
+     * Naively proxy ol.Map clicking events to this element.
+     * Had to use a different event name to prevent double-firing.
+     * Maybe there's a workaround.
+     */
+    this.olMap_.on('click', (olEvent) => {
+      olEvent.preventDefault();
+      olEvent.stopPropagation();
+
+      const event = new Event('click:view');
+
+      event.fromMap_ = true;
+
+      // For convenience, add a version of the coordinate in lat long.
+      event.latLongCoordinate = webGisComponents.ol.proj.transform(olEvent.coordinate, this.projection, "EPSG:4326");
+
+      // Copy properties over.
+      [
+        'coordinate',
+        'dragging',
+        'frameState',
+        'map',
+        'pixel',
+      ].forEach((key) => {
+        event[key] = olEvent[key];
+      });
+
+      this.dispatchEvent(event);
+    });
+
     if (VERBOSE) {
       //! Test default property values.
       this.logInfo_({

@@ -104,7 +104,7 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
     }
 
     // Update internal models.
-    this.updateCoordinates_(val, this.longitude);
+    this.updateCoordinates_(this.longitude, val);
 
     // Update attributes.
     this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('latitude'), val);
@@ -120,7 +120,7 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
     }
 
     // Update internal models.
-    this.updateCoordinates_(this.latitude, val);
+    this.updateCoordinates_(val, this.latitude);
 
     // Update attributes.
     this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('longitude'), val);
@@ -133,16 +133,16 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
   set projection (val) {
     super.projection = val;
 
-    this.updateCoordinates_(this.latitude, this.longitude);
+    this.updateCoordinates_(this.longitude, this.latitude);
   }
 
   /**
    * Customized public/private methods.
    */
 
-  updateCoordinates_ (lat, lon) {
+  updateCoordinates_ (lon, lat) {
     if (typeof lat === 'number' && typeof lon === 'number') {
-      const coord = [lat, lon];
+      const coord = [lon, lat];
       const projectedCoord = webGisComponents.ol.proj.transform(coord, defaultDataProjection, this.projection);
       this.pointFeature_.setGeometry(new webGisComponents.ol.geom.Point(projectedCoord, 'XY'));
     } else {

@@ -50,24 +50,14 @@ export default class HTMLMapLayerBase extends BaseClass {
 
   // @override
   static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
-    'name': 'name',
-    'opacity': 'opacity',
-    'extent': 'extent',
-    'invisible': 'invisible',
     'min-resolution': 'minResolution',
     'max-resolution': 'maxResolution',
-    'projection': 'projection',
   });
 
   // @override
   static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
-    'name': 'name',
-    'opacity': 'opacity',
-    'extent': 'extent',
-    'invisible': 'invisible',
     'minResolution': 'min-resolution',
     'maxResolution': 'max-resolution',
-    'projection': 'projection',
   });
 
   // @override

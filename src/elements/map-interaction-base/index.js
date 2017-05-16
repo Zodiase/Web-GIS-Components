@@ -1,8 +1,3 @@
-import {
-  concat,
-  merge,
-} from 'lodash.local';
-
 import BaseClass from '../base';
 
 /**
@@ -10,24 +5,6 @@ import BaseClass from '../base';
  * <HTMLMapInteractionBase></HTMLMapInteractionBase>
  */
 export default class HTMLMapInteractionBase extends BaseClass {
-
-  // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, []);
-
-  // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {});
-
-  // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {});
-
-  // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {});
-
-  // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {});
-
-  // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {});
 
   /**
    * Getters and Setters (for properties).

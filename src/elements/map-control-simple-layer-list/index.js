@@ -29,16 +29,6 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
-    'collapsed': 'collapsed',
-  });
-
-  // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
-    'collapsed': 'collapsed',
-  });
-
-  // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
     'collapsed': (isSet/*, val*/) => isSet,
   });

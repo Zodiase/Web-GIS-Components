@@ -10,6 +10,7 @@ import './elements/map-layer-group';
 import './elements/map-layer-twms';
 import './elements/map-layer-xyz';
 import './elements/map-layer-geojson';
+import './elements/map-layer-singlepoint';
 
 import './elements/map-control-defaults';
 import './elements/map-control-simple-layer-list';

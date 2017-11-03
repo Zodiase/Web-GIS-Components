@@ -37,6 +37,7 @@ export default class HTMLMapView extends BaseClass {
     'projection',
     'center',
     'zoom',
+    'extent',
   ]);
 
   // @override
@@ -80,6 +81,13 @@ export default class HTMLMapView extends BaseClass {
     'zoom': (isSet, val) => (
       isSet
       ? parseFloat(val)
+      : null
+    ),
+    'extent': (isSet, val) => (
+      isSet
+      ? val.split(',')
+           .map((v) => v.trim())
+           .map((v) => parseFloat(v))
       : null
     ),
   });
@@ -452,6 +460,26 @@ export default class HTMLMapView extends BaseClass {
 
     // Update attributes.
     this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('zoom'), val);
+  }
+
+  /**
+   * @writeonly
+   * @property {[number, number, number, number]} extent
+   */
+  set extent (val) {
+    if (!typeCheck('(Number, Number, Number, Number) | Null', val)) {
+      throw new TypeError('Map view extent has to be an array of 4 numbers.');
+    }
+
+    // Update internal models.
+    this.mapView_.fit(val, {
+      // `map.getSize()` is not reliable when the map is initializing.
+      size: [this.clientWidth, this.clientHeight],
+    });
+
+    // Update attributes.
+    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('center'), this.mapView_.getCenter());
+    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('zoom'), this.mapView_.getZoom());
   }
 
   /**

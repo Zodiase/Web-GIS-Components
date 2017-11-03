@@ -424,6 +424,7 @@ export default class HTMLMapView extends BaseClass {
     this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('projection'), val);
   }
 
+  // @property {[number, number]} center
   get center () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('center'));
     return propValFromAttr === null ? defaultCenter : propValFromAttr;
@@ -443,6 +444,7 @@ export default class HTMLMapView extends BaseClass {
     this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('center'), val);
   }
 
+  // @property {number} zoom
   get zoom () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('zoom'));
     return propValFromAttr === null ? this.mapView_.getZoom() : propValFromAttr;

@@ -5,6 +5,7 @@
 - Using a naive solution to expose ol.Map clicking events to the map view element. So third-parties can capture clicking events and know the coordinates being clicked.
 - Added a write-only property for setting view center and zoom with a single extent.
 - Updated `openlayers` to `4.4.2`.
+- Fixed a bug where `extent` could be overwritten by `center` or `zoom`.
 
 ## v0.2.1
 

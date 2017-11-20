@@ -7,6 +7,10 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+  createBooleanPropertyToAttributeConverter,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../map-control-base';
 
@@ -30,21 +34,12 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
 
   // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'collapsed': (isSet/*, val*/) => isSet,
+    'collapsed': commonAttributeToPropertyConverters.bool,
   });
 
   // @override
   static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {boolean|null} val - Boolean value to set or unset, null to unset.
-    'collapsed': (val) => ({
-      isSet: Boolean(val),
-      value: 'collapsed',
-    }),
-  });
-
-  // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'collapsed': (a, b) => a === b,
+    'collapsed': createBooleanPropertyToAttributeConverter('collapsed'),
   });
 
   constructor () {
@@ -128,7 +123,7 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
       this.wrapper_.classList.remove('collapsed');
     }
 
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('collapsed'), val);
+    this.flushPropertyToAttribute('collapsed', val, true);
   }
 
   /**

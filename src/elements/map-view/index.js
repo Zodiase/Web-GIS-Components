@@ -1,6 +1,5 @@
 import {
   concat,
-  debounce,
   merge,
 } from 'lodash.local';
 import {
@@ -8,6 +7,12 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+  createBooleanPropertyToAttributeConverter,
+  commonPropertyToAttributeConverters,
+  commonPropertyComparators,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../base';
 
@@ -20,13 +25,12 @@ import {
   elementName,
   defaultMapType,
   defaultViewProjection,
+  defaultCenter,
 } from './config';
 import template from './template';
 import {
   getBaseMap,
 } from './basemap';
-
-const defaultCenter = [0, 0];
 
 export default class HTMLMapView extends BaseClass {
 
@@ -35,96 +39,30 @@ export default class HTMLMapView extends BaseClass {
     'disabled',
     'basemap',
     'projection',
+    'extent',
     'center',
     'zoom',
-    'extent',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
-    'disabled': 'disabled',
-    'basemap': 'basemap',
-    'projection': 'projection',
-    'center': 'center',
-    'zoom': 'zoom',
-  });
-
-  // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
-    'disabled': 'disabled',
-    'basemap': 'basemap',
-    'projection': 'projection',
-    'center': 'center',
-    'zoom': 'zoom',
-  });
-
-  // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'disabled': (isSet/*, val*/) => isSet,
-    'basemap': (isSet, val) => (
-      isSet
-      ? val.trim()
-      : null
-    ),
-    'projection': (isSet, val) => (
-      isSet
-      ? val.trim()
-      : null
-    ),
-    'center': (isSet, val) => (
-      isSet
-      ? val.split(',')
-           .map((v) => v.trim())
-           .map((v) => parseFloat(v))
-      : null
-    ),
-    'zoom': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-    'extent': (isSet, val) => (
-      isSet
-      ? val.split(',')
-           .map((v) => v.trim())
-           .map((v) => parseFloat(v))
-      : null
-    ),
+    'disabled': commonAttributeToPropertyConverters.bool,
+    'basemap': commonAttributeToPropertyConverters.string,
+    'projection': commonAttributeToPropertyConverters.string,
+    'center': commonAttributeToPropertyConverters.array_number,
+    'zoom': commonAttributeToPropertyConverters.number,
+    'extent': commonAttributeToPropertyConverters.array_number,
   });
 
   // @override
   static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {boolean|null} val - Boolean value to set or unset, null to unset.
-    'disabled': (val) => ({
-      isSet: Boolean(val),
-      value: 'disabled',
-    }),
-    'basemap': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-    'projection': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-    'center': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val.join(', '),
-    }),
-    // @param {number|null} val - Number value to be set, null to unset.
-    'zoom': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : String(val),
-    }),
+    'disabled': createBooleanPropertyToAttributeConverter('disabled'),
+    'center': commonPropertyToAttributeConverters.array_simple,
   });
 
   // @override
   static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'disabled': (a, b) => a === b,
-    'basemap': (a, b) => a === b,
-    'projection': (a, b) => a === b,
-    'center': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
-    'zoom': (a, b) => a === b,
+    'center': commonPropertyComparators.array,
   });
 
   constructor () {
@@ -137,10 +75,6 @@ export default class HTMLMapView extends BaseClass {
     // Attach a shadow root to <fancy-tabs>.
     const shadowRoot = this.attachShadow({mode: 'open'});
     shadowRoot.appendChild(document.importNode(template.content, true));
-
-    // Define bound/debounced/callback functions before the rest stuff.
-    this.boundViewChangeCenterHandler_ = debounce(this.viewChangeCenterHandler_.bind(this), 30);
-    this.boundViewChangeResolutionHanlder_ = debounce(this.viewChangeResolutionHanlder_.bind(this), 30);
 
     // Get references to all elements here.
     this.mapElement_ = shadowRoot.querySelector('#map');
@@ -296,17 +230,6 @@ export default class HTMLMapView extends BaseClass {
 
       this.dispatchEvent(event);
     });
-
-    if (VERBOSE) {
-      //! Test default property values.
-      this.logInfo_({
-        disabled: this.disabled,
-        basemap: this.basemap,
-        projection: this.projection,
-        center: this.center,
-        children: this.children,
-      });
-    }
   } // constructor
 
   /**
@@ -345,7 +268,15 @@ export default class HTMLMapView extends BaseClass {
 
   /**
    * @readonly
-   * @property {ol.Map} olMap
+   * @property {[number, number]}
+   */
+  get size () {
+    return [this.clientWidth, this.clientHeight];
+  }
+
+  /**
+   * @readonly
+   * @property {ol.Map}
    */
   get olMap () {
     return this.olMap_;
@@ -353,13 +284,13 @@ export default class HTMLMapView extends BaseClass {
 
   /**
    * @readonly
-   * @property {Array.<HTMLMapLayerBase>} layerElements
+   * @property {Array.<HTMLMapLayerBase>}
    */
   get layerElements () {
     return this.childLayerElementsCollection_.getArray();
   }
 
-  // @property {boolean} disabled
+  // @property {boolean}
   get disabled () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('disabled'));
   }
@@ -368,10 +299,10 @@ export default class HTMLMapView extends BaseClass {
       throw new TypeError('Disabled has to be a boolean value.');
     }
 
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('disabled'), val);
+    this.flushPropertyToAttribute('disabled', val, true);
   }
 
-  // @property {string} basemap
+  // @property {string}
   get basemap () {
     const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('basemap'));
     return propValFromAttr === null ? defaultMapType : propValFromAttr;
@@ -395,13 +326,12 @@ export default class HTMLMapView extends BaseClass {
     this.baseMapLayerCollection_.changed();
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('basemap'), _val);
+    this.flushPropertyToAttribute('basemap', _val, true);
   }
 
-  // @property {string} projection
+  // @property {string}
   get projection () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('projection'));
-    return propValFromAttr === null ? defaultViewProjection : propValFromAttr;
+    return this.mapView_.getProjection().getCode();
   }
   set projection (val) {
     if (!typeCheck('String | Null', val)) {
@@ -421,13 +351,12 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('projection'), val);
+    this.flushPropertyToAttribute('projection', undefined, true);
   }
 
-  // @property {[number, number]} center
+  // @property {[number, number]}
   get center () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('center'));
-    return propValFromAttr === null ? defaultCenter : propValFromAttr;
+    return this.mapView_.getCenter();
   }
   set center (val) {
     if (!typeCheck('(Number, Number) | Null', val)) {
@@ -441,13 +370,12 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('center'), val);
+    this.flushPropertyToAttribute('center', undefined, true);
   }
 
-  // @property {number} zoom
+  // @property {number}
   get zoom () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('zoom'));
-    return propValFromAttr === null ? this.mapView_.getZoom() : propValFromAttr;
+    return this.mapView_.getZoom();
   }
   set zoom (val) {
     if (!typeCheck('Number | Null', val)) {
@@ -461,13 +389,15 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('zoom'), val);
+    this.flushPropertyToAttribute('zoom', undefined, true);
   }
 
   /**
-   * @writeonly
-   * @property {[number, number, number, number]} extent
+   * @property {[number, number, number, number]}
    */
+  get extent () {
+    return this.mapView_.calculateExtent(this.size);
+  }
   set extent (val) {
     if (!typeCheck('(Number, Number, Number, Number) | Null', val)) {
       throw new TypeError('Map view extent has to be an array of 4 numbers.');
@@ -476,12 +406,13 @@ export default class HTMLMapView extends BaseClass {
     // Update internal models.
     this.mapView_.fit(val, {
       // `map.getSize()` is not reliable when the map is initializing.
-      size: [this.clientWidth, this.clientHeight],
+      size: this.size,
     });
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('center'), this.mapView_.getCenter());
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('zoom'), this.mapView_.getZoom());
+    this.flushPropertyToAttribute('extent', undefined, true);
+    this.flushPropertyToAttribute('center');
+    this.flushPropertyToAttribute('zoom');
   }
 
   /**
@@ -519,31 +450,28 @@ export default class HTMLMapView extends BaseClass {
 
     if (oldView) {
       // Detach listeners.
-      oldView.un('change:center', this.boundViewChangeCenterHandler_);
-      oldView.un('change:resolution', this.boundViewChangeResolutionHanlder_);
+      oldView.un('change:center', this.viewChangeExtentHandler_);
+      oldView.un('change:resolution', this.viewChangeExtentHandler_);
     }
 
     if (newView) {
       // Attach listeners.
-      newView.on('change:center', this.boundViewChangeCenterHandler_);
-      newView.on('change:resolution', this.boundViewChangeResolutionHanlder_);
+      newView.on('change:center', this.viewChangeExtentHandler_);
+      newView.on('change:resolution', this.viewChangeExtentHandler_);
     }
 
     this.mapView_ = newView;
   }
 
-  viewChangeCenterHandler_ ({/*type, key, oldValue, */target}) {
-    this.center = target.getCenter();
-  }
-
-  viewChangeResolutionHanlder_ ({/*type, key, oldValue, */target}) {
-    this.zoom = target.getZoom();
+  viewChangeExtentHandler_ = () => {
+    this.flushPropertyToAttribute('extent');
+    this.flushPropertyToAttribute('center');
+    this.flushPropertyToAttribute('zoom');
   }
 
   mountView_ () {
     this.log_('mountView_');
 
-    this.mapView_.setCenter(this.center);
     this.olMap_.setView(this.mapView_);
   }
   unmountView_ () {

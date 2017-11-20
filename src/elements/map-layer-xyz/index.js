@@ -7,6 +7,9 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../map-layer-base';
 
@@ -49,61 +52,21 @@ export default class HTMLMapLayerXYZ extends BaseClass {
 
   // @override
   static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
-    'url': 'url',
     'min-zoom': 'minZoom',
     'max-zoom': 'maxZoom',
   });
 
   // @override
   static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
-    'url': 'url',
     'minZoom': 'min-zoom',
     'maxZoom': 'max-zoom',
   });
 
   // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'url': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
-    'min-zoom': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-    'max-zoom': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-  });
-
-  // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {string|null} val - String value to be set, null to unset.
-    'url': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-    // @param {number|null} val - Number value to be set, null to unset.
-    'min-zoom': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : String(val),
-    }),
-    // @param {number|null} val - Number value to be set, null to unset.
-    'max-zoom': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : String(val),
-    }),
-  });
-
-  // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'url': (a, b) => a === b,
-    'minZoom': (a, b) => a === b,
-    'maxZoom': (a, b) => a === b,
+    'url': commonAttributeToPropertyConverters.string,
+    'min-zoom': commonAttributeToPropertyConverters.number,
+    'max-zoom': commonAttributeToPropertyConverters.number,
   });
 
   // @override
@@ -135,7 +98,7 @@ export default class HTMLMapLayerXYZ extends BaseClass {
     });
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('url'), val);
+    this.flushPropertyToAttribute('url', val, true);
   }
 
   // @property {number} minZoom
@@ -158,7 +121,7 @@ export default class HTMLMapLayerXYZ extends BaseClass {
     });
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('minZoom'), val);
+    this.flushPropertyToAttribute('minZoom', val, true);
   }
 
   // @property {number} maxZoom
@@ -181,7 +144,7 @@ export default class HTMLMapLayerXYZ extends BaseClass {
     });
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('maxZoom'), val);
+    this.flushPropertyToAttribute('maxZoom', val, true);
   }
 
   /**

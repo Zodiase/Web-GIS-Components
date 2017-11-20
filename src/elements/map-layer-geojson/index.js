@@ -7,6 +7,9 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../map-layer-base';
 
@@ -34,9 +37,9 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
 
   // @override
   static observedAttributes = concat(BaseClass.observedAttributes, [
-    'src-url',
-    'src-json',
     'src-projection',
+    'src-json',
+    'src-url',
   ]);
 
   // @override
@@ -55,47 +58,9 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
 
   // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'src-url': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
-    'src-json': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
-    'src-projection': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
-  });
-
-  // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {string|null} val - String value to be set, null to unset.
-    'src-url': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-    // @param {string|null} val - String value to be set, null to unset.
-    'src-json': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-    // @param {string|null} val - String value to be set, null to unset.
-    'src-projection': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-  });
-
-  // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'srcUrl': (a, b) => a === b,
-    'srcJson': (a, b) => a === b,
-    'srcProjection': (a, b) => a === b,
+    'src-url': commonAttributeToPropertyConverters.string,
+    'src-json': commonAttributeToPropertyConverters.string,
+    'src-projection': commonAttributeToPropertyConverters.string,
   });
 
   // @override
@@ -145,7 +110,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('srcUrl'), val);
+    this.flushPropertyToAttribute('srcUrl', val, true);
   }
 
   // @property {string|null} srcJson
@@ -180,7 +145,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('srcJson'), val);
+    this.flushPropertyToAttribute('srcJson', val, true);
   }
 
   // @property {string|null} srcProjection
@@ -198,7 +163,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('srcProjection'), val);
+    this.flushPropertyToAttribute('srcProjection', val, true);
 
     if (this.srcUrl) {
       this.logWarn_('Resetting src-url.');

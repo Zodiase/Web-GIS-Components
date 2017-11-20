@@ -8,6 +8,12 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+  createBooleanPropertyToAttributeConverter,
+  commonPropertyToAttributeConverters,
+  commonPropertyComparators,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../base';
 
@@ -62,89 +68,24 @@ export default class HTMLMapLayerBase extends BaseClass {
 
   // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'name': (isSet, val) => (
-      isSet
-      ? val.trim()
-      : null
-    ),
-    'opacity': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-    'extent': (isSet, val) => (
-      isSet
-      ? val.split(',')
-           .map((v) => v.trim())
-           .map((v) => parseFloat(v))
-      : null
-    ),
-    'invisible': (isSet/*, val*/) => isSet,
-    'min-resolution': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-    'max-resolution': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-    'projection': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
+    'name': commonAttributeToPropertyConverters.string,
+    'opacity': commonAttributeToPropertyConverters.number,
+    'extent': commonAttributeToPropertyConverters.array_number,
+    'invisible': commonAttributeToPropertyConverters.bool,
+    'min-resolution': commonAttributeToPropertyConverters.number,
+    'max-resolution': commonAttributeToPropertyConverters.number,
+    'projection': commonAttributeToPropertyConverters.string,
   });
 
   // @override
   static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {string|null} val - String value to be set, null to unset.
-    'name': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
-    // @param {number|null} val - Number value to be set, null to unset.
-    'opacity': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : String(val),
-    }),
-    // @param {Array.<number>|null} val - Array of 4 numbers value to be set, null to unset.
-    'extent': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val.join(', '),
-    }),
-    // @param {boolean|null} val - Boolean value to set or unset, null to unset.
-    'invisible': (val) => ({
-      isSet: Boolean(val),
-      value: 'invisible',
-    }),
-    // @param {number|null} val - Number value to be set, null to unset.
-    'min-resolution': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : String(val),
-    }),
-    // @param {number|null} val - Number value to be set, null to unset.
-    'max-resolution': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : String(val),
-    }),
-    // @param {string|null} val - String value to be set, null to unset.
-    'projection': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
+    'extent': commonPropertyToAttributeConverters.array_simple,
+    'invisible': createBooleanPropertyToAttributeConverter('invisible'),
   });
 
   // @override
   static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'name': (a, b) => a === b,
-    'opacity': (a, b) => a === b,
-    'extent': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
-    'invisible': (a, b) => a === b,
-    'min-resolution': (a, b) => a === b,
-    'max-resolution': (a, b) => a === b,
-    'projection': (a, b) => a === b,
+    'extent': commonPropertyComparators.array,
   });
 
   /**
@@ -207,7 +148,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('name'), _val);
+    this.flushPropertyToAttribute('name', _val, true);
   }
 
   // @property {number} opacity
@@ -233,7 +174,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('opacity'), val);
+    this.flushPropertyToAttribute('opacity', val, true);
   }
 
   // @property {Array.<number>|null} extent
@@ -252,7 +193,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('extent'), val);
+    this.flushPropertyToAttribute('extent', val, true);
   }
 
   // @property {boolean} invisible
@@ -271,7 +212,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('invisible'), val);
+    this.flushPropertyToAttribute('invisible', val, true);
   }
 
   // @property {number} minResolution
@@ -290,7 +231,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('minResolution'), val);
+    this.flushPropertyToAttribute('minResolution', val, true);
   }
 
   // @property {number} maxResolution
@@ -309,7 +250,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('maxResolution'), val);
+    this.flushPropertyToAttribute('maxResolution', val, true);
   }
 
   // @property {string|null} projection
@@ -327,7 +268,7 @@ export default class HTMLMapLayerBase extends BaseClass {
     }
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('projection'), val);
+    this.flushPropertyToAttribute('projection', val, true);
   }
 
   /**

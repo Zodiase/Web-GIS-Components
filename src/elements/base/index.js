@@ -42,7 +42,8 @@ export default class HTMLMapBaseClass extends HTMLElement {
   /**
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements#Observed_attributes}
    * Child classes should extend this.
-   * @property {Array.<string>} observedAttributes
+   * Attributes will be reloaded when connected in the order they appear in this list.
+   * @property {Array.<string>}
    * @readonly
    * @static
    */
@@ -53,7 +54,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * Keys are attribute names.
    * Values are property names.
    * Child classes should extend this.
-   * @property {Object.<string>} attributeNameToPropertyNameMapping
+   * @property {Object.<string>}
    * @readonly
    * @static
    */
@@ -64,7 +65,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * Keys are property names.
    * Values are attribute names.
    * Child classes should extend this.
-   * @property {Object.<string>} propertyNameToAttributeNameMapping
+   * @property {Object.<string>}
    * @readonly
    * @static
    */
@@ -75,7 +76,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * Keys are attribute names.
    * Values are functions that convert attribute configs to property values.
    * Child classes should extend this.
-   * @property {Object.<isSet: boolean, val: string -> *>} attributeToPropertyConverters
+   * @property {Object.<isSet: boolean, val: string -> *>}
    * @readonly
    * @static
    */
@@ -102,6 +103,15 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @static
    */
   static propertyComparators = {};
+
+  /**
+   * @property {Object.<a: *, b: * -> boolean>}
+   * @readonly
+   * @static
+   */
+  static commonPropertyComparators = {
+    'array': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
+  };
 
   /**
    * string -> string
@@ -286,7 +296,9 @@ export default class HTMLMapBaseClass extends HTMLElement {
   }
 
   /**
-   * An instance of the element is created or upgraded. Useful for initializing state, settings up event listeners, or creating shadow dom. See the spec for restrictions on what you can do in the constructor.
+   * An instance of the element is created or upgraded.
+   * Useful for initializing state, settings up event listeners, or creating shadow dom.
+   * See the spec for restrictions on what you can do in the constructor.
    */
   constructor () {
     super(); // always call super() first in the ctor.
@@ -297,20 +309,22 @@ export default class HTMLMapBaseClass extends HTMLElement {
     // Indicate whether this custom element is in DOM or not.
     this.connected_ = false;
 
-    // This namespace stores flags indicating what attributes are being changed.
-    this.changingAttributes_ = {};
+    // Special flag to suppress `attributeChangedCallback`.
+    this.ignoreAttributeChanges_ = true;
+
+    this.initAttributeUpdateFlagging_();
 
     // This namespace stores flags indicating if the old values of some attributes were working.
     this.hasWorkingAttributes_ = {};
 
-    // Used by `this.setTimeout`.
-    this.timeoutIDs_ = new Set();
+    this.initTimeoutIdCollection_();
 
     // Setup logging functions.
-    this.log_ = this.logInfo_ = () => { /*NOOP*/ };
     if (VERBOSE) {
       this.log_ = console.log.bind(console, `${this.constructor.name}_${this.id}`);
       this.logInfo_ = console.info.bind(console, `${this.constructor.name}_${this.id}`);
+    } else {
+      this.log_ = this.logInfo_ = () => { /*NOOP*/ };
     }
     this.logWarn_ = console.warn.bind(console, `${this.constructor.name}_${this.id}`);
     this.logError_ = console.error.bind(console, `${this.constructor.name}_${this.id}`);
@@ -320,8 +334,15 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * Called every time the element is inserted into the DOM. Useful for running setup code, such as fetching resources or rendering. Generally, you should try to delay work until this time.
    */
   connectedCallback () {
-    this.log_('connected');
+    this.ignoreAttributeChanges_ = false;
+
+    this.constructor.observedAttributes.forEach((attrName) => this.hasAttribute(attrName) && this.reloadAttribute(attrName));
+
     this.connected_ = true;
+
+    this.log_('connected', {
+      attributes: [...this.attributes],
+    });
   }
 
   /**
@@ -331,24 +352,21 @@ export default class HTMLMapBaseClass extends HTMLElement {
     this.log_('disconnected');
 
     // Clear all timers.
-    this.forEachTimeoutID_((id) => {
+    this.forEachTimeoutId_((id) => {
       this.clearTimeout(id);
     });
 
     this.connected_ = false;
+    this.ignoreAttributeChanges_ = true;
   }
 
   /**
-   * An attribute was added, removed, updated, or replaced. Also called for initial values when an element is created by the parser, or upgraded. Note: only attributes listed in the observedAttributes property will receive this callback.
+   * An attribute was added, removed, updated, or replaced.
+   * Also called for initial values when an element is created by the parser, or upgraded.
+   * Note: only attributes listed in the static `observedAttributes` property will receive this callback.
    */
   attributeChangedCallback (attrName, oldVal, newVal) {
-    // Only care about the attributes in the observed list.
-    if (this.constructor.observedAttributes.indexOf(attrName) === -1) {
-      return;
-    }
-
-    // If this attribute is already being updated, do not trigger a reaction again.
-    if (this.isUpdating_(attrName)) {
+    if (this.ignoreAttributeChanges_) {
       return;
     }
 
@@ -358,11 +376,18 @@ export default class HTMLMapBaseClass extends HTMLElement {
       newVal
     });
 
+    // If this attribute is already being updated, do not trigger a reaction again.
+    if (this.isAttributeFlaggedAsBeingUpdated_(attrName)) {
+      this.log_('attributeChangedCallback', attrName, 'attribute update in progress');
+      return;
+    }
+
     let cancelled = false;
 
     try {
+      this.log_('attributeChangedCallback', attrName, 'attribute begin update');
       // Mark the attribute as being updated so changing its value during the process doesn't cause another reaction (and dead loop).
-      this.setUpdateFlag_(attrName);
+      this.flagAttributeAsBeingUpdated_(attrName);
 
       const propName = this.constructor.getPropertyNameByAttributeName_(attrName),
             eventName = `changed:${propName}`,
@@ -407,7 +432,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
       //! Handle the error better?
       cancelled = true;
     } finally {
-      this.clearUpdateFlag_(attrName);
+      this.unflagAttributeAsBeingUpdated_(attrName);
 
       if (cancelled) {
         // Either cancelled or errored.
@@ -439,53 +464,92 @@ export default class HTMLMapBaseClass extends HTMLElement {
     //! Not sure what to do.
   }
 
-  /**
-   * Getters and Setters (for properties).
-   */
+  get connected () {
+    return this.connected_;
+  }
 
   // Attach the openlayers library.
   get ol () {
     return webGisComponents.ol;
   }
 
-  /**
-   * Customized public/private methods.
-   */
+  /************************************************************************************************
+   * Property/Attribute methods.
+   ***********************************************************************************************/
 
   /**
+   * Helper for triggering an attribute change manually.
+   * @param  {string} attrName
+   */
+  reloadAttribute (attrName) {
+    this.attributeChangedCallback(attrName, null, this.getAttribute(attrName));
+  }
+
+  /**
+   * Compare two values of the property.
+   * If a comparator is defined for this property, it is used.
+   * Otherwise, strict value (`===`) comparison is used.
    * string, *, * -> boolean
    * @private
    */
   isIdenticalPropertyValue_ (propName, val1, val2) {
-    const comparator = this.constructor.propertyComparators[propName];
-    return comparator ? comparator(val1, val2) : false;
+    let comparator = this.constructor.propertyComparators[propName];
+
+    if (typeof comparator === 'string') {
+      const comparatorName = comparator;
+
+      comparator = this.constructor.commonPropertyComparators[comparatorName];
+
+      if (!comparator) {
+        this.logWarn_(`Unknown comparator ${comparatorName}`);
+      }
+    }
+
+    if (comparator) {
+      return comparator(val1, val2);
+    } else {
+      return val1 === val2;
+    }
   }
 
   /**
-   * Convert attribute to property.
+   * Convert an attribute value to a property value.
+   * For example, attribute values are typically strings, while a property could be a number or an array.
+   * If a converter is defined for this attribute, it is used.
+   * Otherwise, the raw value of the attribute is returned, if the attribute is present.
+   * If the attribute is not present, returns `null`.
+   * @private
    * @param {string} attrName
    * @param {boolean} [hasAttr] - Optional. If provided, will use this value for conversion.
    * @param {string} [attrVal] - Optional. If provided, will use this value for conversion.
    * @returns {*}
    */
-  getPropertyValueFromAttribute_ (attrName, hasAttr, attrVal) {
-    const _hasAttr = !(typeof hasAttr === 'undefined') ? hasAttr : this.hasAttribute(attrName);
-    const _attrVal = !(typeof attrVal === 'undefined') ? attrVal : this.getAttribute(attrName);
-
-    const converter = this.constructor.attributeToPropertyConverters[attrName];
-
-    if (converter) {
-      return converter(_hasAttr, _attrVal);
+  getPropertyValueFromAttribute_ (
+    attrName,
+    hasAttr = this.hasAttribute(attrName),
+    attrVal = this.getAttribute(attrName),
+  ) {
+    if (!hasAttr) {
+      return null;
     } else {
-      return _hasAttr ? _attrVal : null;
+      const converter = this.constructor.attributeToPropertyConverters[attrName];
+
+      if (converter) {
+        return converter(hasAttr, attrVal);
+      } else {
+        return attrVal;
+      }
     }
   }
 
   /**
-   * Convert property to attribute.
+   * Convert a property value to an attribute value and set the attribute.
+   * If a converter is defined for this property, it is used.
+   * Otherwise, if the value is `null`, the attribute is removed.
+   * Otherwise the String form of the value is used to set the attribute.
+   * @private
    * @param {string} attrName
    * @param {*} propVal
-   * @returns {string}
    */
   updateAttributeByProperty_ (attrName, propVal) {
     const converter = this.constructor.propertyToAttributeConverters[attrName];
@@ -501,45 +565,74 @@ export default class HTMLMapBaseClass extends HTMLElement {
       } else {
         this.removeAttribute(attrName);
       }
+    } else if (propVal === null) {
+      this.removeAttribute(attrName);
     } else {
       this.setAttribute(attrName, String(propVal));
     }
-
-    return this.getAttribute(attrName);
   }
 
-  // Helpers for getting/setting/clearing update flags.
+  /**
+   * Helper function to make `updateAttributeByProperty_` easier to use.
+   * @param  {string} propName
+   * @param  {*} propVal
+   * @param  {bool} forced
+   */
+  flushPropertyToAttribute (propName, propVal = this[propName], forced = false) {
+    const attrName = this.constructor.getAttributeNameByPropertyName_(propName);
+
+    if (this.hasAttribute(attrName) || forced) {
+      this.updateAttributeByProperty_(attrName, propVal);
+    }
+  }
+
+  /************************************************************************************************
+   * Helpers for getting/setting/clearing update flags.
+   ***********************************************************************************************/
+
   // @private
-  setUpdateFlag_ (attrName) {
+  initAttributeUpdateFlagging_ () {
+    // This namespace stores flags indicating what attributes are being changed.
+    this.changingAttributes_ = {};
+  }
+
+  // @private
+  flagAttributeAsBeingUpdated_ (attrName) {
     this.changingAttributes_[attrName] = true;
   }
   // @private
-  clearUpdateFlag_ (attrName) {
-    this.changingAttributes_[attrName] = false;
+  unflagAttributeAsBeingUpdated_ (attrName) {
+    delete this.changingAttributes_[attrName];
   }
   // @private
-  isUpdating_ (attrName) {
+  isAttributeFlaggedAsBeingUpdated_ (attrName) {
     return this.changingAttributes_[attrName] === true;
   }
 
-  /**
-   * Helper function for manipulating internal storage for `setTimeout`.
-   */
-  addTimeoutID_ (id) {
+  /************************************************************************************************
+   * Helper functions for manipulating internal storage for `setTimeout`.
+   ***********************************************************************************************/
+
+  // @private
+  initTimeoutIdCollection_ () {
+    this.timeoutIDs_ = new Set();
+  }
+
+  // @private
+  addTimeoutId_ (id) {
     return this.timeoutIDs_.add(id);
   }
-  /**
-   * Helper function for manipulating internal storage for `setTimeout`.
-   */
-  removeTimeoutID_ (id) {
+  // @private
+  removeTimeoutId_ (id) {
     return this.timeoutIDs_.delete(id);
   }
+
   /**
    * Helper function for iterating internal storage for `setTimeout`.
    * @param {function} func
    * @param {Object|null} context
    */
-  forEachTimeoutID_ (func, context) {
+  forEachTimeoutId_ (func, context) {
     this.timeoutIDs_.forEach(func, context);
   }
 
@@ -554,13 +647,13 @@ export default class HTMLMapBaseClass extends HTMLElement {
   setTimeout (func, delay = 0, ...params) {
     const timerID = setTimeout((..._params) => {
 
-      this.removeTimeoutID_(timerID);
+      this.removeTimeoutId_(timerID);
 
       func(..._params);
 
     }, delay, ...params);
 
-    this.addTimeoutID_(timerID);
+    this.addTimeoutId_(timerID);
 
     return timerID;
   }
@@ -573,7 +666,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
   clearTimeout (timerID) {
     clearTimeout(timerID);
 
-    this.removeTimeoutID_(timerID);
+    this.removeTimeoutId_(timerID);
   }
 
   /**

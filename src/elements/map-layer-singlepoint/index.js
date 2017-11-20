@@ -7,6 +7,9 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../map-layer-base';
 
@@ -36,36 +39,8 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
 
   // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'latitude': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-    'longitude': (isSet, val) => (
-      isSet
-      ? parseFloat(val)
-      : null
-    ),
-  });
-
-  // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {number} val
-    'latitude': (val) => ({
-      isSet: true,
-      value: String(val),
-    }),
-    // @param {number} val
-    'longitude': (val) => ({
-      isSet: true,
-      value: String(val),
-    }),
-  });
-
-  // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'latitude': (a, b) => a === b,
-    'longitude': (a, b) => a === b,
+    'latitude': commonAttributeToPropertyConverters.number,
+    'longitude': commonAttributeToPropertyConverters.number,
   });
 
   // @override
@@ -107,7 +82,7 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
     this.updateCoordinates_(this.longitude, val);
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('latitude'), val);
+    this.flushPropertyToAttribute('latitude', val, true);
   }
 
   // @property {number} longitude
@@ -123,7 +98,7 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
     this.updateCoordinates_(val, this.latitude);
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('longitude'), val);
+    this.flushPropertyToAttribute('longitude', val, true);
   }
 
   // @override

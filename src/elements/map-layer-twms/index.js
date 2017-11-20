@@ -8,6 +8,9 @@ import {
 } from 'type-check';
 
 import webGisComponents from 'namespace';
+import {
+  commonAttributeToPropertyConverters,
+} from 'helpers/custom-element-helpers';
 
 import BaseClass from '../map-layer-base';
 
@@ -41,25 +44,17 @@ export default class HTMLMapLayerTWMS extends BaseClass {
 
   // @override
   static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
-    'url': 'url',
-    'params': 'params',
     'server-type': 'serverType',
   });
 
   // @override
   static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
-    'url': 'url',
-    'params': 'params',
     'serverType': 'server-type',
   });
 
   // @override
   static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
-    'url': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
+    'url': commonAttributeToPropertyConverters.string,
     'params': (isSet, val) => (
       isSet
       ? val.split('&')
@@ -70,20 +65,11 @@ export default class HTMLMapLayerTWMS extends BaseClass {
            }), {})
       : {}
     ),
-    'server-type': (isSet, val) => (
-      isSet
-      ? val
-      : null
-    ),
+    'server-type': commonAttributeToPropertyConverters.string,
   });
 
   // @override
   static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
-    // @param {string|null} val - String value to be set, null to unset.
-    'url': (val) => ({
-      isSet: !(val === null),
-      value: (val === null) ? '' : val,
-    }),
     'params': (val) => ({
       isSet: !(val === null),
       value: (val === null)
@@ -94,14 +80,12 @@ export default class HTMLMapLayerTWMS extends BaseClass {
                      .join('&'),
     }),
     //@see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
-//     'server-type'
+    // 'server-type'
   });
 
   // @override
   static propertyComparators = merge({}, BaseClass.propertyComparators, {
-    'url': (a, b) => a === b,
     'params': (a, b) => isEqual(a, b),
-    'serverType': (a, b) => a === b,
   });
 
   // @override
@@ -133,7 +117,7 @@ export default class HTMLMapLayerTWMS extends BaseClass {
     });
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('url'), val);
+    this.flushPropertyToAttribute('url', val, true);
   }
 
   // @property {Object|null} params
@@ -151,7 +135,7 @@ export default class HTMLMapLayerTWMS extends BaseClass {
     });
 
     // Update attributes.
-    this.updateAttributeByProperty_(this.constructor.getAttributeNameByPropertyName_('params'), val);
+    this.flushPropertyToAttribute('params', val, true);
   }
 
   /**

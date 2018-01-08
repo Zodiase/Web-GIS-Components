@@ -17,7 +17,7 @@ module.exports = {
     'web-gis-components': './src/web-gis-components.js',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, process.env.DISTDIR || 'dist'),
     filename: '[name].js',
   },
   resolve: {

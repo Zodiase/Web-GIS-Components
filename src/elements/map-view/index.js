@@ -473,11 +473,13 @@ export default class HTMLMapView extends BaseClass {
     this.log_('mountView_');
 
     this.olMap_.setView(this.mapView_);
+    this.setTimeout(() => this.dispatchEvent(new Event('load:view')));
   }
   unmountView_ () {
     this.log_('unmountView_');
 
     this.olMap_.setView(null);
+    this.setTimeout(() => this.dispatchEvent(new Event('unload:view')));
   }
 
   /**

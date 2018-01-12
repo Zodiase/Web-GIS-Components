@@ -574,6 +574,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
   /**
    * Helper function to make `updateAttributeByProperty_` easier to use.
+   * This function will not trigger `attributeChangedCallback`.
    * @param  {string} propName
    * @param  {*} propVal
    * @param  {bool} forced
@@ -582,7 +583,9 @@ export default class HTMLMapBaseClass extends HTMLElement {
     const attrName = this.constructor.getAttributeNameByPropertyName_(propName);
 
     if (this.hasAttribute(attrName) || forced) {
+      this.flagAttributeAsBeingUpdated_(attrName);
       this.updateAttributeByProperty_(attrName, propVal);
+      this.unflagAttributeAsBeingUpdated_(attrName);
     }
   }
 
@@ -596,11 +599,20 @@ export default class HTMLMapBaseClass extends HTMLElement {
     this.changingAttributes_ = {};
   }
 
-  // @private
+  /**
+   * Mark an attribute as being updated so the attribute monitor would not
+   * react to the changes to that attribute.
+   * @param {string} attrName
+   * @private
+   */
   flagAttributeAsBeingUpdated_ (attrName) {
     this.changingAttributes_[attrName] = true;
   }
-  // @private
+  /**
+   * Undo the action of `flagAttributeAsBeingUpdated_`.
+   * @param {string} attrName
+   * @private
+   */
   unflagAttributeAsBeingUpdated_ (attrName) {
     delete this.changingAttributes_[attrName];
   }

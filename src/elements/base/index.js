@@ -602,11 +602,16 @@ export default class HTMLMapBaseClass extends HTMLElement {
   /**
    * Mark an attribute as being updated so the attribute monitor would not
    * react to the changes to that attribute.
+   * Use intergers to avoid race conditions between multiple locking sessions.
    * @param {string} attrName
    * @private
    */
   flagAttributeAsBeingUpdated_ (attrName) {
-    this.changingAttributes_[attrName] = true;
+    if (attrName in this.changingAttributes_) {
+      this.changingAttributes_[attrName] += 1;
+    } else {
+      this.changingAttributes_[attrName] = 1;
+    }
   }
   /**
    * Undo the action of `flagAttributeAsBeingUpdated_`.
@@ -614,11 +619,20 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @private
    */
   unflagAttributeAsBeingUpdated_ (attrName) {
-    delete this.changingAttributes_[attrName];
+    if (!(attrName in this.changingAttributes_)) {
+      return;
+    }
+
+    this.changingAttributes_[attrName] -= 1;
+
+    if (this.changingAttributes_[attrName] <= 0) {
+      delete this.changingAttributes_[attrName];
+    }
   }
   // @private
   isAttributeFlaggedAsBeingUpdated_ (attrName) {
-    return this.changingAttributes_[attrName] === true;
+    return (attrName in this.changingAttributes_) &&
+      this.changingAttributes_[attrName] > 0;
   }
 
   /************************************************************************************************

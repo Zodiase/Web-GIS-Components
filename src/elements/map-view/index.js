@@ -63,6 +63,7 @@ export default class HTMLMapView extends BaseClass {
   // @override
   static propertyComparators = merge({}, BaseClass.propertyComparators, {
     'center': commonPropertyComparators.array,
+    'extent': commonPropertyComparators.array,
   });
 
   constructor () {

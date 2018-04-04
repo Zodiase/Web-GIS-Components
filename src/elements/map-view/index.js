@@ -371,7 +371,8 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update attributes.
-    this.flushPropertyToAttribute('center', undefined, true);
+    //! Don't reflect this attribute.
+    // this.flushPropertyToAttribute('center', undefined, true);
   }
 
   // @property {number}
@@ -390,7 +391,8 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update attributes.
-    this.flushPropertyToAttribute('zoom', undefined, true);
+    //! Don't reflect this attribute.
+    // this.flushPropertyToAttribute('zoom', undefined, true);
   }
 
   /**
@@ -411,9 +413,10 @@ export default class HTMLMapView extends BaseClass {
     });
 
     // Update attributes.
-    this.flushPropertyToAttribute('extent', undefined, true);
-    this.flushPropertyToAttribute('center');
-    this.flushPropertyToAttribute('zoom');
+    //! Don't reflect these attributes.
+    // this.flushPropertyToAttribute('extent', undefined, true);
+    // this.flushPropertyToAttribute('center');
+    // this.flushPropertyToAttribute('zoom');
   }
 
   /**
@@ -451,23 +454,24 @@ export default class HTMLMapView extends BaseClass {
 
     if (oldView) {
       // Detach listeners.
-      oldView.un('change:center', this.viewChangeExtentHandler_);
-      oldView.un('change:resolution', this.viewChangeExtentHandler_);
+      oldView.un('change:center', this.onChangeViewExtent_);
+      oldView.un('change:resolution', this.onChangeViewExtent_);
     }
 
     if (newView) {
       // Attach listeners.
-      newView.on('change:center', this.viewChangeExtentHandler_);
-      newView.on('change:resolution', this.viewChangeExtentHandler_);
+      newView.on('change:center', this.onChangeViewExtent_);
+      newView.on('change:resolution', this.onChangeViewExtent_);
     }
 
     this.mapView_ = newView;
   }
 
-  viewChangeExtentHandler_ = () => {
-    this.flushPropertyToAttribute('extent');
-    this.flushPropertyToAttribute('center');
-    this.flushPropertyToAttribute('zoom');
+  onChangeViewExtent_ = () => {
+    //! Don't reflect these attributes.
+    // this.flushPropertyToAttribute('extent');
+    // this.flushPropertyToAttribute('center');
+    // this.flushPropertyToAttribute('zoom');
   }
 
   mountView_ () {

@@ -73,7 +73,6 @@ export default class HTMLMapView extends BaseClass {
       ol
     } = this;
 
-    // Attach a shadow root to <fancy-tabs>.
     const shadowRoot = this.attachShadow({mode: 'open'});
     shadowRoot.appendChild(document.importNode(template.content, true));
 
@@ -151,9 +150,12 @@ export default class HTMLMapView extends BaseClass {
       this.dispatchEvent(new Event('change:layers'));
     });
 
+    // This stores the current base map name.
+    // @type {string}
+    this.baseMapName_ = defaultMapType;
     // This collection holds the base map.
     this.baseMapLayerCollection_ = new ol.Collection([
-      getBaseMap(defaultMapType, this.baseMapCache_)
+      getBaseMap(this.baseMapName_, this.baseMapCache_)
     ]);
 
     // Options for instantiating the view.
@@ -291,71 +293,125 @@ export default class HTMLMapView extends BaseClass {
     return this.childLayerElementsCollection_.getArray();
   }
 
-  // @property {boolean}
+  /**
+   * This is a reflected property.
+   * @property {boolean}
+   */
   get disabled () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('disabled'));
   }
   set disabled (val) {
-    if (!typeCheck('Boolean | Null', val)) {
-      throw new TypeError('Disabled has to be a boolean value.');
-    }
+    const oldValue = this.disabled;
+    const newValue = val === null ? null : Boolean(val);
 
     this.flushPropertyToAttribute('disabled', val, true);
+
+    const event = new CustomEvent('change:disabled', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'disabled',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {string}
+  /**
+   * This is not a reflected property.
+   * Setting an invalid property value silently fails.
+   * @property {string}
+   */
   get basemap () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('basemap'));
-    return propValFromAttr === null ? defaultMapType : propValFromAttr;
+    return this.baseMapName_;
   }
   set basemap (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('Map view base map type has to be a string.');
+    const oldValue = this.basemap;
+
+    this.baseMapName_ = defaultMapType;
+    this.baseMapLayerCollection_.clear();
+
+    if (val === null) {
+      return;
     }
 
-    const _val = typeCheck('String', val) ? val.trim() : val;
+    const layer = getBaseMap(val, this.baseMapCache_);
+
+    if (layer === null) {
+      return;
+    }
 
     // Update internal models.
-    const layer = getBaseMap(_val, this.baseMapCache_);
-
-    this.baseMapLayerCollection_.clear();
-    if (layer === null) {
-      throw new TypeError('Invalid base map type.');
-    } else {
-      this.baseMapLayerCollection_.push(layer);
-    }
+    this.baseMapName_ = layer.name;
+    this.baseMapLayerCollection_.push(layer);
     this.baseMapLayerCollection_.changed();
 
-    // Update attributes.
-    this.flushPropertyToAttribute('basemap', _val, true);
+    const event = new CustomEvent('change:basemap', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'basemap',
+        oldValue: oldValue,
+        newValue: this.baseMapName_,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {string}
+  /**
+   * This is not a reflected property.
+   * Setting an invalid property value silently fails.
+   * @property {string}
+   */
   get projection () {
     return this.mapView_.getProjection().getCode();
   }
   set projection (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('Map projection has to be a string.');
-    }
+    const oldValue = this.projection;
+    let newValue = val === null ? null : String(val);
 
-    if (val !== null && !this.constructor.isValidProjection(val)) {
-      throw new TypeError('Invalid projection.');
+    if (newValue !== null && !this.constructor.isValidProjection(newValue)) {
+      newValue = defaultViewProjection;
     }
 
     // Update internal models.
-    const oldVal = this.mapView_.getProjection().getCode();
-    if (!this.isIdenticalPropertyValue_('projection', oldVal, val)) {
-      this.updateView_({
-        projection: val
-      });
+    if (this.isIdenticalPropertyValue_('projection', oldValue, newValue)) {
+      return;
     }
 
-    // Update attributes.
-    this.flushPropertyToAttribute('projection', undefined, true);
+    this.updateView_({
+      projection: newValue,
+    });
+
+    const event = new CustomEvent('change:projection', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'projection',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {[number, number]}
+  /**
+   * This is not a reflected property.
+   * @property {[number, number]}
+   */
   get center () {
     return this.mapView_.getCenter();
   }
@@ -365,37 +421,69 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update internal models.
-    const oldVal = this.mapView_.getCenter();
-    if (!this.isIdenticalPropertyValue_('center', oldVal, val)) {
-      this.mapView_.setCenter(val);
+    const oldValue = this.center;
+    const newValue = val;
+
+    if (this.isIdenticalPropertyValue_('center', oldValue, newValue)) {
+      return;
     }
 
-    // Update attributes.
-    //! Don't reflect this attribute.
-    // this.flushPropertyToAttribute('center', undefined, true);
+    this.mapView_.setCenter(newValue);
+
+    const event = new CustomEvent('change:center', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'center',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {number}
+  /**
+   * This is not a reflected property.
+   * @property {number}
+   */
   get zoom () {
     return this.mapView_.getZoom();
   }
   set zoom (val) {
-    if (!typeCheck('Number | Null', val)) {
-      throw new TypeError('Map view zoom has to be a number.');
-    }
+    const oldValue = this.zoom;
+    // `null` turns into 0.
+    const newValue = Number(val);
+    // TODO: handle when `newValue` is `NaN`.
 
     // Update internal models.
-    const oldVal = this.mapView_.getZoom();
-    if (!this.isIdenticalPropertyValue_('zoom', oldVal, val)) {
-      this.mapView_.setZoom(val);
+    if (this.isIdenticalPropertyValue_('zoom', oldValue, newValue)) {
+      return;
     }
 
-    // Update attributes.
-    //! Don't reflect this attribute.
-    // this.flushPropertyToAttribute('zoom', undefined, true);
+    this.mapView_.setZoom(newValue);
+
+    const event = new CustomEvent('change:zoom', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'zoom',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   /**
+   * This is not a reflected property.
    * @property {[number, number, number, number]}
    */
   get extent () {
@@ -407,16 +495,32 @@ export default class HTMLMapView extends BaseClass {
     }
 
     // Update internal models.
-    this.mapView_.fit(val, {
+    const oldValue = this.extent;
+    const newValue = val;
+
+    if (this.isIdenticalPropertyValue_('center', oldValue, newValue)) {
+      return;
+    }
+
+    this.mapView_.fit(newValue, {
       // `map.getSize()` is not reliable when the map is initializing.
       size: this.size,
     });
 
-    // Update attributes.
-    //! Don't reflect these attributes.
-    // this.flushPropertyToAttribute('extent', undefined, true);
-    // this.flushPropertyToAttribute('center');
-    // this.flushPropertyToAttribute('zoom');
+    const event = new CustomEvent('change:extent', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'extent',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   /**
@@ -428,7 +532,7 @@ export default class HTMLMapView extends BaseClass {
    * @param {Object} options
    */
   updateView_ (options) {
-    //! Worry about caching later.
+    // TODO: Use caching.
 
     const finalOptions = this.olViewOptions_ = merge(this.olViewOptions_, !this.mapView_ ? null : {
       center: this.mapView_.getCenter(),
@@ -468,10 +572,8 @@ export default class HTMLMapView extends BaseClass {
   }
 
   onChangeViewExtent_ = () => {
-    //! Don't reflect these attributes.
-    // this.flushPropertyToAttribute('extent');
-    // this.flushPropertyToAttribute('center');
-    // this.flushPropertyToAttribute('zoom');
+    //! Don't reflect attributes from property changes.
+    this.log_('onChangeViewExtent_');
   }
 
   mountView_ () {

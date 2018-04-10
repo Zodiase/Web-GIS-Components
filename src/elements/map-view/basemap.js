@@ -65,6 +65,8 @@ export const getBaseMap = (rawType, cache) => {
   // If a generator could not be found, return null;
   const layer = layerGenerator ? layerGenerator() : null;
 
+  layer.name = lowerRawType;
+
   // Update cache if possible.
   if (cache) {
     cache[trueType] = layer;

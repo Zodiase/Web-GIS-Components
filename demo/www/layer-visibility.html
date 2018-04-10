@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Layer Visibility Demo</title>
+  <script src="./lib/proj4-v2.4.3.js"></script>
+  <script src="./lib/proj4-defs.js"></script>
+  <script src="./lib/mapview/web-gis-components.js"></script>
+</head>
+<body>
+
+  <a href="./">&lt; Back</a>
+
+  <h1>Layer Visibility Demo</h1>
+
+  <map-view id="demo-map" basemap="osm" center="-10997148, 4569099">
+    <map-layer-twms
+      id="layer"
+      name="example-twms-topp:states"
+      extent="-13884991, 2870341, -7455066, 6338219"
+      url="https://ahocevar.com/geoserver/wms"
+      params="LAYERS=topp%3Astates&TILED=true"
+      server-type="geoserver"
+    ></map-layer-twms>
+  </map-view>
+
+  <label style="display: block">
+    <input id="checkbox" type="checkbox" /> Invisible
+  </label>
+
+  <script>
+    var layer = document.getElementById('layer');
+    var checkbox = document.getElementById('checkbox');
+
+    checkbox.addEventListener('change', function () {
+      layer.invisible = checkbox.checked;
+    });
+  </script>
+
+</body>
+</html>

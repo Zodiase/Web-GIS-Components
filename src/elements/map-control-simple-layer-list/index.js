@@ -107,23 +107,39 @@ export default class HTMLMapSimpleLayerListControl extends BaseClass {
     this.renderLayerList();
   }
 
-  // @property {boolean} collapsed
+  /**
+   * This is a reflected property.
+   * @property {boolean} collapsed
+   */
   get collapsed () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('collapsed'));
   }
   set collapsed (val) {
-    if (!typeCheck('Boolean | Null', val)) {
-      throw new TypeError('Collapsed has to be a boolean value.');
-    }
+    const oldValue = this.collapsed;
+    const newValue = val === null ? null : Boolean(val);
 
-    // Update internal models.
-    if (val) {
+    if (newValue) {
       this.wrapper_.classList.add('collapsed');
     } else {
       this.wrapper_.classList.remove('collapsed');
     }
 
-    this.flushPropertyToAttribute('collapsed', val, true);
+    this.flushPropertyToAttribute('collapsed', newValue, true);
+
+    const event = new CustomEvent('change:collapsed', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'collapsed',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   /**

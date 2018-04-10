@@ -79,72 +79,132 @@ export default class HTMLMapLayerXYZ extends BaseClass {
     return webGisComponents.ol.source.XYZ;
   }
 
+  constructor () {
+    super();
+
+    // @type {number}
+    this.minZoom_ = defaultMinZoom;
+    this.maxZoom_ = defaultMaxZoom;
+  }
+
   /**
    * Getters and Setters (for properties).
    */
 
-  // @property {string|null} url
+  /**
+   * This is a reflected property.
+   * @property {string|null} url
+   */
   get url () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('url'));
   }
   set url (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('Tiled WMS layer url has to be a string.');
-    }
+    const oldValue = this.url;
+    const newValue = val === null ? null : String(val);
 
     // Update internal models.
     this.updateSource({
       url: val
     });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('url', val, true);
+    this.flushPropertyToAttribute('url', newValue, true);
+
+    const event = new CustomEvent('change:url', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'url',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {number} minZoom
+  /**
+   * This is not a reflected property.
+   * @property {number} minZoom
+   */
   get minZoom () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('minZoom'));
-    return propValFromAttr === null ? defaultMinZoom : propValFromAttr;
+    return this.minZoom_;
   }
   set minZoom (val) {
-    if (!typeCheck('Number | Null', val)) {
-      throw new TypeError('Layer minimum zoom has to be a number.');
+    const oldValue = this.minZoom;
+    // `null` turns into 0.
+    let newValue = Number(val);
+    // TODO: handle when `newValue` is `NaN`.
+
+    if (newValue < 0) {
+      newValue = 0;
     }
 
-    if (val < 0) {
-      throw new RangeError('Layer minimum zoom can not be lower than 0.');
+    if (this.isIdenticalPropertyValue_('minZoom', oldValue, newValue)) {
+      return;
     }
 
-    // Update internal models.
     this.updateSource({
-      minZoom: val
+      minZoom: newValue,
     });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('minZoom', val, true);
+    const event = new CustomEvent('change:minZoom', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'minZoom',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {number} maxZoom
+  /**
+   * This is not a reflected property.
+   * @property {number} maxZoom
+   */
   get maxZoom () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('maxZoom'));
-    return propValFromAttr === null ? defaultMaxZoom : propValFromAttr;
+    return this.maxZoom_;
   }
   set maxZoom (val) {
-    if (!typeCheck('Number | Null', val)) {
-      throw new TypeError('Layer maximum zoom has to be a number.');
+    const oldValue = this.maxZoom;
+    // `null` turns into 0.
+    let newValue = Number(val);
+    // TODO: handle when `newValue` is `NaN`.
+
+    if (newValue < 0) {
+      newValue = 0;
     }
 
-    if (val < 0) {
-      throw new RangeError('Layer maximum zoom can not be lower than 0.');
+    if (this.isIdenticalPropertyValue_('maxZoom', oldValue, newValue)) {
+      return;
     }
 
-    // Update internal models.
     this.updateSource({
-      maxZoom: val
+      maxZoom: newValue,
     });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('maxZoom', val, true);
+    const event = new CustomEvent('change:maxZoom', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'maxZoom',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   /**

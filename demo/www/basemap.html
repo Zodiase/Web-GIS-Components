@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Base Maps Demo</title>
+  <script src="./lib/proj4-v2.4.3.js"></script>
+  <script src="./lib/proj4-defs.js"></script>
+  <script src="./lib/mapview/web-gis-components.js"></script>
+</head>
+<body>
+
+  <a href="./">&lt; Back</a>
+
+  <h1>Base Maps Demo</h1>
+
+  <map-view id="demo-map" center="-10997148, 4569099" style="display: block"></map-view>
+
+  <label style="display: block">Current base map: <span id="demo-map__display-basemap"></span></label>
+
+  <label style="display: block">
+    Change to: 
+    <select id="demo-map__select">
+      <option value="" selected>None</option>
+      <option value="osm">OSM</option>
+      <option value="arcgis">ArcGIS Topo Map</option>
+    </select>
+  </label>
+
+  <script>
+    var mapview = document.getElementById('demo-map');
+    var select = document.getElementById('demo-map__select');
+    var label = document.getElementById('demo-map__display-basemap');
+
+    mapview.addEventListener('change:basemap', function () {
+      label.innerText = mapview.basemap;
+    });
+
+    select.addEventListener('change', function () {
+      mapview.basemap = select.value;
+    });
+  </script>
+
+</body>
+</html>

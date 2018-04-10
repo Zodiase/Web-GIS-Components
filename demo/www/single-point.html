@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Single Point Layer Demo</title>
+  <script src="./lib/proj4-v2.4.3.js"></script>
+  <script src="./lib/proj4-defs.js"></script>
+  <script src="./lib/mapview/web-gis-components.js"></script>
+</head>
+<body>
+
+  <a href="./">&lt; Back</a>
+
+  <h1>Single Point Layer Demo</h1>
+
+  <map-view id="demo-map" basemap="arcgis" center="-10997148, 4569099">
+    <map-layer-singlepoint id="point-layer" name="point" projection="EPSG:4326"></map-layer-singlepoint>
+  </map-view>
+
+  <div>Click to set the coordinates of the single point.</div>
+
+  <script>
+    var mapview = document.getElementById('demo-map');
+    var pointLayer = document.getElementById('point-layer');
+
+    mapview.addEventListener('click:view', function (event) {
+      pointLayer.longitude = event.latLongCoordinate[0];
+      pointLayer.latitude = event.latLongCoordinate[1];
+    });
+  </script>
+
+</body>
+</html>

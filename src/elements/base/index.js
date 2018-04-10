@@ -10,14 +10,13 @@
  *     - verify new property
  *     - update internal models
  *     - silent update attribute with new property
- *   - if fails
- *     - error and revert attribute to the old value
- *   - else
  *     - dispatch change event
  *     - if canceled
- *       - revert attribute to the old value
+ *       - revert property and attribute to the old value
  *     - else
  *       - done!
+ *   - if fails
+ *     - error and revert attribute to the old value
  */
 
 /*eslint no-bitwise: "off", no-console: "off"*/
@@ -363,6 +362,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
   /**
    * An attribute was added, removed, updated, or replaced.
    * Also called for initial values when an element is created by the parser, or upgraded.
+   * If the change is successful, a bubbling change event is fired on the element.
    * Note: only attributes listed in the static `observedAttributes` property will receive this callback.
    */
   attributeChangedCallback (attrName, oldVal, newVal) {
@@ -382,78 +382,58 @@ export default class HTMLMapBaseClass extends HTMLElement {
       return;
     }
 
-    let cancelled = false;
-
     try {
       this.log_('attributeChangedCallback', attrName, 'attribute begin update');
       // Mark the attribute as being updated so changing its value during the process doesn't cause another reaction (and dead loop).
       this.flagAttributeAsBeingUpdated_(attrName);
 
       const propName = this.constructor.getPropertyNameByAttributeName_(attrName),
-            eventName = `changed:${propName}`,
             oldPropVal = this.getPropertyValueFromAttribute_(attrName, oldVal !== null, oldVal), //this[propName],
             newPropVal = this.getPropertyValueFromAttribute_(attrName, newVal !== null, newVal);
 
       if (this.isIdenticalPropertyValue_(propName, oldPropVal, newPropVal)) {
-        this.log_(eventName, 'no change', {
-          oldPropVal,
-          newPropVal
-        });
+        this.log_(propName, 'no change');
       } else {
         // Setter should verify new property value and throw if needed.
+        // Setter also fires the change event and throws if the event is canceled.
         this[propName] = newPropVal;
 
-        this.log_(eventName, {
+        // No error and not cancelled.
+        this.hasWorkingAttributes_[attrName] = true;
+
+        this.log_(propName, 'changed', {
           oldVal: oldPropVal,
           newVal: newPropVal
         });
-
-        // Dispatch change event.
-        const event = new CustomEvent(eventName, {
-          bubbles: true,
-          cancelable: true,
-          scoped: false,
-          composed: false,
-          detail: {
-            property: propName,
-            newValue: newPropVal
-          }
-        });
-
-        cancelled = !this.dispatchEvent(event);
       }
     } catch (error) {
-      this.logError_(`Failed to handle attribute change. ${error.message}`, {
-        attrName,
-        oldVal,
-        newVal
-      });
+      const cancelled = error.message === 'cancel';
 
-      //! Handle the error better?
-      cancelled = true;
-    } finally {
-      this.unflagAttributeAsBeingUpdated_(attrName);
+      if (!cancelled) {
+        this.logError_(`Failed to handle attribute change. ${error.message}`, {
+          attrName,
+          oldVal,
+          newVal
+        });
+      }
 
-      if (cancelled) {
-        // Either cancelled or errored.
-        if (this.hasWorkingAttributes_[attrName]) {
-          // Revert the attribute to the old value.
-          if (oldVal === null) {
-            this.removeAttribute(attrName);
-          } else {
-            this.setAttribute(attrName, oldVal);
-          }
+      // Either cancelled or errored.
+      if (this.hasWorkingAttributes_[attrName]) {
+        // Revert the attribute to the old value.
+        if (oldVal === null) {
+          this.removeAttribute(attrName);
         } else {
-          this.logWarn_('No acceptable value to revert to.', {
-            attrName,
-            oldVal,
-            newVal
-          });
+          this.setAttribute(attrName, oldVal);
         }
       } else {
-        // No error and not cancelled.
-        this.hasWorkingAttributes_[attrName] = true;
+        this.logWarn_('No acceptable value to revert to.', {
+          attrName,
+          oldVal,
+          newVal
+        });
       }
+    } finally {
+      this.unflagAttributeAsBeingUpdated_(attrName);
     }
   } // attributeChangedCallback
 
@@ -461,7 +441,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * The custom element has been moved into a new document (e.g. someone called document.adoptNode(el)).
    */
   adoptedCallback () {
-    //! Not sure what to do.
+    // TODO: Do something?
   }
 
   get connected () {

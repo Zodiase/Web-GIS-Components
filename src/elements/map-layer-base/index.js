@@ -118,6 +118,9 @@ export default class HTMLMapLayerBase extends BaseClass {
 
     // @type {ol.layer.Base}
     this.olLayer_ = new this.constructor.layerClass({});
+
+    // @type {string}
+    this.projection_ = defaultLayerProjection;
   }
 
   /**
@@ -130,145 +133,252 @@ export default class HTMLMapLayerBase extends BaseClass {
     return this.olLayer_;
   }
 
-  // @property {string|null} name
+  /**
+   * This is a reflected property.
+   * @property {string|null} name
+   */
   get name () {
-    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('name'));
+    return this.olLayer_.get('name');
   }
   set name (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('Layer name has to be a string.');
+    const oldValue = this.name;
+    const newValue = val === null ? null : String(val);
+
+    if (this.isIdenticalPropertyValue_('name', oldValue, newValue)) {
+      return;
     }
 
-    const _val = typeCheck('String', val) ? val.trim() : val;
+    this.olLayer_.set('name', newValue);
 
-    // Update internal models.
-    const oldVal = this.olLayer_.get('name');
-    if (!this.isIdenticalPropertyValue_('name', oldVal, _val)) {
-      this.olLayer_.set('name', _val);
-    }
+    const event = new CustomEvent('change:name', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'name',
+        oldValue,
+        newValue,
+      },
+    });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('name', _val, true);
+    this.dispatchEvent(event);
   }
 
-  // @property {number} opacity
+  /**
+   * This is not a reflected property.
+   * @property {number} opacity
+   */
   get opacity () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('opacity'));
-    return propValFromAttr === null ? defaultLayerOpacity : propValFromAttr;
+    return this.olLayer_.getOpacity();
   }
   set opacity (val) {
-    if (!typeCheck('Number | Null', val)) {
-      throw new TypeError('Layer opacity has to be a number.');
+    const oldValue = this.opacity;
+    // `null` turns into 0.
+    const newValue = Number(val);
+    // TODO: handle when `newValue` is `NaN`.
+
+    if (this.isIdenticalPropertyValue_('opacity', oldValue, newValue)) {
+      return;
     }
 
-    if (typeCheck('Number', val)) {
-      if (val > 1 || val < 0) {
-        throw new RangeError('Layer opacity should be between 0 and 1.');
-      }
-    }
+    this.olLayer_.setOpacity(newValue);
 
-    // Update internal models.
-    const oldVal = this.olLayer_.getOpacity();
-    if (!this.isIdenticalPropertyValue_('opacity', oldVal, val)) {
-      this.olLayer_.setOpacity(val);
-    }
+    const event = new CustomEvent('change:opacity', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'opacity',
+        oldValue,
+        newValue,
+      },
+    });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('opacity', val, true);
+    this.dispatchEvent(event);
   }
 
-  // @property {Array.<number>|null} extent
+  /**
+   * This is not a reflected property.
+   * @property {Array.<number>|null} extent
+   */
   get extent () {
-    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('extent'));
+    return this.olLayer_.getExtent() || null;
   }
   set extent (val) {
     if (!typeCheck('(Number, Number, Number, Number) | Null', val)) {
       throw new TypeError('Layer extent has to be an array of 4 numbers.');
     }
 
-    // Update internal models.
-    const oldVal = this.olLayer_.getExtent() || null;
-    if (!this.isIdenticalPropertyValue_('extent', oldVal, val)) {
-      this.olLayer_.setExtent(val);
+    const oldValue = this.extent;
+    const newValue = val;
+
+    if (this.isIdenticalPropertyValue_('extent', oldValue, newValue)) {
+      return;
     }
 
-    // Update attributes.
-    this.flushPropertyToAttribute('extent', val, true);
+    this.olLayer_.setExtent(val);
+
+    const event = new CustomEvent('change:extent', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'extent',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {boolean} invisible
+  /**
+   * This is a reflected property.
+   * @property {boolean} invisible
+   */
   get invisible () {
-    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('invisible'));
+    return !this.olLayer_.getVisible();
   }
   set invisible (val) {
-    if (!typeCheck('Boolean | Null', val)) {
-      throw new TypeError('Invisible has to be a boolean value.');
+    const oldValue = this.invisible;
+    const newValue = val === null ? null : Boolean(val);
+
+    if (this.isIdenticalPropertyValue_('invisible', oldValue, newValue)) {
+      return;
     }
 
-    // Update internal models.
-    const oldVal = !this.olLayer_.getVisible();
-    if (!this.isIdenticalPropertyValue_('invisible', oldVal, val)) {
-      this.olLayer_.setVisible(!val);
-    }
+    this.olLayer_.setVisible(!newValue);
 
-    // Update attributes.
-    this.flushPropertyToAttribute('invisible', val, true);
+    this.flushPropertyToAttribute('invisible', newValue, true);
+
+    const event = new CustomEvent('change:invisible', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'invisible',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {number} minResolution
+  /**
+   * This is not a reflected property.
+   * @property {number} minResolution
+   */
   get minResolution () {
-    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('minResolution'));
+    return this.olLayer_.getMinResolution();
   }
   set minResolution (val) {
-    if (!typeCheck('Number | Null', val)) {
-      throw new TypeError('Layer minimum resolution has to be a number.');
+    const oldValue = this.minResolution;
+    // `null` turns into 0.
+    const newValue = Number(val);
+    // TODO: handle when `newValue` is `NaN`.
+
+    if (this.isIdenticalPropertyValue_('minResolution', oldValue, newValue)) {
+      return;
     }
 
-    // Update internal models.
-    const oldVal = this.olLayer_.getMinResolution();
-    if (!this.isIdenticalPropertyValue_('minResolution', oldVal, val)) {
-      this.olLayer_.setMinResolution(val);
-    }
+    this.olLayer_.setMinResolution(newValue);
 
-    // Update attributes.
-    this.flushPropertyToAttribute('minResolution', val, true);
+    const event = new CustomEvent('change:minResolution', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'minResolution',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {number} maxResolution
+  /**
+   * This is not a reflected property.
+   * @property {number} maxResolution
+   */
   get maxResolution () {
-    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('maxResolution'));
+    return this.olLayer_.getMaxResolution();
   }
   set maxResolution (val) {
-    if (!typeCheck('Number | Null', val)) {
-      throw new TypeError('Layer maximum resolution has to be a number.');
+    const oldValue = this.maxResolution;
+    // `null` turns into 0.
+    const newValue = Number(val);
+    // TODO: handle when `newValue` is `NaN`.
+
+    if (this.isIdenticalPropertyValue_('maxResolution', oldValue, newValue)) {
+      return;
     }
 
-    // Update internal models.
-    const oldVal = this.olLayer_.getMaxResolution();
-    if (!this.isIdenticalPropertyValue_('maxResolution', oldVal, val)) {
-      this.olLayer_.setMaxResolution(val);
-    }
+    this.olLayer_.setMaxResolution(newValue);
 
-    // Update attributes.
-    this.flushPropertyToAttribute('maxResolution', val, true);
+    const event = new CustomEvent('change:maxResolution', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'maxResolution',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {string|null} projection
+  /**
+   * This is not a reflected property.
+   * Setting an invalid property value silently fails.
+   * @property {string|null} projection
+   */
   get projection () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('projection'));
-    return propValFromAttr === null ? defaultLayerProjection : propValFromAttr;
+    return this.projection_;
   }
   set projection (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('Layer projection has to be a string.');
+    const oldValue = this.projection;
+    let newValue = val === null ? null : String(val);
+
+    if (newValue === null || !this.constructor.isValidProjection(newValue)) {
+      newValue = defaultLayerProjection;
     }
 
-    if (val !== null && !this.constructor.isValidProjection(val)) {
-      throw new TypeError('Invalid projection.');
+    if (this.isIdenticalPropertyValue_('projection', oldValue, newValue)) {
+      return;
     }
 
-    // Update attributes.
-    this.flushPropertyToAttribute('projection', val, true);
+    this.projection_ = newValue;
+
+    const event = new CustomEvent('change:projection', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'projection',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   /**

@@ -102,25 +102,45 @@ export default class HTMLMapLayerTWMS extends BaseClass {
    * Getters and Setters (for properties).
    */
 
-  // @property {string|null} url
+  /**
+   * This is a reflected property.
+   * @property {string|null} url
+   */
   get url () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('url'));
   }
   set url (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('Tiled WMS layer url has to be a string.');
-    }
+    const oldValue = this.url;
+    const newValue = val === null ? null : String(val);
 
     // Update internal models.
     this.updateSource({
       url: val
     });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('url', val, true);
+    this.flushPropertyToAttribute('url', newValue, true);
+
+    const event = new CustomEvent('change:url', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'url',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {Object|null} params
+  /**
+   * This is not a reflected property.
+   * Setting an invalid property value silently fails.
+   * @property {Object|null} params
+   */
   get params () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('params'));
   }
@@ -129,13 +149,27 @@ export default class HTMLMapLayerTWMS extends BaseClass {
       throw new TypeError('Tiled WMS layer params has to be an object.');
     }
 
-    // Update internal models.
+    const oldValue = this.params;
+    const newValue = val;
+
     this.updateSource({
-      params: val
+      params: newValue,
     });
 
-    // Update attributes.
-    this.flushPropertyToAttribute('params', val, true);
+    const event = new CustomEvent('change:params', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'params',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   /**

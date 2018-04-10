@@ -69,7 +69,10 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
    * Getters and Setters (for properties).
    */
 
-  // @property {number} latitude
+  /**
+   * This is a reflected property.
+   * @property {number} latitude
+   */
   get latitude () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('latitude'));
   }
@@ -85,7 +88,10 @@ export default class HTMLMapLayerSinglePoint extends BaseClass {
     this.flushPropertyToAttribute('latitude', val, true);
   }
 
-  // @property {number} longitude
+  /**
+   * This is a reflected property.
+   * @property {number} longitude
+   */
   get longitude () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('longitude'));
   }

@@ -73,20 +73,29 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
     return webGisComponents.ol.source.Vector;
   }
 
+  constructor () {
+    super();
+
+    // @type {string}
+    this.srcProjection_ = defaultDataProjection;
+  }
+
   /**
    * Getters and Setters (for properties).
    */
 
-  // @property {string|null} srcUrl
+  /**
+   * This is a reflected property.
+   * @property {string|null} srcUrl
+   */
   get srcUrl () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('srcUrl'));
   }
   set srcUrl (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('GeoJSON layer source data url has to be a string.');
-    }
+    const oldValue = this.srcUrl;
+    const newValue = val === null ? null : String(val);
 
-    if (val === null) {
+    if (newValue === null) {
       // Update internal models.
       this.updateSource({
         url: undefined,
@@ -100,7 +109,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
 
       // Update internal models.
       this.updateSource({
-        url: val,
+        url: newValue,
         format: new webGisComponents.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
@@ -109,20 +118,36 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
       });
     }
 
-    // Update attributes.
-    this.flushPropertyToAttribute('srcUrl', val, true);
+    this.flushPropertyToAttribute('srcUrl', newValue, true);
+
+    const event = new CustomEvent('change:srcUrl', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'srcUrl',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {string|null} srcJson
+  /**
+   * This is a reflected property.
+   * @property {string|null} srcJson
+   */
   get srcJson () {
     return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('srcJson'));
   }
   set srcJson (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('GeoJSON layer source data JSON has to be a string.');
-    }
+    const oldValue = this.srcJson;
+    const newValue = val === null ? null : String(val);
 
-    if (val === null) {
+    if (newValue === null) {
       // Update internal models.
       this.updateSource({
         features: undefined,
@@ -138,32 +163,66 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
         features: (new webGisComponents.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
-        })).readFeatures(JSON.parse(val)),
+        })).readFeatures(JSON.parse(newValue)),
         url: undefined,
         format: undefined,
       });
     }
 
-    // Update attributes.
-    this.flushPropertyToAttribute('srcJson', val, true);
+    this.flushPropertyToAttribute('srcJson', newValue, true);
+
+    const event = new CustomEvent('change:srcJson', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'srcJson',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
-  // @property {string|null} srcProjection
+  /**
+   * This is not a reflected property.
+   * Setting an invalid property value silently fails.
+   * @property {string|null} srcProjection
+   */
   get srcProjection () {
-    const propValFromAttr = this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('srcProjection'));
-    return propValFromAttr === null ? defaultDataProjection : propValFromAttr;
+    return this.srcProjection_;
   }
   set srcProjection (val) {
-    if (!typeCheck('String | Null', val)) {
-      throw new TypeError('GeoJSON layer source data projection has to be a string.');
+    const oldValue = this.srcProjection;
+    let newValue = val === null ? null : String(val);
+
+    if (newValue === null || !this.constructor.isValidProjection(newValue)) {
+      newValue = defaultDataProjection;
     }
 
-    if (val !== null && !this.constructor.isValidProjection(val)) {
-      throw new TypeError('Invalid projection.');
+    if (this.isIdenticalPropertyValue_('srcProjection', oldValue, newValue)) {
+      return;
     }
 
-    // Update attributes.
-    this.flushPropertyToAttribute('srcProjection', val, true);
+    this.srcProjection_ = newValue;
+
+    const event = new CustomEvent('change:srcProjection', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'srcProjection',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
 
     if (this.srcUrl) {
       this.logWarn_('Resetting src-url.');

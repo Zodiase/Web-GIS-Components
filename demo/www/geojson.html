@@ -12,12 +12,59 @@
 
   <h1>GeoJSON Layer Demo</h1>
 
-  <map-view id="demo-map" basemap="osm" center="-10997148, 4569099">
+  <h2>A triangle provided in EPSG:4326 projection, viewed in default EPSG:3857 projection.</h2>
+
+  <map-view id="demo-map-1" basemap="arcgis" center="-10997148, 4569099">
     <map-layer-geojson
       name="example-geojson"
-      src-json='{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"stroke":"#555555","stroke-width":2,"stroke-opacity":1,"fill":"#555555","fill-opacity":0.5},"geometry":{"type":"Polygon","coordinates":[[[-101.865234375,37.09023980307208],[-92.28515625,40.17887331434696],[-93.69140625,38.47939467327645],[-102.63427734374999,41.83682786072714],[-99.052734375,36.80928470205937],[-103.623046875,38.8225909761771],[-94.63623046875,40.111688665595956],[-100.986328125,42.032974332441405],[-97.119140625,43.58039085560784],[-101.865234375,37.09023980307208]]]}}]}'
+      src-json='{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-100.72265625,47.27922900257082],[-113.115234375,38.20365531807149],[-86.30859375,35.88905007936091],[-100.72265625,47.27922900257082]]]}}]}'
       src-projection="EPSG:4326"
-      projection="EPSG:3857"
+    ></map-layer-geojson>
+  </map-view>
+
+  <h2>Styling within the GeoJSON is not supported.</h2>
+
+  <map-view id="demo-map-2" basemap="arcgis" center="-10997148, 4569099">
+    <map-layer-geojson
+      name="example-geojson"
+      src-json='{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"stroke":"#FF0000","stroke-width":2,"stroke-opacity":1,"fill":"#00FF00","fill-opacity":0.5},"geometry":{"type":"Polygon","coordinates":[[[-100.72265625,47.27922900257082],[-113.115234375,38.20365531807149],[-86.30859375,35.88905007936091],[-100.72265625,47.27922900257082]]]}}]}'
+      src-projection="EPSG:4326"
+    ></map-layer-geojson>
+  </map-view>
+
+  <h2>Reprojection</h2>
+
+  <map-view id="demo-map-3" basemap="arcgis" center="-10997148, 4569099">
+    <map-layer-geojson
+      name="example-geojson"
+      src-json='{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"stroke":"#FF0000","stroke-width":2,"stroke-opacity":1,"fill":"#00FF00","fill-opacity":0.5},"geometry":{"type":"Polygon","coordinates":[[[-100.72265625,47.27922900257082],[-113.115234375,38.20365531807149],[-86.30859375,35.88905007936091],[-100.72265625,47.27922900257082]]]}}]}'
+      src-projection="EPSG:4326"
+    ></map-layer-geojson>
+  </map-view>
+
+  <label style="display: block">
+    Select projection: 
+    <select id="demo-map-3__select">
+      <option value="EPSG:3857" selected>EPSG:3857</option>
+      <option value="EPSG:4326">EPSG:4326</option>
+    </select>
+  </label>
+
+  <script>
+    var mapview = document.getElementById('demo-map-3');
+    var select = document.getElementById('demo-map-3__select');
+
+    select.addEventListener('change', function () {
+      mapview.switchProjection(mapview.projection, select.value);
+    });
+  </script>
+
+  <h2>Empty GeoJSON layer</h2>
+
+  <map-view basemap="arcgis" center="-10997148, 4569099">
+    <map-layer-geojson
+      name="example-geojson"
+      src-json='{"type":"FeatureCollection","features":[]}'
     ></map-layer-geojson>
   </map-view>
 

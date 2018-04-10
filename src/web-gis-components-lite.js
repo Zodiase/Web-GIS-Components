@@ -9,6 +9,7 @@ import './elements/map-view';
 import './elements/map-layer-group';
 import './elements/map-layer-twms';
 import './elements/map-layer-xyz';
+import './elements/map-layer-vector';
 import './elements/map-layer-geojson';
 import './elements/map-layer-singlepoint';
 

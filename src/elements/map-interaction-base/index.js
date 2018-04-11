@@ -35,8 +35,18 @@ export default class HTMLMapInteractionBase extends BaseClass {
   constructor () {
     super();
 
-    // @type {ol.Collection.<ol.interaction.Interaction>}
+    /**
+     * Child classes should not override this property but only modify its content.
+     * @type {ol.Collection.<ol.interaction.Interaction>}
+     */
     this.olInteractions_ = new webGisComponents.ol.Collection();
+
+    // Newly added interactions should have consistent active state.
+    this.olInteractions_.on('add', (olEvent) => {
+      const newInteraction = olEvent.element;
+
+      newInteraction.setActive(!this.disabled);
+    });
   }
 
   /**

@@ -2,9 +2,6 @@ import {
   concat,
   merge,
 } from 'lodash.local';
-import {
-  typeCheck
-} from 'type-check';
 
 import webGisComponents from 'namespace';
 import {

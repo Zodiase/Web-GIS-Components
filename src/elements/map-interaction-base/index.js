@@ -1,5 +1,4 @@
 import {
-  clone,
   concat,
   merge,
 } from 'lodash.local';

@@ -18,7 +18,6 @@ import {
 import BaseClass from '../base';
 
 import {
-  defaultLayerOpacity,
   defaultLayerProjection,
 } from './config';
 

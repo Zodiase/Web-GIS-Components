@@ -15,17 +15,7 @@ export default class HTMLMapDefaultInteractions extends BaseClass {
   constructor () {
     super();
 
-    // @type {ol.Collection.<ol.interaction.Interaction>}
-    this.olInteraction_ = new webGisComponents.ol.interaction.defaults({});
-  }
-
-  /**
-   * Getters and Setters (for properties).
-   */
-
-  // @override
-  get interactions () {
-    return this.olInteraction_.getArray();
+    this.olInteractions_.extend(webGisComponents.ol.interaction.defaults({}).getArray());
   }
 
 } // HTMLMapDefaultInteractions

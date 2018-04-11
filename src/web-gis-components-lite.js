@@ -17,3 +17,4 @@ import './elements/map-control-defaults';
 import './elements/map-control-simple-layer-list';
 
 import './elements/map-interaction-defaults';
+import './elements/map-interaction-draw';

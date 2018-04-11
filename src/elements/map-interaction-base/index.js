@@ -1,3 +1,5 @@
+import webGisComponents from 'namespace';
+
 import BaseClass from '../base';
 
 /**
@@ -6,14 +8,21 @@ import BaseClass from '../base';
  */
 export default class HTMLMapInteractionBase extends BaseClass {
 
+  constructor () {
+    super();
+
+    // @type {ol.Collection.<ol.interaction.Interaction>}
+    this.olInteractions_ = new webGisComponents.ol.Collection();
+  }
+
   /**
    * Getters and Setters (for properties).
    */
 
-  // @property {Array.<ol.interaction.Interaction>} interaction
+  // @property {ol.Collection.<ol.interaction.Interaction>} interactions
   // @readonly
   get interactions () {
-    throw new Error('Subclass should implement this.');
+    return this.olInteractions_;
   }
 
 } // HTMLMapInteractionBase

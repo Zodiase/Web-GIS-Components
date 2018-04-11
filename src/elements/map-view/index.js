@@ -115,27 +115,60 @@ export default class HTMLMapView extends BaseClass {
     // Overlays are tied to geolocations.
     this.mapOverlays_ = new ol.Collection();
 
-    // Interactions are tied to the map view.
-    // @type {ol.Collection.<ol.interaction.Interaction>}
+    /**
+     * Interactions are tied to the map view.
+     * Modify its content but don't reassign it.
+     * @type {ol.Collection.<ol.interaction.Interaction>}
+     */
     this.mapInteractionCollection_ = new ol.Collection();
+    /**
+     * This is a collection for monitoring collections of interactions.
+     * An interaction element can have a collection of interactions associated with it.
+     * And the content of that collection could change.
+     * So we need to monitor each one of those collections.
+     * And release the event listeners when the element is removed.
+     * @type {ol.Collection.<HTMLMapInteractionBase>}
+     */
+    this.trackedInteractionElementCollection_ = new ol.Collection();
+
+    // When tracked interaction elements change, reload interactions from them into `this.mapInteractionCollection_`.
+    this.trackedInteractionElementCollection_.on('change', ({target}) => {
+      this.mapInteractionCollection_.clear();
+
+      target.forEach((interactionElement) => {
+        this.mapInteractionCollection_.extend(interactionElement.interactions.getArray());
+      });
+
+      this.mapInteractionCollection_.changed();
+
+      this.dispatchEvent(new Event('change:interactions'));
+    });
 
     // Interaction Elements in this map view.
     // @type {ol.Collection.<HTMLMapInteractionBase>}
     this.mapInteractionElementCollection_ = this.getLiveChildElementCollection(HTMLMapInteractionBase);
 
-    this.mapInteractionElementCollection_.on('change', ({/*type, */target}) => {
-      const interactionElements = target.getArray();
-      const interactions = interactionElements.map((el) => el.interactions)
-                                      .reduce((acc, controlArray) => [
-                                        ...acc,
-                                        ...controlArray,
-                                      ], []);
+    // When the child interaction elements change, load them into the tracked collection `this.trackedInteractionElementCollection_`.
+    this.mapInteractionElementCollection_.on('change', ({target}) => {
+      // Release currently tracked elements.
+      const trackedInteractionElements = this.trackedInteractionElementCollection_.getArray();
 
-      this.mapInteractionCollection_.clear();
-      this.mapInteractionCollection_.extend(interactions);
-      this.mapInteractionCollection_.changed();
+      trackedInteractionElements.forEach((interactionElement) => {
+        interactionElement.interactions.un('change', this.onChangeInteractionElementInteractions_);
+      });
 
-      this.dispatchEvent(new Event('change:interactions'));
+      this.trackedInteractionElementCollection_.clear();
+
+      const newInteractionElements = target.getArray();
+
+      // Track new elements.
+      newInteractionElements.forEach((interactionElement) => {
+        interactionElement.interactions.on('change', this.onChangeInteractionElementInteractions_);
+      });
+
+      this.trackedInteractionElementCollection_.extend(newInteractionElements);
+
+      this.trackedInteractionElementCollection_.changed();
     });
 
     // This collection holds the child layers so it's easier to do batch updates.
@@ -614,6 +647,12 @@ export default class HTMLMapView extends BaseClass {
     // Tell children to switch projections as well.
     this.childLayerElementsCollection_.forEach((item) => item.switchProjection(fromProj, toProj));
   }
+
+  // Callback when the interactions in an interaction element change.
+  onChangeInteractionElementInteractions_ = () => {
+    // Reload interactions from all tracked interaction elements.
+    this.trackedInteractionElementCollection_.changed();
+  };
 
 } // HTMLMapView
 

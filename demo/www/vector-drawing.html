@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vector Drawing Demo</title>
+  <script src="./lib/proj4-v2.4.3.js"></script>
+  <script src="./lib/proj4-defs.js"></script>
+  <script src="./lib/mapview/web-gis-components.js"></script>
+</head>
+<body>
+
+  <a href="./">&lt; Back</a>
+
+  <h1>Vector Drawing Demo</h1>
+
+  <p>See how the drawing interaction works with the vector layer.</p>
+
+  <map-view id="demo-map" basemap="osm" center="-10997148, 4569099" style="display: block">
+      <map-layer-vector id="vector-layer" src-projection="EPSG:4326"></map-layer-vector>
+      <map-interaction-draw id="drawing" source="vector-layer"></map-interaction-draw>
+  </map-view>
+
+  <label style="display: block">
+    Select projection: 
+    <select id="demo-map__select-projection">
+      <option value="EPSG:3857" selected>EPSG:3857</option>
+      <option value="EPSG:4326">EPSG:4326</option>
+    </select>
+  </label>
+
+  <label style="display: block">
+      Select drawing type: 
+      <select id="demo-map__select-drawing">
+        <option value="Polygon" selected>Polygon</option>
+        <option value="Point">Point</option>
+        <option value="LineString">LineString</option>
+        <option value="MultiPoint">MultiPoint</option>
+        <option value="MultiLineString">MultiLineString</option>
+        <option value="MultiPolygon">MultiPolygon</option>
+        <option value="Circle">Circle</option>
+      </select>
+    </label>
+
+  <label style="display: block">
+    <input id="demo-map__drawone" type="checkbox" />
+    Draw only one.
+  </label>
+
+  <script>
+    var mapview = document.getElementById('demo-map');
+    var vectorLayer = document.getElementById('vector-layer');
+    var drawing = document.getElementById('drawing');
+    var selectProjection = document.getElementById('demo-map__select-projection');
+    var selectDrawing = document.getElementById('demo-map__select-drawing');
+    var drawOne = document.getElementById('demo-map__drawone');
+
+    selectProjection.addEventListener('change', function () {
+      mapview.switchProjection(mapview.projection, selectProjection.value);
+    });
+
+    selectDrawing.addEventListener('change', function () {
+      drawing.type = selectDrawing.value;
+    });
+
+    drawing.addEventListener('drawstart', function () {
+      if (drawOne.checked) {
+        vectorLayer.clearFeatures();
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -169,6 +169,34 @@ export default class HTMLMapLayerVector extends BaseClass {
   }
 
   /**
+   * Convert an Openlayers geometry to its GeoJSON counterpart.
+   * @param {ol.geometry.Geometry} geometry
+   * @returns {Object}
+   */
+  writeGeometryObject (geometry) {
+    const format = new this.ol.format.GeoJSON({
+      defaultDataProjection: this.srcProjection,
+      featureProjection: this.projection,
+    });
+
+    return format.writeGeometryObject(geometry);
+  }
+
+  /**
+   * Convert a GeoJSON geometry to its Openlayers counterpart.
+   * @param {Object} geometry
+   * @returns {ol.geometry.Geometry}
+   */
+  readGeometryObject (geometry) {
+    const format = new this.ol.format.GeoJSON({
+      defaultDataProjection: this.srcProjection,
+      featureProjection: this.projection,
+    });
+
+    return format.readGeometry(geometry);
+  }
+
+  /**
    * Creates a feature from a geometry.
    * @param {ol.geom.Geometry|Object} geom
    */

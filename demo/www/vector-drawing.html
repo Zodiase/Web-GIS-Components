@@ -16,6 +16,7 @@
 
   <map-view id="demo-map" basemap="osm" center="-10997148, 4569099" style="display: block">
       <map-layer-vector id="vector-layer" src-projection="EPSG:4326"></map-layer-vector>
+      <map-interaction-defaults></map-interaction-defaults>
       <map-interaction-draw id="drawing" source="vector-layer"></map-interaction-draw>
   </map-view>
 
@@ -32,6 +33,7 @@
       <select id="demo-map__select-drawing">
         <option value="Polygon" selected>Polygon</option>
         <option value="Point">Point</option>
+        <option value="Box">Box</option>
         <option value="LineString">LineString</option>
         <option value="MultiPoint">MultiPoint</option>
         <option value="MultiLineString">MultiLineString</option>
@@ -42,7 +44,12 @@
 
   <label style="display: block">
     <input id="demo-map__drawone" type="checkbox" />
-    Draw only one.
+    Draw only one
+  </label>
+
+  <label style="display: block">
+    <input id="demo-map__disable" type="checkbox" />
+    Disable drawing
   </label>
 
   <script>
@@ -52,6 +59,7 @@
     var selectProjection = document.getElementById('demo-map__select-projection');
     var selectDrawing = document.getElementById('demo-map__select-drawing');
     var drawOne = document.getElementById('demo-map__drawone');
+    var disable = document.getElementById('demo-map__disable');
 
     selectProjection.addEventListener('change', function () {
       mapview.switchProjection(mapview.projection, selectProjection.value);
@@ -59,6 +67,10 @@
 
     selectDrawing.addEventListener('change', function () {
       drawing.type = selectDrawing.value;
+    });
+
+    disable.addEventListener('change', function () {
+      drawing.disabled = disable.checked;
     });
 
     drawing.addEventListener('drawstart', function () {

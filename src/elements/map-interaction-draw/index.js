@@ -39,22 +39,48 @@ export default class HTMLMapDrawInteraction extends BaseClass {
     'type': commonAttributeToPropertyConverters.string,
   });
 
-  static validTypes = [
-    'Point',
-    'LineString',
-    'Polygon',
-    'MultiPoint',
-    'MultiLineString',
-    'MultiPolygon',
-    'Circle',
-  ];
+  static validTypes = {
+    Point: () => ({
+      type: 'Point',
+    }),
+    LineString: () => ({
+      type: 'LineString',
+    }),
+    Polygon: () => ({
+      type: 'Polygon',
+    }),
+    MultiPoint: () => ({
+      type: 'MultiPoint',
+    }),
+    MultiLineString: () => ({
+      type: 'MultiLineString',
+    }),
+    MultiPolygon: () => ({
+      type: 'MultiPolygon',
+    }),
+    Circle: () => ({
+      type: 'Circle',
+    }),
+    Box: () => ({
+      type: 'Circle',
+      geometryFunction: webGisComponents.ol.interaction.Draw.createBox(),
+    }),
+  };
 
   /**
    * @param {string} type
    * @returns {boolean}
    */
   static isValidType (type) {
-    return this.validTypes.indexOf(type) > -1;
+    return type in this.validTypes;
+  }
+
+  /**
+   * @param {string} type
+   * @returns {Object}
+   */
+  static getDrawingOptions (type) {
+    return this.validTypes[type]();
   }
 
   constructor () {
@@ -85,8 +111,14 @@ export default class HTMLMapDrawInteraction extends BaseClass {
       newValue = defaultDrawingType;
     }
 
+    const {
+      type,
+      geometryFunction,
+    } = this.constructor.getDrawingOptions(newValue);
+
     this.updateInteraction({
-      type: newValue,
+      type,
+      geometryFunction,
     });
 
     this.flushPropertyToAttribute('type', newValue, true);

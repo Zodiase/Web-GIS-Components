@@ -604,9 +604,19 @@ export default class HTMLMapView extends BaseClass {
     this.mapView_ = newView;
   }
 
-  onChangeViewExtent_ = () => {
-    //! Don't reflect attributes from property changes.
-    this.log_('onChangeViewExtent_');
+  onChangeViewExtent_ = (olEvent) => {
+    const event = new CustomEvent('change:extent', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        originalEvent: olEvent,
+      },
+    });
+
+    this.dispatchEvent(event);
   }
 
   mountView_ () {

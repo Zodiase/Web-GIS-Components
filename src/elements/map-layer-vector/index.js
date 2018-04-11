@@ -90,12 +90,20 @@ export default class HTMLMapLayerVector extends BaseClass {
     // Initialize layer source.
     this.updateSource({});
 
+    this.listenToSourceEvents_(this.source);
+
     // TODO: Add support to load features from child DOM nodes?
   }
 
   /**
    * Getters and Setters (for properties).
    */
+
+  // @property {ol.source.Vector} source
+  // @readonly
+  get source () {
+    return this.layer.getSource();
+  }
 
   /**
    * This is not a reflected property.
@@ -156,6 +164,14 @@ export default class HTMLMapLayerVector extends BaseClass {
   }
 
   /**
+   * @param {ol.Extent} extent
+   * @returns {ol.geom.Geometry}
+   */
+  createGeometryFromExtent (extent) {
+    return this.ol.geom.Polygon.fromExtent(extent);
+  }
+
+  /**
    * Creates a feature from a geometry.
    * @param {ol.geom.Geometry|Object} geom
    */
@@ -176,12 +192,7 @@ export default class HTMLMapLayerVector extends BaseClass {
    * @param {Array.<ol.Feature>} features
    */
   addFeatures (features) {
-    const source = this.layer.getSource();
-    if (!source) {
-      return;
-    }
-
-    return source.addFeatures(features);
+    return this.source.addFeatures(features);
   }
 
   /**
@@ -193,15 +204,17 @@ export default class HTMLMapLayerVector extends BaseClass {
   }
 
   /**
+   * @returns {Array.<ol.Feature>}
+   */
+  getFeatures () {
+    return this.source.getFeatures();
+  }
+
+  /**
    * Removes all features.
    */
   clearFeatures () {
-    const source = this.layer.getSource();
-    if (!source) {
-      return;
-    }
-
-    return source.clear();
+    return this.source.clear();
   }
 
   // @override
@@ -209,15 +222,31 @@ export default class HTMLMapLayerVector extends BaseClass {
     super.switchProjection(fromProj, toProj);
 
     // Transform all features.
-    const source = this.layer.getSource();
-    if (source) {
-      source.forEachFeature((feature) => {
-        const geom = feature.getGeometry();
-        if (geom) {
-          geom.transform(fromProj, toProj);
-        }
+    this.source.forEachFeature((feature) => {
+      const geom = feature.getGeometry();
+      if (geom) {
+        geom.transform(fromProj, toProj);
+      }
+    });
+  }
+
+  listenToSourceEvents_ (source) {
+    source.on('addfeature', (olEvent) => {
+      const event = new CustomEvent('addfeature', {
+        bubbles: true,
+        // TODO: Make this cancelable.
+        cancelable: false,
+        scoped: false,
+        composed: false,
+        detail: {
+          originalEvent: olEvent,
+        },
       });
-    }
+
+      event.feature = olEvent.feature;
+
+      this.dispatchEvent(event);
+    });
   }
 
 } // HTMLMapLayerVector

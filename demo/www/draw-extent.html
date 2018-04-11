@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Draw Extent Demo</title>
+  <script src="./lib/proj4-v2.4.3.js"></script>
+  <script src="./lib/proj4-defs.js"></script>
+  <script src="./lib/mapview/web-gis-components.js"></script>
+</head>
+<body>
+
+  <a href="./">&lt; Back</a>
+
+  <h1>Draw Extent Demo</h1>
+
+  <p>See how the drawing interaction can be used to control the extent of another map view.</p>
+
+  <map-view id="minimap" basemap="arcgis" center="-10997148, 4569099" style="display: block">
+    <map-layer-vector id="drawing-layer"></map-layer-vector>
+    <map-interaction-defaults></map-interaction-defaults>
+    <map-interaction-draw id="drawing" source="drawing-layer" type="Box"></map-interaction-draw>
+  </map-view>
+
+  <map-view id="bigmap" basemap="osm" center="-10997148, 4569099" style="display: block">
+    <map-interaction-defaults></map-interaction-defaults>
+  </map-view>
+
+  <script>
+    var minimap = document.getElementById('minimap');
+    var bigmap = document.getElementById('bigmap');
+    var drawingLayer = document.getElementById('drawing-layer');
+    var drawing = document.getElementById('drawing');
+
+    // Restrict to have at most 1 feature in the layer.
+    drawing.addEventListener('drawstart', function () {
+      drawingLayer.clearFeatures();
+    });
+
+    drawingLayer.addEventListener('addfeature', function (event) {
+      bigmap.extent = event.feature.getGeometry().getExtent();
+    });
+
+    bigmap.addEventListener('change:extent', function (event) {
+      const extent = bigmap.extent;
+      const extentGeometry = drawingLayer.createGeometryFromExtent(extent);
+      const features = drawingLayer.getFeatures();
+
+      if (features.length > 0) {
+        const extentFeature = features[0];
+
+        extentFeature.setGeometry(extentGeometry);
+      } else {
+        drawingLayer.addFeature(drawingLayer.createFeature(extentGeometry));
+      }
+    })
+  </script>
+
+</body>
+</html>

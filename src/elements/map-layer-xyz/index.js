@@ -8,7 +8,7 @@ import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-layer-base';
+import HTMLMapLayerBase from '../map-layer-base';
 
 import {
   defaultMinZoom,
@@ -29,10 +29,10 @@ import {
  *   max-zoom="{number}"
  * ></HTMLMapLayerXYZ>
  */
-export default class HTMLMapLayerXYZ extends BaseClass {
+export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapLayerBase.observedAttributes, [
     // Url template of the layer source.
     // Required.
     // @see {@link http://openlayers.org/en/latest/apidoc/ol.source.XYZ.html}
@@ -48,19 +48,19 @@ export default class HTMLMapLayerXYZ extends BaseClass {
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, HTMLMapLayerBase.attributeNameToPropertyNameMapping, {
     'min-zoom': 'minZoom',
     'max-zoom': 'maxZoom',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, HTMLMapLayerBase.propertyNameToAttributeNameMapping, {
     'minZoom': 'min-zoom',
     'maxZoom': 'max-zoom',
   });
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'url': commonAttributeToPropertyConverters.string,
     'min-zoom': commonAttributeToPropertyConverters.number,
     'max-zoom': commonAttributeToPropertyConverters.number,

@@ -1,10 +1,10 @@
-import BaseClass from '../base';
+import HTMLMapBaseClass from '../base';
 
 /**
  * Usage:
  * <HTMLMapControlBase></HTMLMapControlBase>
  */
-export default class HTMLMapControlBase extends BaseClass {
+export default class HTMLMapControlBase extends HTMLMapBaseClass {
 
   constructor () {
     super();

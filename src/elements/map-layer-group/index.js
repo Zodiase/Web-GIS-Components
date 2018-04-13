@@ -1,6 +1,6 @@
 import webGisComponents from 'namespace';
 
-import BaseClass from '../map-layer-base';
+import HTMLMapLayerBase from '../map-layer-base';
 
 import {
   elementName,
@@ -12,7 +12,7 @@ import {
  *   // @inheritdoc
  * ></HTMLMapLayerGroup>
  */
-export default class HTMLMapLayerGroup extends BaseClass {
+export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
 
   // @override
   static get layerClass () {
@@ -48,7 +48,7 @@ export default class HTMLMapLayerGroup extends BaseClass {
    * @returns {ol.Collection.<HTMLMapLayerBase>}
    */
   static getLiveChildLayerElementCollection (element, layerCollection) {
-    const elementCollection = this.getLiveChildElementCollection(element, BaseClass);
+    const elementCollection = this.getLiveChildElementCollection(element, HTMLMapLayerBase);
 
     // Cache loaded items for comparison when items are updated.
     elementCollection._cachedItems = new Set();

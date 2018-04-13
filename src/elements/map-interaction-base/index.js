@@ -9,26 +9,26 @@ import {
   createBooleanPropertyToAttributeConverter,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../base';
+import HTMLMapBaseClass from '../base';
 
 /**
  * Usage:
  * <HTMLMapInteractionBase></HTMLMapInteractionBase>
  */
-export default class HTMLMapInteractionBase extends BaseClass {
+export default class HTMLMapInteractionBase extends HTMLMapBaseClass {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapBaseClass.observedAttributes, [
     'disabled',
   ]);
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapBaseClass.attributeToPropertyConverters, {
     'disabled': commonAttributeToPropertyConverters.bool,
   });
 
   // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, HTMLMapBaseClass.propertyToAttributeConverters, {
     'disabled': createBooleanPropertyToAttributeConverter('disabled'),
   });
 

@@ -11,7 +11,7 @@ import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-layer-base';
+import HTMLMapLayerBase from '../map-layer-base';
 
 import {
   elementName,
@@ -29,16 +29,16 @@ import {
  *   longitude="{number}"
  * ></HTMLMapLayerSinglePoint>
  */
-export default class HTMLMapLayerSinglePoint extends BaseClass {
+export default class HTMLMapLayerSinglePoint extends HTMLMapLayerBase {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapLayerBase.observedAttributes, [
     'latitude',
     'longitude',
   ]);
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'latitude': commonAttributeToPropertyConverters.number,
     'longitude': commonAttributeToPropertyConverters.number,
   });

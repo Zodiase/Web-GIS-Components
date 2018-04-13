@@ -15,7 +15,7 @@ import {
   commonPropertyComparators,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../base';
+import HTMLMapBaseClass from '../base';
 
 import {
   defaultLayerProjection,
@@ -40,10 +40,10 @@ import {
  *   projection="{string}"
  * ></HTMLMapLayerBase>
  */
-export default class HTMLMapLayerBase extends BaseClass {
+export default class HTMLMapLayerBase extends HTMLMapBaseClass {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapBaseClass.observedAttributes, [
     'name',
     'opacity',
     'extent',
@@ -54,19 +54,19 @@ export default class HTMLMapLayerBase extends BaseClass {
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, HTMLMapBaseClass.attributeNameToPropertyNameMapping, {
     'min-resolution': 'minResolution',
     'max-resolution': 'maxResolution',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, HTMLMapBaseClass.propertyNameToAttributeNameMapping, {
     'minResolution': 'min-resolution',
     'maxResolution': 'max-resolution',
   });
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapBaseClass.attributeToPropertyConverters, {
     'name': commonAttributeToPropertyConverters.string,
     'opacity': commonAttributeToPropertyConverters.number,
     'extent': commonAttributeToPropertyConverters.array_number,
@@ -77,13 +77,13 @@ export default class HTMLMapLayerBase extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, HTMLMapBaseClass.propertyToAttributeConverters, {
     'extent': commonPropertyToAttributeConverters.array_simple,
     'invisible': createBooleanPropertyToAttributeConverter('invisible'),
   });
 
   // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, HTMLMapBaseClass.propertyComparators, {
     'extent': commonPropertyComparators.array,
   });
 

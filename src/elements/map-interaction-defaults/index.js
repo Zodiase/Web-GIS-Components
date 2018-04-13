@@ -1,6 +1,6 @@
 import webGisComponents from 'namespace';
 
-import BaseClass from '../map-interaction-base';
+import HTMLMapInteractionBase from '../map-interaction-base';
 
 import {
   elementName,
@@ -10,7 +10,7 @@ import {
  * Usage:
  * <HTMLMapDefaultInteractions></HTMLMapDefaultInteractions>
  */
-export default class HTMLMapDefaultInteractions extends BaseClass {
+export default class HTMLMapDefaultInteractions extends HTMLMapInteractionBase {
 
   constructor () {
     super();

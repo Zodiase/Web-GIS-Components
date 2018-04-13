@@ -12,7 +12,7 @@ import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-layer-base';
+import HTMLMapLayerBase from '../map-layer-base';
 
 import {
   elementName,
@@ -33,27 +33,27 @@ import {
  *   server-type="{string}"
  * ></HTMLMapLayerTWMS>
  */
-export default class HTMLMapLayerTWMS extends BaseClass {
+export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapLayerBase.observedAttributes, [
     'url',
     'params',
     'server-type',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, HTMLMapLayerBase.attributeNameToPropertyNameMapping, {
     'server-type': 'serverType',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, HTMLMapLayerBase.propertyNameToAttributeNameMapping, {
     'serverType': 'server-type',
   });
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'url': commonAttributeToPropertyConverters.string,
     'params': (isSet, val) => (
       isSet
@@ -69,7 +69,7 @@ export default class HTMLMapLayerTWMS extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, HTMLMapLayerBase.propertyToAttributeConverters, {
     'params': (val) => ({
       isSet: !(val === null),
       value: (val === null)
@@ -84,7 +84,7 @@ export default class HTMLMapLayerTWMS extends BaseClass {
   });
 
   // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, HTMLMapLayerBase.propertyComparators, {
     'params': (a, b) => isEqual(a, b),
   });
 

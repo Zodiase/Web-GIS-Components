@@ -14,11 +14,9 @@ import {
   commonPropertyComparators,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../base';
-
+import HTMLMapBaseClass from '../base';
 import HTMLMapControlBase from '../map-control-base';
 import HTMLMapInteractionBase from '../map-interaction-base';
-
 import HTMLMapLayerGroup from '../map-layer-group';
 
 import {
@@ -32,10 +30,10 @@ import {
   getBaseMap,
 } from './basemap';
 
-export default class HTMLMapView extends BaseClass {
+export default class HTMLMapView extends HTMLMapBaseClass {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapBaseClass.observedAttributes, [
     'disabled',
     'basemap',
     'projection',
@@ -45,7 +43,7 @@ export default class HTMLMapView extends BaseClass {
   ]);
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapBaseClass.attributeToPropertyConverters, {
     'disabled': commonAttributeToPropertyConverters.bool,
     'basemap': commonAttributeToPropertyConverters.string,
     'projection': commonAttributeToPropertyConverters.string,
@@ -55,13 +53,13 @@ export default class HTMLMapView extends BaseClass {
   });
 
   // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, HTMLMapBaseClass.propertyToAttributeConverters, {
     'disabled': createBooleanPropertyToAttributeConverter('disabled'),
     'center': commonPropertyToAttributeConverters.array_simple,
   });
 
   // @override
-  static propertyComparators = merge({}, BaseClass.propertyComparators, {
+  static propertyComparators = merge({}, HTMLMapBaseClass.propertyComparators, {
     'center': commonPropertyComparators.array,
     'extent': commonPropertyComparators.array,
   });

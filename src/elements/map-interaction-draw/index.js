@@ -9,8 +9,7 @@ import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-interaction-base';
-
+import HTMLMapInteractionBase from '../map-interaction-base';
 import HTMLMapLayerBase from '../map-layer-base';
 
 import {
@@ -22,16 +21,16 @@ import {
  * Usage:
  * <HTMLMapDrawInteraction></HTMLMapDrawInteraction>
  */
-export default class HTMLMapDrawInteraction extends BaseClass {
+export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapInteractionBase.observedAttributes, [
     'source',
     'type',
   ]);
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapInteractionBase.attributeToPropertyConverters, {
     'source': commonAttributeToPropertyConverters.string,
     'type': commonAttributeToPropertyConverters.string,
   });

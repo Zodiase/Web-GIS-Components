@@ -9,8 +9,7 @@ import {
   createBooleanPropertyToAttributeConverter,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-control-base';
-
+import HTMLMapControlBase from '../map-control-base';
 import HTMLMapLayerGroup from '../map-layer-group';
 
 import {
@@ -22,20 +21,20 @@ import template from './template';
  * Usage:
  * <HTMLMapSimpleLayerListControl></HTMLMapSimpleLayerListControl>
  */
-export default class HTMLMapSimpleLayerListControl extends BaseClass {
+export default class HTMLMapSimpleLayerListControl extends HTMLMapControlBase {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapControlBase.observedAttributes, [
     'collapsed',
   ]);
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapControlBase.attributeToPropertyConverters, {
     'collapsed': commonAttributeToPropertyConverters.bool,
   });
 
   // @override
-  static propertyToAttributeConverters = merge({}, BaseClass.propertyToAttributeConverters, {
+  static propertyToAttributeConverters = merge({}, HTMLMapControlBase.propertyToAttributeConverters, {
     'collapsed': createBooleanPropertyToAttributeConverter('collapsed'),
   });
 

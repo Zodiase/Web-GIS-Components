@@ -1,6 +1,6 @@
 import webGisComponents from 'namespace';
 
-import BaseClass from '../map-control-base';
+import HTMLMapControlBase from '../map-control-base';
 
 import {
   elementName,
@@ -10,7 +10,7 @@ import {
  * Usage:
  * <HTMLMapDefaultControls></HTMLMapDefaultControls>
  */
-export default class HTMLMapDefaultControls extends BaseClass {
+export default class HTMLMapDefaultControls extends HTMLMapControlBase {
 
   constructor () {
     super();

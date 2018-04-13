@@ -8,7 +8,7 @@ import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-layer-base';
+import HTMLMapLayerBase from '../map-layer-base';
 
 import {
   elementName,
@@ -28,25 +28,25 @@ import {
  *   <HTMLMapLayerVectorStyle ...></HTMLMapLayerVectorStyle>
  * </HTMLMapLayerVector>
  */
-export default class HTMLMapLayerVector extends BaseClass {
+export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
+  static observedAttributes = concat(HTMLMapLayerBase.observedAttributes, [
     'src-projection',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, HTMLMapLayerBase.attributeNameToPropertyNameMapping, {
     'src-projection': 'srcProjection',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, HTMLMapLayerBase.propertyNameToAttributeNameMapping, {
     'srcProjection': 'src-projection',
   });
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'src-projection': commonAttributeToPropertyConverters.string,
   });
 

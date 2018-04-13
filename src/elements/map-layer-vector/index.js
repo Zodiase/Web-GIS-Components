@@ -87,8 +87,6 @@ export default class HTMLMapLayerVector extends BaseClass {
     // Initialize layer source.
     this.updateSource({});
 
-    this.listenToSourceEvents_(this.source);
-
     // TODO: Add support to load features from child DOM nodes?
   }
 
@@ -143,6 +141,15 @@ export default class HTMLMapLayerVector extends BaseClass {
   /**
    * Customized public/private methods.
    */
+
+  // @override
+  updateSource (options) {
+    const newSource = super.updateSource(options);
+
+    this.listenToSourceEvents_(newSource);
+
+    return newSource;
+  }
 
   /**
    * @param {Object} geom

@@ -389,6 +389,7 @@ export default class HTMLMapLayerBase extends BaseClass {
    * Since this creates a new source thus loosing all the cached data in the old one, don't use this for minor changes.
    * Pass in `undefined` (or `void 0`) as value to delete a field.
    * @param {Object} options
+   * @returns {ol.source.Source}
    */
   updateSource (options) {
     if (this.olLayer_ === null) {
@@ -409,6 +410,8 @@ export default class HTMLMapLayerBase extends BaseClass {
 
     const newSource = new this.constructor.layerSourceClass(this.olSourceOptions_);
     this.olLayer_.setSource(newSource);
+
+    return newSource;
   }
 
   /**

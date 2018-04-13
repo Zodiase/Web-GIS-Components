@@ -8,11 +8,10 @@ import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
 
-import BaseClass from '../map-layer-base';
+import HTMLMapLayerVector from '../map-layer-vector';
 
 import {
   elementName,
-  defaultDataProjection,
 } from './config';
 
 /**
@@ -30,52 +29,31 @@ import {
  *   <HTMLMapLayerVectorStyle ...></HTMLMapLayerVectorStyle>
  * </HTMLMapLayerGeoJSON>
  */
-export default class HTMLMapLayerGeoJSON extends BaseClass {
+export default class HTMLMapLayerGeoJSON extends HTMLMapLayerVector {
 
   // @override
-  static observedAttributes = concat(BaseClass.observedAttributes, [
-    'src-projection',
+  static observedAttributes = concat(HTMLMapLayerVector.observedAttributes, [
     'src-json',
     'src-url',
   ]);
 
   // @override
-  static attributeNameToPropertyNameMapping = merge({}, BaseClass.attributeNameToPropertyNameMapping, {
+  static attributeNameToPropertyNameMapping = merge({}, HTMLMapLayerVector.attributeNameToPropertyNameMapping, {
     'src-url': 'srcUrl',
     'src-json': 'srcJson',
-    'src-projection': 'srcProjection',
   });
 
   // @override
-  static propertyNameToAttributeNameMapping = merge({}, BaseClass.propertyNameToAttributeNameMapping, {
+  static propertyNameToAttributeNameMapping = merge({}, HTMLMapLayerVector.propertyNameToAttributeNameMapping, {
     'srcUrl': 'src-url',
     'srcJson': 'src-json',
-    'srcProjection': 'src-projection',
   });
 
   // @override
-  static attributeToPropertyConverters = merge({}, BaseClass.attributeToPropertyConverters, {
+  static attributeToPropertyConverters = merge({}, HTMLMapLayerVector.attributeToPropertyConverters, {
     'src-url': commonAttributeToPropertyConverters.string,
     'src-json': commonAttributeToPropertyConverters.string,
-    'src-projection': commonAttributeToPropertyConverters.string,
   });
-
-  // @override
-  static get layerClass () {
-    return webGisComponents.ol.layer.Vector;
-  }
-
-  // @override
-  static get layerSourceClass () {
-    return webGisComponents.ol.source.Vector;
-  }
-
-  constructor () {
-    super();
-
-    // @type {string}
-    this.srcProjection_ = defaultDataProjection;
-  }
 
   /**
    * Getters and Setters (for properties).
@@ -193,54 +171,7 @@ export default class HTMLMapLayerGeoJSON extends BaseClass {
     return this.srcProjection_;
   }
   set srcProjection (val) {
-    const oldValue = this.srcProjection;
-    let newValue = val === null ? null : String(val);
-
-    if (newValue === null || !this.constructor.isValidProjection(newValue)) {
-      newValue = defaultDataProjection;
-    }
-
-    if (this.isIdenticalPropertyValue_('srcProjection', oldValue, newValue)) {
-      return;
-    }
-
-    this.srcProjection_ = newValue;
-
-    const event = new CustomEvent('change:srcProjection', {
-      bubbles: true,
-      // TODO: Make this cancelable.
-      cancelable: false,
-      scoped: false,
-      composed: false,
-      detail: {
-        property: 'srcProjection',
-        oldValue,
-        newValue,
-      },
-    });
-
-    this.dispatchEvent(event);
-
-    if (this.srcUrl) {
-      this.logWarn_('Resetting src-url.');
-      const swap = this.srcUrl;
-      this.srcUrl = null;
-      this.srcUrl = swap;
-    }
-    if (this.srcJson) {
-      this.logWarn_('Resetting src-json.');
-      const swap = this.srcJson;
-      this.srcJson = null;
-      this.srcJson = swap;
-    }
-  }
-
-  // @override
-  get projection () {
-    return super.projection;
-  }
-  set projection (val) {
-    super.projection = val;
+    super.srcProjection = val;
 
     if (this.srcUrl) {
       this.logWarn_('Resetting src-url.');

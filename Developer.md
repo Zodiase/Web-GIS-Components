@@ -35,30 +35,37 @@ To group layers, use the dedicated custom element `<map-layer-group></map-layer-
 ## Attribute change flow:
 
 - attribute on change
-- try to convert attribute to property (ignore default values and range checks)
-- update property with property setter
-    - validate new property value and throw when needed
+- parse attribute to property
+- if fails
+  - error and revert attribute to the old value
+- else
+  - update property (with property setter, throw if error)
+    - fill default values
+    - verify new property
     - update internal models
     - silent update attribute with new property
-- if throws
-    - print error and revert attribute to the old value if one is available
-- else
     - dispatch change event
     - if canceled
-        - revert attribute to the old value if one is available
+      - revert property and attribute to the old value
     - else
-        - done!
+      - done!
+  - if fails
+    - error and revert attribute to the old value
+
+Not all properties need to reflect their values back to attributes.
 
 ## How to create a new custom element?
 
 - Pick a good base class to start.
-    - A new layer? Probably start from `HTMLMapLayerBase` in `map-layer-base`.
+    - A new vector layer? Probably start from `HTMLMapLayerVector` in `map-layer-vector`.
+    - A new normal/raster layer? Probably start from `HTMLMapLayerBase` in `map-layer-base`.
     - A new control? Probably start from `HTMLMapControlBase` in `map-control-base`.
     - A new interaction? Probably start from `HTMLMapInteractionBase` in `map-interaction-base`.
     - Something else? Can't be wrong to base off `HTMLElement`.
 - Create a folder in `/src/elements/` with a expressive name.
     - A layer should have a folder name starting with `map-layer-`.
     - A control should have a folder name starting with `map-control-`.
+    - An interaction should have a folder name starting with `map-interaction-`.
 - Use a `config.js` to export any static configs. It makes these values easier to be used by other components.
 - Define and export the class in `index.js` as the default export.
 - If it's a custom element, `customElements.define` it in `index.js`.

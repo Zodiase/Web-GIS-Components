@@ -24,6 +24,7 @@ class HTMLMapVectorStyle {
       fill: this.getValidColorString_(style.fill),
       strokeColor: this.getValidColorString_(style.strokeColor),
       strokeWidth: this.getValidSize_(style.strokeWidth),
+      vertexSize: this.getValidSize_(style.vertexSize),
     };
 
     this.observable_ = new webGisComponents.ol.Observable();
@@ -68,6 +69,15 @@ class HTMLMapVectorStyle {
     this.observable_.changed();
   }
 
+  get vertexSize () {
+    return this._.vertexSize || 0;
+  }
+  set vertexSize (value) {
+    this._.vertexSize = this.getValidSize_(value);
+
+    this.observable_.changed();
+  }
+
   getValidColorString_ (colorString) {
     //!
     return colorString;
@@ -99,6 +109,7 @@ class HTMLMapVectorStyle {
       fill: fillColor,
       strokeColor,
       strokeWidth,
+      vertexSize,
     } = this;
 
     const olFill = fillColor === 'none'
@@ -114,7 +125,16 @@ class HTMLMapVectorStyle {
                        width: strokeWidth,
                      });
 
+    const olVertexImage = vertexSize === 0
+                          ? null
+                          : new ol.style.Circle({
+                            fill: olFill,
+                            stroke: olStroke,
+                            radius: vertexSize,
+                          });
+
     const style = new ol.style.Style({
+      image: olVertexImage,
       fill: olFill,
       stroke: olStroke,
     });
@@ -191,8 +211,9 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   static defaultStyle = {
     fill: 'transparent',
-    strokeColor: 'rgba(0, 0, 0, 0.5)',
-    strokeWidth: 1,
+    strokeColor: '#3399CC',
+    strokeWidth: 1.25,
+    vertexSize: 5,
   };
 
   /**

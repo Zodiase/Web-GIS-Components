@@ -6,6 +6,11 @@
 - Added a write-only property for setting view center and zoom with a single extent.
 - Updated `openlayers` to `4.4.2`.
 - Fixed a bug where `extent` could be overwritten by `center` or `zoom`.
+- New element `<map-layer-singlepoint>` for showing a single point on the map.
+- New events `load:view` and `unload:view` on the `<map-view>` element to signal when the map is mounted and unmounted.
+- Fix the issue where extent is frequently being reset when used in React.
+- New elements `<map-layer-vector>` and `<map-interaction-draw>` for drawing / displaying dynamic vector features.
+- Vector layers (`<map-layer-vector>`, `<map-layer-geojson>` and `<map-layer-singlepoint>`) can now be somewhat styled with `style` property. See `Vector Layer Demo` for some examples.
 
 ## v0.2.1
 

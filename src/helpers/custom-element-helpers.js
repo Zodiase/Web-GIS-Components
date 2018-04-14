@@ -1,3 +1,5 @@
+import * as querystring from 'querystring';
+
 /**
  * @type {Object.<isSet: boolean, val: string -> *>}
  * @readonly
@@ -11,6 +13,11 @@ export const commonAttributeToPropertyConverters = {
          .map((v) => v.trim())
          .map((v) => parseFloat(v))
     : null,
+  getQueryStringParser: (sep = '&', eq = '=') => (isSet, val) => (
+    isSet
+    ? querystring.parse(val, sep, eq)
+    : {}
+  ),
 };
 
 export const createBooleanPropertyToAttributeConverter = (propName) =>
@@ -29,6 +36,10 @@ export const commonPropertyToAttributeConverters = {
   array_simple: (val) => ({
     isSet: !(val === null),
     value: (val === null) ? '' : val.join(', '),
+  }),
+  getQueryStringBuilder: (sep = '&', eq = '=') => (val) => ({
+    isSet: !(val === null),
+    value: querystring.stringify(val, sep, eq),
   }),
 };
 

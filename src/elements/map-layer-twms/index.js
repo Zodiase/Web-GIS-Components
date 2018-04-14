@@ -10,6 +10,7 @@ import {
 import webGisComponents from 'namespace';
 import {
   commonAttributeToPropertyConverters,
+  commonPropertyToAttributeConverters,
 } from 'helpers/custom-element-helpers';
 
 import HTMLMapLayerBase from '../map-layer-base';
@@ -55,30 +56,13 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
   // @override
   static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'url': commonAttributeToPropertyConverters.string,
-    'params': (isSet, val) => (
-      isSet
-      ? val.split('&')
-           .map((pairStr) => pairStr.split('=').map((x) => decodeURIComponent(x)))
-           .reduce((acc, [key, value]) => ({
-             ...acc,
-             [key]: value
-           }), {})
-      : {}
-    ),
+    'params': commonAttributeToPropertyConverters.getQueryStringParser('&', '='),
     'server-type': commonAttributeToPropertyConverters.string,
   });
 
   // @override
   static propertyToAttributeConverters = merge({}, HTMLMapLayerBase.propertyToAttributeConverters, {
-    'params': (val) => ({
-      isSet: !(val === null),
-      value: (val === null)
-             ? ''
-             : Object.keys(val)
-                     .map((key) => [key, val[key]].map((x) => encodeURIComponent(x))
-                                                  .join('='))
-                     .join('&'),
-    }),
+    'params': commonPropertyToAttributeConverters.getQueryStringBuilder('&', '='),
     //@see {@link http://openlayers.org/en/latest/apidoc/ol.source.TileWMS.html}
     // 'server-type'
   });

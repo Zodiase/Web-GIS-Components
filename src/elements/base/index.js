@@ -560,6 +560,10 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @param  {bool} forced
    */
   flushPropertyToAttribute (propName, propVal = this[propName], forced = false) {
+    if (!this.connected) {
+      return;
+    }
+
     const attrName = this.constructor.getAttributeNameByPropertyName_(propName);
 
     if (this.hasAttribute(attrName) || forced) {

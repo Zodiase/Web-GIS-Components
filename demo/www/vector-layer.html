@@ -1,271 +1,323 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Vector Layer Demo</title>
-  <script src="./lib/proj4-v2.4.3.js"></script>
-  <script src="./lib/proj4-defs.js"></script>
-  <script src="./lib/mapview/web-gis-components.js"></script>
-</head>
-<body>
+  <head>
+    <title>Vector Layer Demo</title>
+    <script src="./lib/proj4-v2.4.3.js"></script>
+    <script src="./lib/proj4-defs.js"></script>
+    <script src="./lib/mapview/web-gis-components.js"></script>
+  </head>
+  <body>
 
-  <a href="./">&lt; Back</a>
+    <a href="./">&lt; Back</a>
 
-  <h1>Vector Layer Demo</h1>
+    <h1>Vector Layer Demo</h1>
 
-  <p>This element is usually used to show vector features added by code or another map interaction.</p>
+    <p>This element is usually used to show vector features added by code or another map interaction.</p>
 
-  <map-view id="demo-map" basemap="osm" center="-10997148, 4569099" style="display: block">
-      <map-layer-vector id="vector-layer" src-projection="EPSG:4326"></map-layer-vector>
-  </map-view>
+    <map-view id="demo-map" basemap="osm" center="-10997148, 4569099" style="display: block">
+      <map-layer-vector
+        id="vector-layer"
+        src-projection="EPSG:4326"
+      ></map-layer-vector>
+    </map-view>
 
-  <label style="display: block">
-    Select projection: 
-    <select id="demo-map__select">
-      <option value="EPSG:3857" selected>EPSG:3857</option>
-      <option value="EPSG:4326">EPSG:4326</option>
-    </select>
-  </label>
+    <label style="display: block">
+      Select projection: 
+      <select id="projection-select">
+        <option selected value="EPSG:3857">EPSG:3857</option>
+        <option value="EPSG:4326">EPSG:4326</option>
+      </select>
+    </label>
 
-  <script>
-    var mapview = document.getElementById('demo-map');
-    var vectorLayer = document.getElementById('vector-layer');
-    var select = document.getElementById('demo-map__select');
+    <label style="display: block">
+      Select fill: 
+      <select id="fill-select">
+        <option selected value="">Default</option>
+        <option value="none">None</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+      </select>
+    </label>
 
-    select.addEventListener('change', function () {
-      mapview.switchProjection(mapview.projection, select.value);
-    });
+    <label style="display: block">
+      Select stroke color: 
+      <select id="stroke-color-select">
+        <option selected value="">Default</option>
+        <option value="none">None</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+      </select>
+    </label>
 
-    vectorLayer.addFeatures([
-      {
-        "type": "Polygon",
-        "coordinates": [
-          [
+    <label style="display: block">
+      Select stroke width: 
+      <select id="stroke-width-select">
+        <option selected value="1">Default</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="4">4</option>
+        <option value="NaN">NaN</option>
+      </select>
+    </label>
+
+    <script>
+      var mapview = document.getElementById('demo-map');
+      var vectorLayer = document.getElementById('vector-layer');
+
+      var projectionSelect = document.getElementById('projection-select');
+      projectionSelect.addEventListener('change', function () {
+        mapview.switchProjection(mapview.projection, projectionSelect.value);
+      });
+
+      var fillSelect = document.getElementById('fill-select');
+      fillSelect.addEventListener('change', function () {
+        vectorLayer.style.fill = fillSelect.value;
+      });
+
+      var strokeColorSelect = document.getElementById('stroke-color-select');
+      strokeColorSelect.addEventListener('change', function () {
+        vectorLayer.style.strokeColor = strokeColorSelect.value;
+      });
+
+      var strokeWidthSelect = document.getElementById('stroke-width-select');
+      strokeWidthSelect.addEventListener('change', function () {
+        vectorLayer.style.strokeWidth = strokeWidthSelect.value;
+      });
+
+      vectorLayer.addFeatures([
+        {
+          "type": "Polygon",
+          "coordinates": [
             [
-              -117.6416015625,
-              44.809121700077355
-            ],
-            [
-              -113.9501953125,
-              37.92686760148135
-            ],
-            [
-              -112.32421875,
-              37.92686760148135
-            ],
-            [
-              -109.072265625,
-              44.62175409623324
-            ],
-            [
-              -110.61035156249999,
-              44.653024159812
-            ],
-            [
-              -113.0712890625,
-              39.095962936305476
-            ],
-            [
-              -116.3671875,
-              44.715513732021336
-            ],
-            [
-              -117.6416015625,
-              44.809121700077355
+              [
+                -117.6416015625,
+                44.809121700077355
+              ],
+              [
+                -113.9501953125,
+                37.92686760148135
+              ],
+              [
+                -112.32421875,
+                37.92686760148135
+              ],
+              [
+                -109.072265625,
+                44.62175409623324
+              ],
+              [
+                -110.61035156249999,
+                44.653024159812
+              ],
+              [
+                -113.0712890625,
+                39.095962936305476
+              ],
+              [
+                -116.3671875,
+                44.715513732021336
+              ],
+              [
+                -117.6416015625,
+                44.809121700077355
+              ]
             ]
           ]
-        ]
-      },
-      {
-        "type": "Polygon",
-        "coordinates": [
-          [
+        },
+        {
+          "type": "Polygon",
+          "coordinates": [
             [
-              -107.666015625,
-              43.29320031385282
-            ],
-            [
-              -109.599609375,
-              38.13455657705411
-            ],
-            [
-              -104.4140625,
-              38.09998264736481
-            ],
-            [
-              -104.2822265625,
-              39.198205348894795
-            ],
-            [
-              -107.841796875,
-              39.13006024213511
-            ],
-            [
-              -107.40234375,
-              40.245991504199026
-            ],
-            [
-              -104.23828125,
-              40.17887331434696
-            ],
-            [
-              -104.1064453125,
-              41.21172151054787
-            ],
-            [
-              -106.9189453125,
-              41.244772343082076
-            ],
-            [
-              -106.5673828125,
-              42.293564192170095
-            ],
-            [
-              -103.9306640625,
-              42.32606244456202
-            ],
-            [
-              -103.7548828125,
-              43.26120612479979
-            ],
-            [
-              -107.666015625,
-              43.29320031385282
+              [
+                -107.666015625,
+                43.29320031385282
+              ],
+              [
+                -109.599609375,
+                38.13455657705411
+              ],
+              [
+                -104.4140625,
+                38.09998264736481
+              ],
+              [
+                -104.2822265625,
+                39.198205348894795
+              ],
+              [
+                -107.841796875,
+                39.13006024213511
+              ],
+              [
+                -107.40234375,
+                40.245991504199026
+              ],
+              [
+                -104.23828125,
+                40.17887331434696
+              ],
+              [
+                -104.1064453125,
+                41.21172151054787
+              ],
+              [
+                -106.9189453125,
+                41.244772343082076
+              ],
+              [
+                -106.5673828125,
+                42.293564192170095
+              ],
+              [
+                -103.9306640625,
+                42.32606244456202
+              ],
+              [
+                -103.7548828125,
+                43.26120612479979
+              ],
+              [
+                -107.666015625,
+                43.29320031385282
+              ]
             ]
           ]
-        ]
-      },
-      {
-        "type": "Polygon",
-        "coordinates": [
-          [
+        },
+        {
+          "type": "Polygon",
+          "coordinates": [
             [
-              -97.119140625,
-              41.64007838467894
-            ],
-            [
-              -96.5478515625,
-              42.52069952914966
-            ],
-            [
-              -98.3056640625,
-              43.13306116240615
-            ],
-            [
-              -100.634765625,
-              43.068887774169625
-            ],
-            [
-              -102.21679687499999,
-              42.13082130188811
-            ],
-            [
-              -102.65625,
-              40.51379915504413
-            ],
-            [
-              -102.4365234375,
-              39.16414104768742
-            ],
-            [
-              -101.07421875,
-              38.03078569382296
-            ],
-            [
-              -99.140625,
-              37.82280243352759
-            ],
-            [
-              -97.294921875,
-              38.134556577054134
-            ],
-            [
-              -96.1962890625,
-              39.027718840211605
-            ],
-            [
-              -97.119140625,
-              39.63953756436671
-            ],
-            [
-              -98.525390625,
-              38.9594087924542
-            ],
-            [
-              -100.1513671875,
-              38.856820134743636
-            ],
-            [
-              -100.986328125,
-              39.50404070558415
-            ],
-            [
-              -101.42578124999999,
-              40.48038142908172
-            ],
-            [
-              -101.07421875,
-              41.409775832009565
-            ],
-            [
-              -99.93164062499999,
-              42.09822241118976
-            ],
-            [
-              -98.4375,
-              42.19596877629178
-            ],
-            [
-              -97.119140625,
-              41.64007838467894
+              [
+                -97.119140625,
+                41.64007838467894
+              ],
+              [
+                -96.5478515625,
+                42.52069952914966
+              ],
+              [
+                -98.3056640625,
+                43.13306116240615
+              ],
+              [
+                -100.634765625,
+                43.068887774169625
+              ],
+              [
+                -102.21679687499999,
+                42.13082130188811
+              ],
+              [
+                -102.65625,
+                40.51379915504413
+              ],
+              [
+                -102.4365234375,
+                39.16414104768742
+              ],
+              [
+                -101.07421875,
+                38.03078569382296
+              ],
+              [
+                -99.140625,
+                37.82280243352759
+              ],
+              [
+                -97.294921875,
+                38.134556577054134
+              ],
+              [
+                -96.1962890625,
+                39.027718840211605
+              ],
+              [
+                -97.119140625,
+                39.63953756436671
+              ],
+              [
+                -98.525390625,
+                38.9594087924542
+              ],
+              [
+                -100.1513671875,
+                38.856820134743636
+              ],
+              [
+                -100.986328125,
+                39.50404070558415
+              ],
+              [
+                -101.42578124999999,
+                40.48038142908172
+              ],
+              [
+                -101.07421875,
+                41.409775832009565
+              ],
+              [
+                -99.93164062499999,
+                42.09822241118976
+              ],
+              [
+                -98.4375,
+                42.19596877629178
+              ],
+              [
+                -97.119140625,
+                41.64007838467894
+              ]
             ]
           ]
-        ]
-      },
-      {
-        "type": "Polygon",
-        "coordinates": [
-          [
+        },
+        {
+          "type": "Polygon",
+          "coordinates": [
             [
-              -94.39453125,
-              42.84375132629021
-            ],
-            [
-              -94.52636718749999,
-              41.73852846935917
-            ],
-            [
-              -92.3291015625,
-              41.86956082699455
-            ],
-            [
-              -92.373046875,
-              38.06539235133249
-            ],
-            [
-              -90.8349609375,
-              38.13455657705411
-            ],
-            [
-              -90.8349609375,
-              41.902277040963696
-            ],
-            [
-              -89.296875,
-              41.902277040963696
-            ],
-            [
-              -89.4287109375,
-              42.90816007196054
-            ],
-            [
-              -94.39453125,
-              42.84375132629021
+              [
+                -94.39453125,
+                42.84375132629021
+              ],
+              [
+                -94.52636718749999,
+                41.73852846935917
+              ],
+              [
+                -92.3291015625,
+                41.86956082699455
+              ],
+              [
+                -92.373046875,
+                38.06539235133249
+              ],
+              [
+                -90.8349609375,
+                38.13455657705411
+              ],
+              [
+                -90.8349609375,
+                41.902277040963696
+              ],
+              [
+                -89.296875,
+                41.902277040963696
+              ],
+              [
+                -89.4287109375,
+                42.90816007196054
+              ],
+              [
+                -94.39453125,
+                42.84375132629021
+              ]
             ]
           ]
-        ]
-      },
-    ].map(function (geom) { return vectorLayer.createFeature(geom); }));
-  </script>
+        },
+      ].map(function (geom) { return vectorLayer.createFeature(geom); }));
+    </script>
 
-</body>
+  </body>
 </html>

@@ -130,6 +130,7 @@
         "no-bitwise": "error",
         "no-caller": "error",
         "no-catch-shadow": "error",
+        "no-cond-assign": "off",
         "no-confusing-arrow": "off",
         "no-console": "warn",
         "no-continue": "error",

@@ -1,11 +1,14 @@
 import {
   concat,
+  isEqual,
   merge,
 } from 'lodash.local';
 
 import webGisComponents from 'namespace';
 import {
   commonAttributeToPropertyConverters,
+  commonPropertyToAttributeConverters,
+  toCamelCasedObject,
 } from 'helpers/custom-element-helpers';
 
 import HTMLMapLayerBase from '../map-layer-base';
@@ -14,6 +17,119 @@ import {
   elementName,
   defaultDataProjection,
 } from './config';
+
+class HTMLMapVectorStyle {
+  constructor (style = {}) {
+    this._ = {
+      fill: this.getValidColorString_(style.fill),
+      strokeColor: this.getValidColorString_(style.strokeColor),
+      strokeWidth: this.getValidSize_(style.strokeWidth),
+    };
+
+    this.observable_ = new webGisComponents.ol.Observable();
+  }
+
+  get ol () {
+    return webGisComponents.ol;
+  }
+
+  get observable () {
+    return this.observable_;
+  }
+
+  get olStyle () {
+    return this.getOlStyle_();
+  }
+
+  get fill () {
+    return this._.fill || 'none';
+  }
+  set fill (value) {
+    this._.fill = this.getValidColorString_(value);
+
+    this.observable_.changed();
+  }
+
+  get strokeColor () {
+    return this._.strokeColor || 'transparent';
+  }
+  set strokeColor (value) {
+    this._.strokeColor = this.getValidColorString_(value);
+
+    this.observable_.changed();
+  }
+
+  get strokeWidth () {
+    return this._.strokeWidth || 0;
+  }
+  set strokeWidth (value) {
+    this._.strokeWidth = this.getValidSize_(value);
+
+    this.observable_.changed();
+  }
+
+  getValidColorString_ (colorString) {
+    //!
+    return colorString;
+  }
+
+  getValidSize_ (size) {
+    let value = size;
+
+    if (typeof value !== 'number') {
+      if (typeof value === 'string') {
+        value = parseFloat(value);
+      } else {
+        value = Number(value);
+      }
+    }
+
+    if (isNaN(value)) {
+      value = 0;
+    } else {
+      value = Math.max(value, 0);
+    }
+
+    return value;
+  }
+
+  getOlStyle_ () {
+    const {
+      ol,
+      fill: fillColor,
+      strokeColor,
+      strokeWidth,
+    } = this;
+
+    const olFill = fillColor === 'none'
+                   ? null
+                   : new ol.style.Fill({
+                     color: fillColor,
+                   });
+
+    const olStroke = strokeWidth === 0
+                     ? null
+                     : new ol.style.Stroke({
+                       color: strokeColor,
+                       width: strokeWidth,
+                     });
+
+    const style = new ol.style.Style({
+      fill: olFill,
+      stroke: olStroke,
+    });
+
+    return style;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  valueOf () {
+    // TODO: Only return explicitely defined styles.
+    return this._;
+  }
+}
 
 /**
  * Usage:
@@ -24,15 +140,17 @@ import {
  *
  *   // Specify the projection the source data coordinates are in. It will only be used when no CRS is available in the data. Default value is "EPSG:4326".
  *   src-projection="{string}"
- * >
- *   <HTMLMapLayerVectorStyle ...></HTMLMapLayerVectorStyle>
- * </HTMLMapLayerVector>
+ *   // Vector styling options.
+ *   // Example: "fill: #FF0000; stroke-color: #00FF00; stroke-width: 5"
+ *   style="{string}"
+ * ></HTMLMapLayerVector>
  */
 export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   // @override
   static observedAttributes = concat(HTMLMapLayerBase.observedAttributes, [
     'src-projection',
+    'style',
   ]);
 
   // @override
@@ -48,6 +166,17 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   // @override
   static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'src-projection': commonAttributeToPropertyConverters.string,
+    'style': commonAttributeToPropertyConverters.getQueryStringParser(';', ':'),
+  });
+
+  // @override
+  static propertyToAttributeConverters = merge({}, HTMLMapLayerBase.propertyToAttributeConverters, {
+    'style': commonPropertyToAttributeConverters.getQueryStringBuilder(';', ':'),
+  });
+
+  // @override
+  static propertyComparators = merge({}, HTMLMapLayerBase.propertyComparators, {
+    'style': (a, b) => isEqual(a, b),
   });
 
   static geometryFactories = {
@@ -58,6 +187,12 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
     MultiPolygon: (geom) => new webGisComponents.ol.geom.MultiPolygon(geom.coordinates),
     Point: (geom) => new webGisComponents.ol.geom.Point(geom.coordinates),
     Polygon: (geom) => new webGisComponents.ol.geom.Polygon(geom.coordinates),
+  };
+
+  static defaultStyle = {
+    fill: 'transparent',
+    strokeColor: 'rgba(0, 0, 0, 0.5)',
+    strokeWidth: 1,
   };
 
   /**
@@ -84,8 +219,14 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
     // @type {string}
     this.srcProjection_ = defaultDataProjection;
 
+    // This should be a collection that emmits events about any property changes.
+    // @type {HTMLMapVectorStyle}
+    this.style_ = null;
+
     // Initialize layer source.
     this.updateSource({});
+
+    this.updateStyle({});
 
     // TODO: Add support to load features from child DOM nodes?
   }
@@ -139,8 +280,52 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   }
 
   /**
+   * @property {HTMLMapVectorStyle} style
+   */
+  get style () {
+    return this.style_;
+  }
+  set style (val) {
+    const oldValue = this.srcProjection;
+    let newValue = val;
+    if (typeof newValue === 'string') {
+      newValue = this.constructor.attributeToPropertyConverters.style(newValue === '', newValue);
+    }
+    if (newValue === null) {
+      newValue = {};
+    }
+    newValue = toCamelCasedObject(newValue);
+
+    if (this.isIdenticalPropertyValue_('style', oldValue, newValue)) {
+      return;
+    }
+
+    this.updateStyle(newValue);
+
+    const event = new CustomEvent('change:style', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'style',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
+  }
+
+  /**
    * Customized public/private methods.
    */
+
+  onStyleChanged_ = () => {
+    this.layer.setStyle(this.style_.olStyle);
+    this.flushPropertyToAttribute('style', this.style_.valueOf(), true);
+  };
 
   // @override
   updateSource (options) {
@@ -149,6 +334,22 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
     this.listenToSourceEvents_(newSource);
 
     return newSource;
+  }
+
+  updateStyle (style) {
+    const oldStyle = this.style_;
+
+    if (oldStyle) {
+      this.style_.observable.un('change', this.onStyleChanged_);
+    }
+
+    const newStyle = new HTMLMapVectorStyle(merge({}, this.constructor.defaultStyle, style));
+
+    newStyle.observable.on('change', this.onStyleChanged_);
+
+    this.style_ = newStyle;
+
+    this.style_.observable.changed();
   }
 
   /**

@@ -50,3 +50,29 @@ export const commonPropertyToAttributeConverters = {
 export const commonPropertyComparators = {
   array: (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
 };
+
+const charDashCharRegex = /([a-z0-9])-([a-z])/i;
+
+export const camelizeString = (str) => {
+  let finalStr = str;
+  let match = null;
+
+  while (match = finalStr.match(charDashCharRegex)) {
+    finalStr = finalStr.replace(match[0], `${match[1]}${match[2].toUpperCase()}`);
+  }
+
+  return finalStr;
+};
+
+/**
+ * Convert `some-property-name` to `somePropertyName`.
+ * @param {Object} obj
+ */
+export const toCamelCasedObject = (obj) => Object.entries(obj).reduce((acc, [key, value]) => {
+  const camelKey = camelizeString(key);
+
+  return {
+    ...acc,
+    [camelKey]: value,
+  };
+}, {});

@@ -12,7 +12,7 @@
     "build:dev": "webpack --env=dev --progress --profile --colors",
     "build:dist": "webpack --env=prod --progress --profile --colors",
     "watch": "webpack --env=dev --progress --profile --colors --watch",
-    "demo": "node demo/server.js 5000",
+    "demo": "node demo-server.js 5000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Xingchen Hong",

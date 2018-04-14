@@ -1,6 +1,6 @@
 {
   "name": "web-gis-elements",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Custom elements for Web GIS applications.",
   "repository": {
     "type": "git",

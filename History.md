@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.3.0
+
 - Fixed a bug in one of the demos that only appears in Safari (#12).
 - Fixed a bug where `map-control-simple-layer-list` can't recognize a layer group and expand it in production code (#14).
 - Using a naive solution to expose ol.Map clicking events to the map view element. So third-parties can capture clicking events and know the coordinates being clicked.

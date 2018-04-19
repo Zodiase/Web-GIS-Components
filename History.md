@@ -1,5 +1,9 @@
 ## v.NEXT
 
+## v0.3.1
+
+- Element constructor names are not mangled any more (#5).
+
 ## v0.3.0
 
 - Fixed a bug in one of the demos that only appears in Safari (#12).

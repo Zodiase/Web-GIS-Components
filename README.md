@@ -8,7 +8,9 @@ See `Roadmap.md` for upcoming features.
 
 ## Demo
 
-The `demo` directory contains demo pages for various example usages. Run `npm run demo` to launch the demo site at `localhost:5000`.
+Checkout the online version at: [zodiase.github.io/Web-GIS-Components/demo](https://zodiase.github.io/Web-GIS-Components/demo/)
+
+The `docs/demo` directory contains demo pages for various example usages. Run `npm run demo` to launch the demo site at `localhost:5000`.
 
 But before the demo site is usable, the project distribution files have to be built first.
 

@@ -133,4 +133,4 @@ export default class HTMLMapLayerSinglePoint extends HTMLMapLayerVector {
 
 } // HTMLMapLayerSinglePoint
 
-customElements.define(elementName, HTMLMapLayerSinglePoint);
+webGisComponents.exposeComponentToGlobal(HTMLMapLayerSinglePoint, elementName);

@@ -136,4 +136,4 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
 
 } // HTMLMapLayerGroup
 
-customElements.define(elementName, HTMLMapLayerGroup);
+webGisComponents.exposeComponentToGlobal(HTMLMapLayerGroup, elementName);

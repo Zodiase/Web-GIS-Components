@@ -162,4 +162,4 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
 
 } // HTMLMapLayerTWMS
 
-customElements.define(elementName, HTMLMapLayerTWMS);
+webGisComponents.exposeComponentToGlobal(HTMLMapLayerTWMS, elementName);

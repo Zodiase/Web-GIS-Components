@@ -193,4 +193,4 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerVector {
 
 } // HTMLMapLayerGeoJSON
 
-customElements.define(elementName, HTMLMapLayerGeoJSON);
+webGisComponents.exposeComponentToGlobal(HTMLMapLayerGeoJSON, elementName);

@@ -505,4 +505,4 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
 } // HTMLMapLayerVector
 
-customElements.define(elementName, HTMLMapLayerVector);
+webGisComponents.exposeComponentToGlobal(HTMLMapLayerVector, elementName);

@@ -664,4 +664,4 @@ export default class HTMLMapView extends HTMLMapBaseClass {
 
 } // HTMLMapView
 
-customElements.define(elementName, HTMLMapView);
+webGisComponents.exposeComponentToGlobal(HTMLMapView, elementName);

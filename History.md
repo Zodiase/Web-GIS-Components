@@ -1,5 +1,7 @@
 ## v.NEXT
 
+- Component constructors are exposed to global so they can be referenced the same way as `HTMLElement` (#6).
+
 ## v0.3.1
 
 - Element constructor names are not mangled any more (#5).

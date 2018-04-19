@@ -171,4 +171,4 @@ export default class HTMLMapSimpleLayerListControl extends HTMLMapControlBase {
 
 } // HTMLMapSimpleLayerListControl
 
-customElements.define(elementName, HTMLMapSimpleLayerListControl);
+webGisComponents.exposeComponentToGlobal(HTMLMapSimpleLayerListControl, elementName);

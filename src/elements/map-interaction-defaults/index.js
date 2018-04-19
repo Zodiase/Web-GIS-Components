@@ -20,4 +20,4 @@ export default class HTMLMapDefaultInteractions extends HTMLMapInteractionBase {
 
 } // HTMLMapDefaultInteractions
 
-customElements.define(elementName, HTMLMapDefaultInteractions);
+webGisComponents.exposeComponentToGlobal(HTMLMapDefaultInteractions, elementName);

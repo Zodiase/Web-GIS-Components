@@ -256,4 +256,4 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
 
 } // HTMLMapDrawInteraction
 
-customElements.define(elementName, HTMLMapDrawInteraction);
+webGisComponents.exposeComponentToGlobal(HTMLMapDrawInteraction, elementName);

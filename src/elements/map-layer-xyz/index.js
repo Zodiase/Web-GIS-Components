@@ -210,4 +210,4 @@ export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
 
 } // HTMLMapLayerXYZ
 
-customElements.define(elementName, HTMLMapLayerXYZ);
+webGisComponents.exposeComponentToGlobal(HTMLMapLayerXYZ, elementName);

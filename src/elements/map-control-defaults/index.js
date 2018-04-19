@@ -43,4 +43,4 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
 
 } // HTMLMapDefaultControls
 
-customElements.define(elementName, HTMLMapDefaultControls);
+webGisComponents.exposeComponentToGlobal(HTMLMapDefaultControls, elementName);

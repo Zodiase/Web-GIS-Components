@@ -86,6 +86,11 @@ module.exports = {
       minimize: true,
       debug: false,
     }),
-    new BabiliPlugin(),
+    new BabiliPlugin({
+      mangle: {
+        keepFnName: true,
+        keepClassName: true,
+      },
+    }),
   ],
 };

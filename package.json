@@ -8,7 +8,7 @@
   },
   "main": "src/index.js",
   "scripts": {
-    "build": "npm run build:dist",
+    "build": "npm run demo:build && npm run build:dist",
     "build:dev": "webpack --env=dev --progress --profile --colors",
     "build:dist": "webpack --env=prod --progress --profile --colors",
     "watch": "webpack --env=dev --progress --profile --colors --watch",

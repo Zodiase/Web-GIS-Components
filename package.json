@@ -14,6 +14,7 @@
     "watch": "webpack --env=dev --progress --profile --colors --watch",
     "demo:build": "npm run demo:build:dev",
     "demo:build:dev": "DISTDIR=\"docs/demo/lib/mapview\" npm run build:dev",
+    "demo:build:dist": "DISTDIR=\"docs/demo/lib/mapview\" npm run build:dist",
     "demo:build:watch": "DISTDIR=\"docs/demo/lib/mapview\" npm run watch",
     "demo": "node demo-server.js 5000",
     "test": "echo \"Error: no test specified\" && exit 1"

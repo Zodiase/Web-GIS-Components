@@ -1,6 +1,7 @@
 const path = require('path');
 const _ = require('lodash');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 
 const globalIncludeExcludeRules = {
   include: [
@@ -12,20 +13,16 @@ const globalIncludeExcludeRules = {
 };
 
 module.exports = {
-  target: 'web',
-  entry: {
-    'web-gis-components': './src/web-gis-components.js',
-  },
-  output: {
-    path: path.resolve(__dirname, process.env.DISTDIR || 'dist'),
-    filename: '[name].js',
-  },
+  target: 'node',
   resolve: {
     modules: [
       path.resolve('./src'),
       path.resolve('./node_modules'),
     ],
   },
+  externals: [
+    nodeExternals(),
+  ],
   module: {
     rules: [
 
@@ -33,35 +30,19 @@ module.exports = {
 
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.css$/,
-        use: [
-          'css-loader',
-        ],
+        loader: 'null-loader',
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.less$/,
-        use: [
-          'css-loader',
-          {
-            loader: 'less-loader',
-            options: {
-              strictMath: true,
-              noIeCompat: true,
-            },
-          },
-        ],
+        loader: 'null-loader',
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000
-        },
+        loader: 'null-loader',
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.html$/,
-        use: [
-          'html-loader',
-        ],
+        loader: 'null-loader',
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.js$/,
@@ -73,7 +54,7 @@ module.exports = {
 
     ],
   },
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'inline-cheap-module-source-map',
   plugins: [
     new webpack.DefinePlugin({
       // Set to `true` to dramatically increase the logs.

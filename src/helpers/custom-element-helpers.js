@@ -10,21 +10,20 @@ export const commonAttributeToPropertyConverters = {
   number: (isSet, val) => isSet ? parseFloat(val) : null,
   array_number: (isSet, val) => isSet
     ? val.split(',')
-         .map((v) => v.trim())
-         .map((v) => parseFloat(v))
+      .map((v) => v.trim())
+      .map((v) => parseFloat(v))
     : null,
-  getQueryStringParser: (sep = '&', eq = '=') => (isSet, val) => (
+  getQueryStringParser: (sep = '&', eq = '=') => (isSet, val) =>
     isSet
-    ? querystring.parse(val, sep, eq)
-    : {}
-  ),
+      ? querystring.parse(val, sep, eq)
+      : {},
 };
 
 export const createBooleanPropertyToAttributeConverter = (propName) =>
-(val) => ({
-  isSet: Boolean(val),
-  value: propName,
-});
+  (val) => ({
+    isSet: Boolean(val),
+    value: propName,
+  });
 
 /**
  * @type {Object.<* -> {isSet: boolean, value: string}>}

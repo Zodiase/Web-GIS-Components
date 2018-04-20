@@ -24,12 +24,14 @@ const webGisComponents = {
   },
 };
 
-// Attach it to global.
-Object.defineProperty(window, 'webGisComponents', {
-  configurable: false,
-  enumerable: false,
-  value: webGisComponents,
-  writable: false,
-});
+if (!window.webGisComponents) {
+  // Attach it to global.
+  Object.defineProperty(window, 'webGisComponents', {
+    configurable: false,
+    enumerable: false,
+    value: webGisComponents,
+    writable: false,
+  });
+}
 
 export default webGisComponents;

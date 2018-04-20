@@ -112,25 +112,25 @@ class HTMLMapVectorStyle {
     } = this;
 
     const olFill = fillColor === 'none'
-                   ? null
-                   : new ol.style.Fill({
-                     color: fillColor,
-                   });
+      ? null
+      : new ol.style.Fill({
+        color: fillColor,
+      });
 
     const olStroke = strokeWidth === 0
-                     ? null
-                     : new ol.style.Stroke({
-                       color: strokeColor,
-                       width: strokeWidth,
-                     });
+      ? null
+      : new ol.style.Stroke({
+        color: strokeColor,
+        width: strokeWidth,
+      });
 
     const olVertexImage = vertexSize === 0
-                          ? null
-                          : new ol.style.Circle({
-                            fill: olFill,
-                            stroke: olStroke,
-                            radius: vertexSize,
-                          });
+      ? null
+      : new ol.style.Circle({
+        fill: olFill,
+        stroke: olStroke,
+        radius: vertexSize,
+      });
 
     const style = new ol.style.Style({
       image: olVertexImage,
@@ -435,8 +435,8 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
   createFeature (geom) {
     const olGeom = geom instanceof this.ol.geom.Geometry
-                   ? geom
-                   : this.createGeometry(geom);
+      ? geom
+      : this.createGeometry(geom);
 
     this.log_('createFeature', olGeom);
 

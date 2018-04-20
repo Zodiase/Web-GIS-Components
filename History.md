@@ -1,6 +1,7 @@
 ## v.NEXT
 
 - Component constructors are exposed to global so they can be referenced the same way as `HTMLElement` (#6).
+- Common interfaces (such as center/extent attribute/property) will always use longitude latitude projection system (#3).
 
 ## v0.3.1
 

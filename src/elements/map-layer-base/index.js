@@ -7,7 +7,6 @@ import {
   typeCheck
 } from 'type-check';
 
-import webGisComponents from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   createBooleanPropertyToAttributeConverter,
@@ -95,7 +94,7 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
    * @static
    */
   static get layerClass () {
-    return webGisComponents.ol.layer.Base;
+    return this.ol.layer.Base;
   }
 
   /**
@@ -106,7 +105,7 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
    * @static
    */
   static get layerSourceClass () {
-    return webGisComponents.ol.source.Source;
+    return this.ol.source.Source;
   }
 
   constructor () {
@@ -205,7 +204,10 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
    * @property {Array.<number>|null} extent
    */
   get extent () {
-    return this.olLayer_.getExtent() || null;
+    const rawExtent = this.olLayer_.getExtent();
+    const extentInLatLong = rawExtent && this.constructor.transformExtent(rawExtent, this.projection, this.constructor.IOProjection);
+
+    return extentInLatLong || null;
   }
   set extent (val) {
     if (!typeCheck('(Number, Number, Number, Number) | Null', val)) {
@@ -219,7 +221,9 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
       return;
     }
 
-    this.olLayer_.setExtent(val);
+    const projectedExtent = this.constructor.transformExtent(newValue, this.constructor.IOProjection, this.projection);
+
+    this.olLayer_.setExtent(projectedExtent);
 
     const event = new CustomEvent('change:extent', {
       bubbles: true,
@@ -231,6 +235,7 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
         property: 'extent',
         oldValue,
         newValue,
+        projectedExtent,
       },
     });
 

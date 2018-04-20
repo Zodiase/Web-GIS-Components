@@ -14,13 +14,13 @@
 
   <p>See how the drawing interaction can be used to control the extent of another map view.</p>
 
-  <map-view id="minimap" basemap="arcgis" center="-10997148, 4569099" style="display: block">
+  <map-view id="minimap" basemap="arcgis" center="-98.8, 38" style="display: block">
     <map-layer-vector id="drawing-layer"></map-layer-vector>
     <map-interaction-defaults></map-interaction-defaults>
     <map-interaction-draw id="drawing" source="drawing-layer" type="Box"></map-interaction-draw>
   </map-view>
 
-  <map-view id="bigmap" basemap="osm" center="-10997148, 4569099" style="display: block">
+  <map-view id="bigmap" basemap="osm" center="-98.8, 38" style="display: block">
     <map-interaction-defaults></map-interaction-defaults>
   </map-view>
 
@@ -36,12 +36,21 @@
     });
 
     drawingLayer.addEventListener('addfeature', function (event) {
-      bigmap.extent = event.feature.getGeometry().getExtent();
+      var featureInLatLong = drawingLayer.toLatLong(drawingLayer.cloneFeature(event.feature));
+      var extentInLatLong =featureInLatLong.getGeometry().getExtent();
+
+      console.log('featureExtent', extentInLatLong);
+
+      bigmap.extent = extentInLatLong;
     });
 
     bigmap.addEventListener('change:extent', function (event) {
-      const extent = bigmap.extent;
-      const extentGeometry = drawingLayer.createGeometryFromExtent(extent);
+      const extentInLatLong = bigmap.extent;
+
+      console.log('extent', extentInLatLong);
+
+      const extentGeometryInLatLong = drawingLayer.createGeometryFromExtent(extentInLatLong);
+      const extentGeometry = drawingLayer.fromLatLong(extentGeometryInLatLong);
       const features = drawingLayer.getFeatures();
 
       if (features.length > 0) {

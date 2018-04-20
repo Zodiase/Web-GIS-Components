@@ -158,7 +158,7 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
 
       // Source element must have a vector source.
       const sourceLayerSource = sourceLayerElement.layer.getSource();
-      if (!(sourceLayerSource && sourceLayerSource instanceof webGisComponents.ol.source.Vector)) {
+      if (!(sourceLayerSource && sourceLayerSource instanceof this.ol.source.Vector)) {
         return;
       }
 
@@ -214,7 +214,7 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
       return;
     }
 
-    const newInteraction = new webGisComponents.ol.interaction.Draw(this.olInteractionOptions_);
+    const newInteraction = new this.ol.interaction.Draw(this.olInteractionOptions_);
 
     this.listenToInteractionEvents_(newInteraction);
 

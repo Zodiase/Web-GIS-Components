@@ -85,7 +85,7 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerVector {
       // Update internal models.
       this.updateSource({
         url: newValue,
-        format: new webGisComponents.ol.format.GeoJSON({
+        format: new this.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
         }),
@@ -135,7 +135,7 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerVector {
 
       // Update internal models.
       this.updateSource({
-        features: (new webGisComponents.ol.format.GeoJSON({
+        features: (new this.ol.format.GeoJSON({
           defaultDataProjection: this.srcProjection,
           featureProjection: this.projection,
         })).readFeatures(JSON.parse(newValue)),

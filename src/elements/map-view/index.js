@@ -249,7 +249,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
       event.fromMap_ = true;
 
       // For convenience, add a version of the coordinate in lat long.
-      event.latLongCoordinate = webGisComponents.ol.proj.transform(olEvent.coordinate, this.projection, "EPSG:4326");
+      event.latLongCoordinate = this.constructor.transformCoord(olEvent.coordinate, this.projection, this.constructor.IOProjection);
 
       // Copy properties over.
       [
@@ -441,10 +441,14 @@ export default class HTMLMapView extends HTMLMapBaseClass {
 
   /**
    * This is not a reflected property.
+   * The value should be in longitude and latitude.
    * @property {[number, number]}
    */
   get center () {
-    return this.mapView_.getCenter();
+    const rawCoord = this.mapView_.getCenter();
+    const centerInLatLong = this.constructor.transformCoord(rawCoord, this.projection, this.constructor.IOProjection);
+
+    return centerInLatLong;
   }
   set center (val) {
     if (!typeCheck('(Number, Number) | Null', val)) {
@@ -459,7 +463,9 @@ export default class HTMLMapView extends HTMLMapBaseClass {
       return;
     }
 
-    this.mapView_.setCenter(newValue);
+    const projectedCenter = this.constructor.transformCoord(newValue, this.constructor.IOProjection, this.projection);
+
+    this.mapView_.setCenter(projectedCenter);
 
     const event = new CustomEvent('change:center', {
       bubbles: true,
@@ -471,6 +477,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
         property: 'center',
         oldValue,
         newValue,
+        projectedCenter,
       },
     });
 
@@ -518,7 +525,10 @@ export default class HTMLMapView extends HTMLMapBaseClass {
    * @property {[number, number, number, number]}
    */
   get extent () {
-    return this.mapView_.calculateExtent(this.size);
+    const rawExtent = this.mapView_.calculateExtent(this.size);
+    const extentInLatLong = this.constructor.transformExtent(rawExtent, this.projection, this.constructor.IOProjection);
+
+    return extentInLatLong;
   }
   set extent (val) {
     if (!typeCheck('(Number, Number, Number, Number) | Null', val)) {
@@ -529,11 +539,13 @@ export default class HTMLMapView extends HTMLMapBaseClass {
     const oldValue = this.extent;
     const newValue = val;
 
-    if (this.isIdenticalPropertyValue_('center', oldValue, newValue)) {
+    if (this.isIdenticalPropertyValue_('extent', oldValue, newValue)) {
       return;
     }
 
-    this.mapView_.fit(newValue, {
+    const projectedExtent = this.constructor.transformExtent(newValue, this.constructor.IOProjection, this.projection);
+
+    this.mapView_.fit(projectedExtent, {
       // `map.getSize()` is not reliable when the map is initializing.
       size: this.size,
     });
@@ -548,6 +560,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
         property: 'extent',
         oldValue,
         newValue,
+        projectedExtent,
       },
     });
 
@@ -572,7 +585,8 @@ export default class HTMLMapView extends HTMLMapBaseClass {
       zoom: this.mapView_.getZoom(),
     }, options);
 
-    const newView = new webGisComponents.ol.View(finalOptions);
+    const newView = new this.ol.View(finalOptions);
+
     this.setView_(newView);
 
     if (this.connected_) {
@@ -641,16 +655,10 @@ export default class HTMLMapView extends HTMLMapBaseClass {
       toProj
     });
 
-    const oldCenter = this.center,
-          newCenter = webGisComponents.ol.proj.transform(oldCenter, fromProj, toProj);
-
-    this.logInfo_({
-      oldCenter,
-      newCenter
-    });
+    const oldCenter = this.center;
 
     this.projection = toProj;
-    this.center = newCenter;
+    this.center = oldCenter;
 
     // Tell children to switch projections as well.
     this.childLayerElementsCollection_.forEach((item) => item.switchProjection(fromProj, toProj));

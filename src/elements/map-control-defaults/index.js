@@ -16,7 +16,7 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
     super();
 
     // @type {ol.Collection.<ol.control.Control>}
-    this.olControl_ = new webGisComponents.ol.control.defaults({});
+    this.olControl_ = new this.ol.control.defaults({});
   }
 
   /**

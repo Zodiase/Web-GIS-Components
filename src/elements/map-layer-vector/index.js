@@ -15,7 +15,6 @@ import HTMLMapLayerBase from '../map-layer-base';
 
 import {
   elementName,
-  defaultDataProjection,
 } from './config';
 
 class HTMLMapVectorStyle {
@@ -27,7 +26,7 @@ class HTMLMapVectorStyle {
       vertexSize: this.getValidSize_(style.vertexSize),
     };
 
-    this.observable_ = new webGisComponents.ol.Observable();
+    this.observable_ = new this.ol.Observable();
   }
 
   get ol () {
@@ -226,19 +225,19 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   // @override
   static get layerClass () {
-    return webGisComponents.ol.layer.Vector;
+    return this.ol.layer.Vector;
   }
 
   // @override
   static get layerSourceClass () {
-    return webGisComponents.ol.source.Vector;
+    return this.ol.source.Vector;
   }
 
   constructor () {
     super();
 
     // @type {string}
-    this.srcProjection_ = defaultDataProjection;
+    this.srcProjection_ = this.constructor.IOProjection;
 
     // This should be a collection that emmits events about any property changes.
     // @type {HTMLMapVectorStyle}
@@ -275,7 +274,7 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
     let newValue = val === null ? null : String(val);
 
     if (newValue === null || !this.constructor.isValidProjection(newValue)) {
-      newValue = defaultDataProjection;
+      newValue = this.constructor.IOProjection;
     }
 
     if (this.isIdenticalPropertyValue_('srcProjection', oldValue, newValue)) {
@@ -374,6 +373,8 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   }
 
   /**
+   * Create a geometry instance from a geometry descriptor.
+   * This does not reproject the coordinates.
    * @param {Object} geom
    * @returns {ol.geom.Geometry}
    */
@@ -384,12 +385,12 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
     const olGeom = this.constructor.geometryFactories[geom.type](geom);
 
-    olGeom.transform(this.srcProjection, this.projection);
-
     return olGeom;
   }
 
   /**
+   * Create a geometry instance from an extent.
+   * This does not reproject the coordinates.
    * @param {ol.Extent} extent
    * @returns {ol.geom.Geometry}
    */
@@ -399,7 +400,8 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   /**
    * Convert an Openlayers geometry to its GeoJSON counterpart.
-   * @param {ol.geometry.Geometry} geometry
+   * The output geometry descriptor has coordinates in the source projection of this layer.
+   * @param {ol.geom.Geometry} geometry
    * @returns {Object}
    */
   writeGeometryObject (geometry) {
@@ -413,8 +415,9 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   /**
    * Convert a GeoJSON geometry to its Openlayers counterpart.
+   * The input geometry descriptor should have coordinates in the source projection of this layer.
    * @param {Object} geometry
-   * @returns {ol.geometry.Geometry}
+   * @returns {ol.geom.Geometry}
    */
   readGeometryObject (geometry) {
     const format = new this.ol.format.GeoJSON({
@@ -427,6 +430,7 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   /**
    * Creates a feature from a geometry.
+   * This process does not involve reprojection so the input geometry should have proper coordinates.
    * @param {ol.geom.Geometry|Object} geom
    */
   createFeature (geom) {
@@ -442,7 +446,7 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   }
 
   /**
-   * Adds a list of features.
+   * Adds a list of features that are already in the target projection.
    * @param {Array.<ol.Feature>} features
    */
   addFeatures (features) {
@@ -450,7 +454,7 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   }
 
   /**
-   * Adds a single feature.
+   * Adds a single feature that is already in the target projection.
    * @param {ol.Feature} feature
    */
   addFeature (feature) {
@@ -458,10 +462,104 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   }
 
   /**
+   * Take a list of features defined in the source projection and add them to the layer with the proper reprojection.
+   * This mutates the input features.
+   * @param {Array.<ol.Feature>} features
+   */
+  adoptFeatures (features) {
+    features.forEach((feature) => {
+      const geometry = feature.getGeometry();
+
+      if (geometry) {
+        // This modifies the geometry in place.
+        geometry.transform(this.srcProjection, this.projection);
+      }
+    });
+
+    return this.addFeatures(features);
+  }
+
+  /**
+   * Take a feature defined in the source projection and add it to the layer with the proper reprojection.
+   * This mutates the input feature.
+   * @param {ol.Feature} feature
+   */
+  adoptFeature (feature) {
+    return this.adoptFeatures([feature]);
+  }
+
+  /**
+   * @param {ol.Feature} feature
+   * @returns {ol.Feature}
+   */
+  cloneFeature (feature) {
+    return feature.clone();
+  }
+
+  /**
    * @returns {Array.<ol.Feature>}
    */
   getFeatures () {
     return this.source.getFeatures();
+  }
+
+  /**
+   * Reproject the input object, be it a feature or a geometry, from current projection to lat-long.
+   * This mutates the input object.
+   * @param {ol.Feature|ol.geom.Geometry|*} obj
+   * @returns {ol.Feature|ol.geom.Geometry|*}
+   */
+  toLatLong (obj) {
+    switch (true) {
+    case obj instanceof this.ol.Feature:
+      {
+        const geometry = obj.getGeometry();
+
+        if (geometry) {
+          geometry.transform(this.projection, this.constructor.IOProjection);
+        }
+      }
+      break;
+    case obj instanceof this.ol.geom.Geometry:
+      obj.transform(this.projection, this.constructor.IOProjection);
+      break;
+    default:
+    }
+
+    return obj;
+  }
+
+  /**
+   * The reverse of `toLatLong`.
+   * @param {ol.Feature|ol.geom.Geometry|*} obj
+   * @returns {ol.Feature|ol.geom.Geometry|*}
+   */
+  fromLatLong (obj) {
+    switch (true) {
+    case obj instanceof this.ol.Feature:
+      {
+        const geometry = obj.getGeometry();
+
+        if (geometry) {
+          geometry.transform(this.constructor.IOProjection, this.projection);
+        }
+      }
+      break;
+    case obj instanceof this.ol.geom.Geometry:
+      obj.transform(this.constructor.IOProjection, this.projection);
+      break;
+    default:
+    }
+
+    return obj;
+  }
+
+  /**
+   * Remove a single feature from the layer.
+   * @param {ol.Feature} feature
+   */
+  removeFeature (feature) {
+    return this.source.removeFeature(feature);
   }
 
   /**

@@ -133,6 +133,21 @@ export default class HTMLMapBaseClass extends HTMLElement {
     return webGisComponents.ol;
   }
 
+  // Projection used for interfacing values.
+  static get IOProjection () {
+    return 'EPSG:4326';
+  }
+
+  /**
+   * @param {Array.<number>} coord
+   * @param {string} source
+   * @param {string} destination
+   * @returns {Array.<number>}
+   */
+  static transformCoord (coord, source, destination) {
+    return this.ol.proj.transform(coord, source, destination);
+  }
+
   /**
    * A better version of transformExtent.
    * @param {ol.Extent} extent
@@ -174,7 +189,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
       return [...acc, point, ...points];
     }, []);
 
-    const allPointsInDestination = allPoints.map((point) => webGisComponents.ol.proj.transform(point, source, destination));
+    const allPointsInDestination = allPoints.map((point) => this.ol.proj.transform(point, source, destination));
 
     // The source data used for aggregation has to contain the head again in the end to prevent overflow.
     const aggSrcData = [...allPointsInDestination, allPointsInDestination[0]];
@@ -222,7 +237,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {boolean}
    */
   static isValidProjection (val) {
-    return webGisComponents.ol.proj.get(val) !== null;
+    return this.ol.proj.get(val) !== null;
   }
 
   /**
@@ -241,7 +256,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {ol.Collection.<function>}
    */
   static getLiveChildElementCollection (element, constructor) {
-    const collection = new webGisComponents.ol.Collection(),
+    const collection = new this.ol.Collection(),
           updateFunction = this.updateChildElements_.bind(this, element, constructor, collection),
           observer = new MutationObserver(updateFunction);
 

@@ -60,11 +60,10 @@
 
     <h2>A triangle provided in EPSG:4326 projection, viewed in default EPSG:3857 projection.</h2>
 
-    <map-view basemap="arcgis" center="-10997148, 4569099">
+    <map-view basemap="arcgis" center="-98.8, 38">
       <map-layer-geojson
         id="geojson-by-value"
         name="example-geojson"
-        src-projection="EPSG:4326"
       ></map-layer-geojson>
     </map-view>
 
@@ -95,12 +94,11 @@
 
     <h2>The same triangle loaded with “src-url” attribute.</h2>
 
-    <map-view basemap="arcgis" center="-10997148, 4569099">
+    <map-view basemap="arcgis" center="-98.8, 38">
       <map-layer-geojson
         id="geojson-by-url"
         name="example-geojson"
         src-url="./geojson.data-file-1.json"
-        src-projection="EPSG:4326"
       ></map-layer-geojson>
     </map-view>
 

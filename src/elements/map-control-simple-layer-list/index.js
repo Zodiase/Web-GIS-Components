@@ -50,7 +50,7 @@ export default class HTMLMapSimpleLayerListControl extends HTMLMapControlBase {
     shadowRoot.appendChild(document.importNode(template.content, true));
 
     // @override
-    this.olControl_ = new webGisComponents.ol.control.Control({
+    this.olControl_ = new this.ol.control.Control({
       element: this.controlElement_,
     });
 

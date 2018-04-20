@@ -45,19 +45,19 @@ export default class HTMLMapLayerSinglePoint extends HTMLMapLayerVector {
 
   // @override
   static get layerClass () {
-    return webGisComponents.ol.layer.Vector;
+    return this.ol.layer.Vector;
   }
 
   // @override
   static get layerSourceClass () {
-    return webGisComponents.ol.source.Vector;
+    return this.ol.source.Vector;
   }
 
   constructor () {
     super();
 
-    this.pointFeature_ = new webGisComponents.ol.Feature({
-      geometry: new webGisComponents.ol.geom.Point([0, 0], 'XY'),
+    this.pointFeature_ = new this.ol.Feature({
+      geometry: new this.ol.geom.Point([0, 0], 'XY'),
     });
 
     this.updateSource({
@@ -124,8 +124,8 @@ export default class HTMLMapLayerSinglePoint extends HTMLMapLayerVector {
   updateCoordinates_ (lon, lat) {
     if (typeof lat === 'number' && typeof lon === 'number') {
       const coord = [lon, lat];
-      const projectedCoord = webGisComponents.ol.proj.transform(coord, defaultDataProjection, this.projection);
-      this.pointFeature_.setGeometry(new webGisComponents.ol.geom.Point(projectedCoord, 'XY'));
+      const projectedCoord = this.ol.proj.transform(coord, defaultDataProjection, this.projection);
+      this.pointFeature_.setGeometry(new this.ol.geom.Point(projectedCoord, 'XY'));
     } else {
       this.pointFeature_.setGeometry();
     }

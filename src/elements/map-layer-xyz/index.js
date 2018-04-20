@@ -68,12 +68,12 @@ export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
 
   // @override
   static get layerClass () {
-    return webGisComponents.ol.layer.Tile;
+    return this.ol.layer.Tile;
   }
 
   // @override
   static get layerSourceClass () {
-    return webGisComponents.ol.source.XYZ;
+    return this.ol.source.XYZ;
   }
 
   constructor () {

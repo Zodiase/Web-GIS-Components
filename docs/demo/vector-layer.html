@@ -14,7 +14,7 @@
 
     <p>This element is usually used to show vector features added by code or another map interaction.</p>
 
-    <map-view id="demo-map" basemap="osm" center="-10997148, 4569099" style="display: block">
+    <map-view id="demo-map" basemap="osm" center="-98.8, 38" style="display: block">
       <map-layer-vector
         id="vector-layer"
         src-projection="EPSG:4326"
@@ -87,7 +87,7 @@
         vectorLayer.style.strokeWidth = strokeWidthSelect.value;
       });
 
-      vectorLayer.addFeatures([
+      vectorLayer.adoptFeatures([
         {
           "type": "Polygon",
           "coordinates": [

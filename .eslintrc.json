@@ -276,7 +276,8 @@
     "overrides": [
         {
             "files": [
-                "src/**/*.spec.js"
+                "src/**/*.spec.js",
+                "test/**/*.spec.js"
             ],
             "env": {
                 "node": true,

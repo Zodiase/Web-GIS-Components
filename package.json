@@ -18,7 +18,8 @@
     "demo:build:watch": "DISTDIR=\"docs/demo/lib/mapview\" npm run watch",
     "demo": "node demo-server.js 5000",
     "test:unit": "mocha-webpack --webpack-config webpack.unit-test.js -r jsdom-global/register \"src/**/*.spec.js\"",
-    "test": "npm run test:unit"
+    "test:integration": "mochify \"test/**/*.spec.js\"",
+    "test": "npm run build && npm run test:unit && npm run integration"
   },
   "author": "Xingchen Hong",
   "license": "Apache-2.0",
@@ -35,6 +36,7 @@
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "express": "^4.16.2",
+    "faker": "^4.1.0",
     "file-loader": "^1.1.11",
     "html-loader": "^0.5.5",
     "jsdom": "^11.8.0",
@@ -49,6 +51,7 @@
     "lodash.merge": "^4.6.0",
     "mocha": "^5.1.1",
     "mocha-webpack": "^1.1.0",
+    "mochify": "^5.6.0",
     "null-loader": "^0.1.1",
     "openlayers": "^4.4.2",
     "sinon": "^4.5.0",

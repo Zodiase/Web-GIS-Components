@@ -19,7 +19,7 @@
     "demo": "node demo-server.js 5000",
     "test:unit": "mocha-webpack --webpack-config webpack.unit-test.js -r jsdom-global/register \"src/**/*.spec.js\"",
     "test:integration": "mochify \"test/**/*.spec.js\"",
-    "test": "npm run build && npm run test:unit && npm run integration"
+    "test": "npm run build && npm run test:unit && npm run test:integration"
   },
   "author": "Xingchen Hong",
   "license": "Apache-2.0",

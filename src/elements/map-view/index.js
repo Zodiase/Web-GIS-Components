@@ -93,10 +93,10 @@ export default class HTMLMapView extends HTMLMapBaseClass {
     this.mapControlElementCollection_.on('change', ({/*type, */target}) => {
       const controlElements = target.getArray();
       const controls = controlElements.map((el) => el.controls)
-                                      .reduce((acc, controlArray) => [
-                                        ...acc,
-                                        ...controlArray,
-                                      ], []);
+        .reduce((acc, controlArray) => [
+          ...acc,
+          ...controlArray,
+        ], []);
 
       this.mapControlCollection_.clear();
       this.mapControlCollection_.extend(controls);

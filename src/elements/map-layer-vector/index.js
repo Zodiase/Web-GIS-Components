@@ -2,6 +2,7 @@ import {
   concat,
   isEqual,
   merge,
+  clone,
 } from 'lodash.local';
 
 import webGisComponents from 'namespace';
@@ -9,6 +10,7 @@ import {
   commonAttributeToPropertyConverters,
   commonPropertyToAttributeConverters,
   toCamelCasedObject,
+  toLispCasedObject,
 } from 'helpers/custom-element-helpers';
 
 import HTMLMapLayerBase from '../map-layer-base';
@@ -112,25 +114,25 @@ class HTMLMapVectorStyle {
     } = this;
 
     const olFill = fillColor === 'none'
-                   ? null
-                   : new ol.style.Fill({
-                     color: fillColor,
-                   });
+      ? null
+      : new ol.style.Fill({
+        color: fillColor,
+      });
 
     const olStroke = strokeWidth === 0
-                     ? null
-                     : new ol.style.Stroke({
-                       color: strokeColor,
-                       width: strokeWidth,
-                     });
+      ? null
+      : new ol.style.Stroke({
+        color: strokeColor,
+        width: strokeWidth,
+      });
 
     const olVertexImage = vertexSize === 0
-                          ? null
-                          : new ol.style.Circle({
-                            fill: olFill,
-                            stroke: olStroke,
-                            radius: vertexSize,
-                          });
+      ? null
+      : new ol.style.Circle({
+        fill: olFill,
+        stroke: olStroke,
+        radius: vertexSize,
+      });
 
     const style = new ol.style.Style({
       image: olVertexImage,
@@ -146,7 +148,7 @@ class HTMLMapVectorStyle {
    */
   valueOf () {
     // TODO: Only return explicitely defined styles.
-    return this._;
+    return clone(this._);
   }
 }
 
@@ -209,7 +211,7 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   };
 
   static defaultStyle = {
-    fill: 'transparent',
+    fill: 'none',
     strokeColor: '#3399CC',
     strokeWidth: 1.25,
     vertexSize: 5,
@@ -343,8 +345,10 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
 
   onStyleChanged_ = () => {
+    const styleObject = toLispCasedObject(this.style_.valueOf());
+
     this.layer.setStyle(this.style_.olStyle);
-    this.flushPropertyToAttribute('style', this.style_.valueOf(), true);
+    this.flushPropertyToAttribute('style', styleObject, true);
   };
 
   // @override
@@ -435,8 +439,8 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
   createFeature (geom) {
     const olGeom = geom instanceof this.ol.geom.Geometry
-                   ? geom
-                   : this.createGeometry(geom);
+      ? geom
+      : this.createGeometry(geom);
 
     this.log_('createFeature', olGeom);
 

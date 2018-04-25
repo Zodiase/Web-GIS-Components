@@ -10,21 +10,20 @@ export const commonAttributeToPropertyConverters = {
   number: (isSet, val) => isSet ? parseFloat(val) : null,
   array_number: (isSet, val) => isSet
     ? val.split(',')
-         .map((v) => v.trim())
-         .map((v) => parseFloat(v))
+      .map((v) => v.trim())
+      .map((v) => parseFloat(v))
     : null,
-  getQueryStringParser: (sep = '&', eq = '=') => (isSet, val) => (
+  getQueryStringParser: (sep = '&', eq = '=') => (isSet, val) =>
     isSet
-    ? querystring.parse(val, sep, eq)
-    : {}
-  ),
+      ? querystring.parse(val, sep, eq)
+      : {},
 };
 
 export const createBooleanPropertyToAttributeConverter = (propName) =>
-(val) => ({
-  isSet: Boolean(val),
-  value: propName,
-});
+  (val) => ({
+    isSet: Boolean(val),
+    value: propName,
+  });
 
 /**
  * @type {Object.<* -> {isSet: boolean, value: string}>}
@@ -51,13 +50,14 @@ export const commonPropertyComparators = {
   array: (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
 };
 
-const charDashCharRegex = /([a-z0-9])-([a-z])/i;
+const lispCaseRegex = /([a-z0-9])-([a-z])/i;
+const camelCaseRegex = /([a-z0-9])([A-Z])/;
 
-export const camelizeString = (str) => {
+export const toCamelCaseString = (str) => {
   let finalStr = str;
   let match = null;
 
-  while (match = finalStr.match(charDashCharRegex)) {
+  while (match = finalStr.match(lispCaseRegex)) {
     finalStr = finalStr.replace(match[0], `${match[1]}${match[2].toUpperCase()}`);
   }
 
@@ -69,10 +69,30 @@ export const camelizeString = (str) => {
  * @param {Object} obj
  */
 export const toCamelCasedObject = (obj) => Object.entries(obj).reduce((acc, [key, value]) => {
-  const camelKey = camelizeString(key);
+  const newKey = toCamelCaseString(key);
 
   return {
     ...acc,
-    [camelKey]: value,
+    [newKey]: value,
+  };
+}, {});
+
+export const toLispCaseString = (str) => {
+  let finalStr = str;
+  let match = null;
+
+  while (match = finalStr.match(camelCaseRegex)) {
+    finalStr = finalStr.replace(match[0], `${match[1]}-${match[2].toLowerCase()}`);
+  }
+
+  return finalStr;
+};
+
+export const toLispCasedObject = (obj) => Object.entries(obj).reduce((acc, [key, value]) => {
+  const newKey = toLispCaseString(key);
+
+  return {
+    ...acc,
+    [newKey]: value,
   };
 }, {});

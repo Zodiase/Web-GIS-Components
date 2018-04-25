@@ -272,5 +272,21 @@
             "error",
             "never"
         ]
-    }
+    },
+    "overrides": [
+        {
+            "files": [
+                "src/**/*.spec.js",
+                "test/**/*.spec.js"
+            ],
+            "env": {
+                "node": true,
+                "mocha": true
+            },
+            "rules": {
+                "no-empty-function": "off",
+                "no-unused-expressions": "off"
+            }
+        }
+    ]
 }

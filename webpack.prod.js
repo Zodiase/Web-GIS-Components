@@ -5,15 +5,15 @@ const BabiliPlugin = require('babili-webpack-plugin');
 
 const globalIncludeExcludeRules = {
   include: [
-    path.resolve(__dirname, "src"),
+    path.resolve(__dirname, 'src'),
   ],
   exclude: [
-    path.resolve(__dirname, "src/third-party"),
+    path.resolve(__dirname, 'src/third-party'),
   ],
 };
 
 module.exports = {
-  target: "web",
+  target: 'web',
   entry: {
     'web-gis-components-lite': './src/web-gis-components-lite.js',
     'web-gis-components-lite-ol': './src/web-gis-components-lite-ol.js',
@@ -37,15 +37,15 @@ module.exports = {
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.css$/,
         use: [
-          "css-loader",
+          'css-loader',
         ],
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.less$/,
         use: [
-          "css-loader",
+          'css-loader',
           {
-            loader: "less-loader",
+            loader: 'less-loader',
             options: {
               strictMath: true,
               noIeCompat: true,
@@ -55,7 +55,7 @@ module.exports = {
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        loader: "url-loader",
+        loader: 'url-loader',
         options: {
           limit: 10000
         },
@@ -63,24 +63,24 @@ module.exports = {
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.html$/,
         use: [
-          "html-loader",
+          'html-loader',
         ],
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.js$/,
         use: [
-          "babel-loader",
-          "eslint-loader",
+          'babel-loader',
+          'eslint-loader',
         ],
       }),
 
     ],
   },
-  devtool: "source-map",
-  plugins:[
+  devtool: 'source-map',
+  plugins: [
     new webpack.DefinePlugin({
-        VERBOSE: false,
-        'process.env.NODE_ENV': JSON.stringify('production'),
+      VERBOSE: false,
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,

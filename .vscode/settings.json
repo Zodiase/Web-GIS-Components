@@ -1,0 +1,10 @@
+{
+    "search.exclude": {
+        "dist": true,
+        "docs/demo/lib": true
+    },
+    "[javascript]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2
+    }
+}

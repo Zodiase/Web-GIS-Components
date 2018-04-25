@@ -285,7 +285,8 @@
             },
             "rules": {
                 "no-empty-function": "off",
-                "no-unused-expressions": "off"
+                "no-unused-expressions": "off",
+                "object-property-newline": "off"
             }
         }
     ]

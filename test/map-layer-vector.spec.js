@@ -6,7 +6,6 @@ require('../dist/web-gis-components.js');
 
 describe('<map-layer-vector>', () => {
   describe('`style` property', () => {
-
     it('should have correct default fill color', () => {
       const element = document.createElement('map-layer-vector');
 

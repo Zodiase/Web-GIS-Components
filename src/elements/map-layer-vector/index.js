@@ -2,6 +2,7 @@ import {
   concat,
   isEqual,
   merge,
+  clone,
 } from 'lodash.local';
 
 import webGisComponents from 'namespace';
@@ -146,7 +147,7 @@ class HTMLMapVectorStyle {
    */
   valueOf () {
     // TODO: Only return explicitely defined styles.
-    return this._;
+    return clone(this._);
   }
 }
 

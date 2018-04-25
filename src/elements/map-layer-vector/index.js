@@ -209,7 +209,7 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   };
 
   static defaultStyle = {
-    fill: 'transparent',
+    fill: 'none',
     strokeColor: '#3399CC',
     strokeWidth: 1.25,
     vertexSize: 5,

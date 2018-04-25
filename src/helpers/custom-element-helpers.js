@@ -1,4 +1,9 @@
 import * as querystring from 'querystring';
+import {
+  parse as parseCss,
+  decl as createCssDeclaration,
+  root as createCssDocument,
+} from 'postcss';
 
 /**
  * @type {Object.<isSet: boolean, val: string -> *>}
@@ -17,6 +22,30 @@ export const commonAttributeToPropertyConverters = {
     isSet
       ? querystring.parse(val, sep, eq)
       : {},
+  /**
+   * Converts an inline-style CSS string to an object.
+   * The object property names should be in camel-case.
+   * This conversion does not care about the validity of the property names or values.
+   * @param {boolean} isSet
+   * @param {string} val
+   * @return {Object}
+   */
+  style: (isSet, val) => {
+    const result = {};
+
+    if (isSet) {
+      const root = parseCss(val);
+      root.each((node) => {
+        if (node.type === 'decl') {
+          const camelCaseKey = toCamelCaseString(node.prop);
+
+          result[camelCaseKey] = node.value;
+        }
+      });
+    }
+
+    return result;
+  },
 };
 
 export const createBooleanPropertyToAttributeConverter = (propName) =>
@@ -40,6 +69,37 @@ export const commonPropertyToAttributeConverters = {
     isSet: !(val === null),
     value: querystring.stringify(val, sep, eq),
   }),
+  /**
+   * Converts an object to an inline-style CSS string.
+   * The property names in the CSS string should be in lisp-case.
+   * This conversion does not care about the validity of the property names or values.
+   * @param {Object} val
+   * @return {string}
+   */
+  style: (val) => {
+    if (val === null) {
+      return {isSet: false};
+    }
+
+    const declarations = Object.entries(val).map(([key, value]) => {
+      const lispCaseKey = toLispCaseString(key);
+
+      return createCssDeclaration({
+        prop: lispCaseKey,
+        value: value,
+      });
+    });
+    const value = createCssDocument({
+      nodes: declarations,
+      semicolon: true,
+      after: '\n',
+    }).toString();
+
+    return {
+      isSet: true,
+      value,
+    };
+  },
 };
 
 /**

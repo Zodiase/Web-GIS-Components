@@ -2,15 +2,12 @@ import {
   concat,
   isEqual,
   merge,
-  clone,
 } from 'lodash.local';
 
 import webGisComponents from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   commonPropertyToAttributeConverters,
-  toCamelCasedObject,
-  toLispCasedObject,
 } from 'helpers/custom-element-helpers';
 
 import HTMLMapLayerBase from '../map-layer-base';
@@ -19,138 +16,7 @@ import {
   elementName,
 } from './config';
 
-class HTMLMapVectorStyle {
-  constructor (style = {}) {
-    this._ = {
-      fill: this.getValidColorString_(style.fill),
-      strokeColor: this.getValidColorString_(style.strokeColor),
-      strokeWidth: this.getValidSize_(style.strokeWidth),
-      vertexSize: this.getValidSize_(style.vertexSize),
-    };
-
-    this.observable_ = new this.ol.Observable();
-  }
-
-  get ol () {
-    return webGisComponents.ol;
-  }
-
-  get observable () {
-    return this.observable_;
-  }
-
-  get olStyle () {
-    return this.getOlStyle_();
-  }
-
-  get fill () {
-    return this._.fill || 'none';
-  }
-  set fill (value) {
-    this._.fill = this.getValidColorString_(value);
-
-    this.observable_.changed();
-  }
-
-  get strokeColor () {
-    return this._.strokeColor || 'transparent';
-  }
-  set strokeColor (value) {
-    this._.strokeColor = this.getValidColorString_(value);
-
-    this.observable_.changed();
-  }
-
-  get strokeWidth () {
-    return this._.strokeWidth || 0;
-  }
-  set strokeWidth (value) {
-    this._.strokeWidth = this.getValidSize_(value);
-
-    this.observable_.changed();
-  }
-
-  get vertexSize () {
-    return this._.vertexSize || 0;
-  }
-  set vertexSize (value) {
-    this._.vertexSize = this.getValidSize_(value);
-
-    this.observable_.changed();
-  }
-
-  getValidColorString_ (colorString) {
-    //!
-    return colorString;
-  }
-
-  getValidSize_ (size) {
-    let value = size;
-
-    if (typeof value !== 'number') {
-      if (typeof value === 'string') {
-        value = parseFloat(value);
-      } else {
-        value = Number(value);
-      }
-    }
-
-    if (isNaN(value)) {
-      value = 0;
-    } else {
-      value = Math.max(value, 0);
-    }
-
-    return value;
-  }
-
-  getOlStyle_ () {
-    const {
-      ol,
-      fill: fillColor,
-      strokeColor,
-      strokeWidth,
-      vertexSize,
-    } = this;
-
-    const olFill = fillColor === 'none'
-      ? null
-      : new ol.style.Fill({
-        color: fillColor,
-      });
-
-    const olStroke = strokeWidth === 0
-      ? null
-      : new ol.style.Stroke({
-        color: strokeColor,
-        width: strokeWidth,
-      });
-
-    const olVertexImage = vertexSize === 0
-      ? null
-      : new ol.style.Circle({
-        fill: olFill,
-        stroke: olStroke,
-        radius: vertexSize,
-      });
-
-    const style = new ol.style.Style({
-      image: olVertexImage,
-      fill: olFill,
-      stroke: olStroke,
-    });
-
-    return style;
-  }
-
-  /**
-   * @returns {Object}
-   */
-  valueOf () {
-    // TODO: Only return explicitely defined styles.
-    return clone(this._);
-  }
-}
+import HTMLMapVectorStyle from './vector-style';
 
 /**
  * Usage:
@@ -166,7 +32,8 @@ class HTMLMapVectorStyle {
  *   style="{string}"
  * ></HTMLMapLayerVector>
  */
-export default class HTMLMapLayerVector extends HTMLMapLayerBase {
+export default
+class HTMLMapLayerVector extends HTMLMapLayerBase {
 
   // @override
   static observedAttributes = concat(HTMLMapLayerBase.observedAttributes, [
@@ -187,12 +54,12 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
   // @override
   static attributeToPropertyConverters = merge({}, HTMLMapLayerBase.attributeToPropertyConverters, {
     'src-projection': commonAttributeToPropertyConverters.string,
-    'style': commonAttributeToPropertyConverters.getQueryStringParser(';', ':'),
+    'style': commonAttributeToPropertyConverters.style,
   });
 
   // @override
   static propertyToAttributeConverters = merge({}, HTMLMapLayerBase.propertyToAttributeConverters, {
-    'style': commonPropertyToAttributeConverters.getQueryStringBuilder(';', ':'),
+    'style': commonPropertyToAttributeConverters.style,
   });
 
   // @override
@@ -316,7 +183,6 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
     if (newValue === null) {
       newValue = {};
     }
-    newValue = toCamelCasedObject(newValue);
 
     if (this.isIdenticalPropertyValue_('style', oldValue, newValue)) {
       return;
@@ -345,10 +211,8 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
 
   onStyleChanged_ = () => {
-    const styleObject = toLispCasedObject(this.style_.valueOf());
-
     this.layer.setStyle(this.style_.olStyle);
-    this.flushPropertyToAttribute('style', styleObject, true);
+    this.flushPropertyToAttribute('style', this.style_.valueOf(), true);
   };
 
   // @override

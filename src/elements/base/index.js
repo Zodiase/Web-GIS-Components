@@ -24,6 +24,10 @@
 
 import webGisComponents from 'namespace';
 
+import {
+  commonPropertyComparators,
+} from 'helpers/custom-element-helpers';
+
 export default class HTMLMapBaseClass extends HTMLElement {
 
   /**
@@ -102,15 +106,6 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @static
    */
   static propertyComparators = {};
-
-  /**
-   * @property {Object.<a: *, b: * -> boolean>}
-   * @readonly
-   * @static
-   */
-  static commonPropertyComparators = {
-    'array': (a, b) => a !== null && b !== null && a.length === b.length && a.every((x, i) => x === b[i]),
-  };
 
   /**
    * string -> string
@@ -493,7 +488,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
     if (typeof comparator === 'string') {
       const comparatorName = comparator;
 
-      comparator = this.constructor.commonPropertyComparators[comparatorName];
+      comparator = commonPropertyComparators[comparatorName];
 
       if (!comparator) {
         this.logWarn_(`Unknown comparator ${comparatorName}`);

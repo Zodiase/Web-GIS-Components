@@ -10,6 +10,7 @@ import {
   commonAttributeToPropertyConverters,
   commonPropertyToAttributeConverters,
   toCamelCasedObject,
+  toLispCasedObject,
 } from 'helpers/custom-element-helpers';
 
 import HTMLMapLayerBase from '../map-layer-base';
@@ -344,8 +345,10 @@ export default class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
 
   onStyleChanged_ = () => {
+    const styleObject = toLispCasedObject(this.style_.valueOf());
+
     this.layer.setStyle(this.style_.olStyle);
-    this.flushPropertyToAttribute('style', this.style_.valueOf(), true);
+    this.flushPropertyToAttribute('style', styleObject, true);
   };
 
   // @override

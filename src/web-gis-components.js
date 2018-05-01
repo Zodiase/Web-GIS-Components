@@ -4,7 +4,7 @@
 
 import './namespace';
 
-import './third-party/webcomponentsjs/webcomponents-lite.js';
-import './third-party/webcomponentsjs/custom-elements-es5-adapter.js';
+import '@webcomponents/webcomponentsjs/webcomponents-lite.js';
+import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 
 import './web-gis-components-lite-ol';

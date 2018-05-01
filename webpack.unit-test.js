@@ -7,9 +7,6 @@ const globalIncludeExcludeRules = {
   include: [
     path.resolve(__dirname, 'src'),
   ],
-  exclude: [
-    path.resolve(__dirname, 'src/third-party'),
-  ],
 };
 
 module.exports = {

@@ -1,3 +1,0 @@
-[submodule "src/third-party/webcomponentsjs"]
-	path = src/third-party/webcomponentsjs
-	url = https://github.com/webcomponents/webcomponentsjs.git

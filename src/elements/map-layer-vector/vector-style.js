@@ -1,4 +1,4 @@
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 
 import Color from './color';
 
@@ -28,7 +28,7 @@ class HTMLMapVectorStyle {
   }
 
   get ol () {
-    return webGisComponents.ol;
+    return webGisElements.ol;
   }
 
   get observable () {

@@ -1,4 +1,4 @@
-# Web GIS Components Roadmap
+# Web GIS Elements Roadmap
 
 - [ ] Vector Feature Styling through DOM.
 

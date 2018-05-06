@@ -2,7 +2,7 @@ const {
   expect,
 } = require('chai');
 
-require('../dist/web-gis-components.js');
+require('../dist/web-gis-elements.js');
 
 describe('<map-layer-vector>', () => {
   describe('`style` property', () => {

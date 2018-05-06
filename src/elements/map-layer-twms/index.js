@@ -7,7 +7,7 @@ import {
   typeCheck
 } from 'type-check';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   commonPropertyToAttributeConverters,
@@ -162,4 +162,4 @@ export default class HTMLMapLayerTWMS extends HTMLMapLayerBase {
 
 } // HTMLMapLayerTWMS
 
-webGisComponents.exposeComponentToGlobal(HTMLMapLayerTWMS, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapLayerTWMS, elementName);

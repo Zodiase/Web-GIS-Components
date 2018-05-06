@@ -11,7 +11,7 @@ const globalIncludeExcludeRules = {
 module.exports = {
   target: 'web',
   entry: {
-    'web-gis-components': './src/web-gis-components.js',
+    'web-gis-elements': './src/web-gis-elements.js',
   },
   output: {
     path: path.resolve(__dirname, process.env.DISTDIR || 'dist'),

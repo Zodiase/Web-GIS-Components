@@ -1,4 +1,4 @@
-# Web GIS Components
+# Web GIS Elements
 
 This project uses [Web Components Technology](https://developer.mozilla.org/en-US/docs/Web/Web_Components) to build a suite of reusable components that can be used as the fundation of Web GIS applications.
 
@@ -8,7 +8,7 @@ See `Roadmap.md` for upcoming features.
 
 ## Demo
 
-Checkout the online version at: [zodiase.github.io/Web-GIS-Components/demo](https://zodiase.github.io/Web-GIS-Components/demo/)
+Checkout the online version at: [zodiase.github.io/Web-GIS-Elements/demo](https://zodiase.github.io/Web-GIS-Elements/demo/)
 
 The `docs/demo` directory contains demo pages for various example usages. Run `npm run demo` to launch the demo site at `localhost:5000`.
 
@@ -24,7 +24,7 @@ This library requires browser support for [Custom Elements](https://developer.mo
 
 It also requires `native-shim` [available here](https://github.com/webcomponents/custom-elements/blob/master/src/native-shim.js) to allow use of Custom Elements in transpiled ES5 code.
 
-The polyfills are already bundled in `web-gis-components.js`. Use `web-gis-components-lite.js` if the polyfills are provided separately.
+The polyfills are already bundled in `web-gis-elements.js`. Use `web-gis-elements-lite.js` if the polyfills are provided separately.
 
 ## Versions
 

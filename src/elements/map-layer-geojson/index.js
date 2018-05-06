@@ -3,7 +3,7 @@ import {
   merge,
 } from 'lodash.local';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
@@ -193,4 +193,4 @@ export default class HTMLMapLayerGeoJSON extends HTMLMapLayerVector {
 
 } // HTMLMapLayerGeoJSON
 
-webGisComponents.exposeComponentToGlobal(HTMLMapLayerGeoJSON, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapLayerGeoJSON, elementName);

@@ -3,7 +3,7 @@ import {
   merge,
 } from 'lodash.local';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
@@ -210,4 +210,4 @@ export default class HTMLMapLayerXYZ extends HTMLMapLayerBase {
 
 } // HTMLMapLayerXYZ
 
-webGisComponents.exposeComponentToGlobal(HTMLMapLayerXYZ, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapLayerXYZ, elementName);

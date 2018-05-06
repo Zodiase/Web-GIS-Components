@@ -1,4 +1,4 @@
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 
 import HTMLMapLayerBase from '../map-layer-base';
 
@@ -136,4 +136,4 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
 
 } // HTMLMapLayerGroup
 
-webGisComponents.exposeComponentToGlobal(HTMLMapLayerGroup, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapLayerGroup, elementName);

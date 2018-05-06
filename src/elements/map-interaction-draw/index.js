@@ -4,7 +4,7 @@ import {
   merge,
 } from 'lodash.local';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
@@ -59,7 +59,7 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
     }),
     Box: () => ({
       type: 'Circle',
-      geometryFunction: webGisComponents.ol.interaction.Draw.createBox(),
+      geometryFunction: webGisElements.ol.interaction.Draw.createBox(),
     }),
   };
 
@@ -256,4 +256,4 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
 
 } // HTMLMapDrawInteraction
 
-webGisComponents.exposeComponentToGlobal(HTMLMapDrawInteraction, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapDrawInteraction, elementName);

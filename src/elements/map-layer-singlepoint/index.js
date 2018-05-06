@@ -6,7 +6,7 @@ import {
   typeCheck
 } from 'type-check';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
 } from 'helpers/custom-element-helpers';
@@ -133,4 +133,4 @@ export default class HTMLMapLayerSinglePoint extends HTMLMapLayerVector {
 
 } // HTMLMapLayerSinglePoint
 
-webGisComponents.exposeComponentToGlobal(HTMLMapLayerSinglePoint, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapLayerSinglePoint, elementName);

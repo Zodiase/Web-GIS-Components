@@ -1,10 +1,10 @@
 {
   "name": "web-gis-elements",
   "version": "0.3.1",
-  "description": "Custom elements for Web GIS applications.",
+  "description": "Common components used in GIS packaged in HTML elements.",
   "repository": {
     "type": "git",
-    "url": "https://xhong@bitbucket.org/cybergis/web-gis-components.git"
+    "url": "https://github.com/Zodiase/Web-GIS-Elements.git"
   },
   "main": "src/index.js",
   "scripts": {

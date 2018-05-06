@@ -5,7 +5,7 @@ import {
   spy,
 } from 'sinon';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 
 import HTMLMapBaseClass from './index';
 
@@ -14,7 +14,7 @@ describe('HTMLMapBaseClass', () => {
     const transformSpy = spy();
 
     before(() => {
-      webGisComponents.setOl({
+      webGisElements.setOl({
         proj: {
           transform: transformSpy,
         },
@@ -22,7 +22,7 @@ describe('HTMLMapBaseClass', () => {
     });
 
     after(() => {
-      webGisComponents.setOl();
+      webGisElements.setOl();
     });
 
     it('should simply use `ol.proj.transform`', () => {

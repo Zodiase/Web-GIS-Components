@@ -3,28 +3,28 @@ import {
 } from 'chai';
 import sinon from 'sinon';
 
-import webGisComponents from './namespace';
+import webGisElements from './namespace';
 
-describe('webGisComponents', () => {
+describe('webGisElements', () => {
 
   it('should attach itself to window', () => {
     expect(window)
       .to.exist
-      .and.have.property('webGisComponents')
-      .that.equals(webGisComponents);
+      .and.have.property('webGisElements')
+      .that.equals(webGisElements);
   });
 
   describe('.setOl', () => {
     it('should save the first argument, which can then be referenced at `.ol`', () => {
-      expect(webGisComponents)
+      expect(webGisElements)
         .to.have.property('setOl')
         .that.is.a('function');
 
       const obj = {};
 
-      webGisComponents.setOl(obj);
+      webGisElements.setOl(obj);
 
-      expect(webGisComponents)
+      expect(webGisElements)
         .to.have.property('ol')
         .that.equals(obj);
     });
@@ -53,14 +53,14 @@ describe('webGisComponents', () => {
     });
 
     it('should register the given component with the given tag name and attach it to window', () => {
-      expect(webGisComponents)
+      expect(webGisElements)
         .to.have.property('exposeComponentToGlobal')
         .that.is.a('function');
 
       const component = function someName () {};
       const tagName = 'foobar';
 
-      webGisComponents.exposeComponentToGlobal(component, tagName);
+      webGisElements.exposeComponentToGlobal(component, tagName);
 
       expect(defineSpy.calledWith(tagName, component)).to.be.true;
       expect(window).to.have.property('someName').that.equals(component);

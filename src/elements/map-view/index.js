@@ -6,7 +6,7 @@ import {
   typeCheck
 } from 'type-check';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   createBooleanPropertyToAttributeConverter,
@@ -672,4 +672,4 @@ export default class HTMLMapView extends HTMLMapBaseClass {
 
 } // HTMLMapView
 
-webGisComponents.exposeComponentToGlobal(HTMLMapView, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapView, elementName);

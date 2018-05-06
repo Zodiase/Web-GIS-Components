@@ -4,7 +4,7 @@ import {
   merge,
 } from 'lodash.local';
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   commonPropertyToAttributeConverters,
@@ -68,13 +68,13 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
   });
 
   static geometryFactories = {
-    Circle: (geom) => new webGisComponents.ol.geom.Circle(geom.center, geom.radius),
-    LineString: (geom) => new webGisComponents.ol.geom.LineString(geom.coordinates),
-    MultiLineString: (geom) => new webGisComponents.ol.geom.MultiLineString(geom.coordinates),
-    MultiPoint: (geom) => new webGisComponents.ol.geom.MultiPoint(geom.coordinates),
-    MultiPolygon: (geom) => new webGisComponents.ol.geom.MultiPolygon(geom.coordinates),
-    Point: (geom) => new webGisComponents.ol.geom.Point(geom.coordinates),
-    Polygon: (geom) => new webGisComponents.ol.geom.Polygon(geom.coordinates),
+    Circle: (geom) => new webGisElements.ol.geom.Circle(geom.center, geom.radius),
+    LineString: (geom) => new webGisElements.ol.geom.LineString(geom.coordinates),
+    MultiLineString: (geom) => new webGisElements.ol.geom.MultiLineString(geom.coordinates),
+    MultiPoint: (geom) => new webGisElements.ol.geom.MultiPoint(geom.coordinates),
+    MultiPolygon: (geom) => new webGisElements.ol.geom.MultiPolygon(geom.coordinates),
+    Point: (geom) => new webGisElements.ol.geom.Point(geom.coordinates),
+    Polygon: (geom) => new webGisElements.ol.geom.Polygon(geom.coordinates),
   };
 
   static defaultStyle = {
@@ -471,4 +471,4 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
 
 } // HTMLMapLayerVector
 
-webGisComponents.exposeComponentToGlobal(HTMLMapLayerVector, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapLayerVector, elementName);

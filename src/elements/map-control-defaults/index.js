@@ -1,4 +1,4 @@
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 
 import HTMLMapControlBase from '../map-control-base';
 
@@ -43,4 +43,4 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
 
 } // HTMLMapDefaultControls
 
-webGisComponents.exposeComponentToGlobal(HTMLMapDefaultControls, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapDefaultControls, elementName);

@@ -22,7 +22,7 @@
 /*eslint no-bitwise: "off", no-console: "off"*/
 /*global HTMLElement, CustomEvent, MutationObserver*/
 
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 
 import {
   commonPropertyComparators,
@@ -125,7 +125,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
   // Attach the openlayers library.
   static get ol () {
-    return webGisComponents.ol;
+    return webGisElements.ol;
   }
 
   // Projection used for interfacing values.
@@ -460,7 +460,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
   // Attach the openlayers library.
   get ol () {
-    return webGisComponents.ol;
+    return webGisElements.ol;
   }
 
   /************************************************************************************************

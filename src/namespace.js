@@ -1,5 +1,5 @@
 // Define the namespace for this library.
-const webGisComponents = {
+const webGisElements = {
   setOl (newOl) {
     this.ol = newOl;
   },
@@ -24,14 +24,14 @@ const webGisComponents = {
   },
 };
 
-if (!window.webGisComponents) {
+if (!window.webGisElements) {
   // Attach it to global.
-  Object.defineProperty(window, 'webGisComponents', {
+  Object.defineProperty(window, 'webGisElements', {
     configurable: false,
     enumerable: false,
-    value: webGisComponents,
+    value: webGisElements,
     writable: false,
   });
 }
 
-export default webGisComponents;
+export default webGisElements;

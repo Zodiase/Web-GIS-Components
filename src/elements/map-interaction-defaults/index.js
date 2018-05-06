@@ -1,4 +1,4 @@
-import webGisComponents from 'namespace';
+import webGisElements from 'namespace';
 
 import HTMLMapInteractionBase from '../map-interaction-base';
 
@@ -20,4 +20,4 @@ export default class HTMLMapDefaultInteractions extends HTMLMapInteractionBase {
 
 } // HTMLMapDefaultInteractions
 
-webGisComponents.exposeComponentToGlobal(HTMLMapDefaultInteractions, elementName);
+webGisElements.exposeComponentToGlobal(HTMLMapDefaultInteractions, elementName);

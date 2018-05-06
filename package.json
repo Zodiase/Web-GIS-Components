@@ -1,12 +1,11 @@
 {
-  "name": "web-gis-elements",
+  "name": "@xch/web-gis-elements",
   "version": "0.3.1",
   "description": "Common components used in GIS packaged in HTML elements.",
   "repository": {
     "type": "git",
     "url": "https://github.com/Zodiase/Web-GIS-Elements.git"
   },
-  "main": "src/index.js",
   "scripts": {
     "build": "npm run demo:build && npm run build:dist",
     "build:dev": "webpack --config webpack.dev.js --progress --profile --colors",

@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.4.1
+
 - Fix the issue where `freehand` can not be turned back on once turned off.
 
 ## v0.4.0

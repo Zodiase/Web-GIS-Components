@@ -1,5 +1,7 @@
 ## v.NEXT
 
+- Fix the issue where `freehand` can not be turned back on once turned off.
+
 ## v0.4.0
 
 - Add `freehand` attribute and property to `HTMLMapDrawInteraction`. Set it to `true` to turn on freehand drawing. This is a new feature.

@@ -7,6 +7,7 @@ import {
 import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
+  createBooleanPropertyToAttributeConverter,
 } from 'helpers/custom-element-helpers';
 
 import HTMLMapInteractionBase from '../map-interaction-base';
@@ -35,6 +36,11 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
     'source': commonAttributeToPropertyConverters.string,
     'freehand': commonAttributeToPropertyConverters.bool,
     'type': commonAttributeToPropertyConverters.string,
+  });
+
+  // @override
+  static propertyToAttributeConverters = merge({}, HTMLMapInteractionBase.propertyToAttributeConverters, {
+    'freehand': createBooleanPropertyToAttributeConverter('freehand'),
   });
 
   static validTypes = {

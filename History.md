@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.4.0
+
 - Add `freehand` attribute and property to `HTMLMapDrawInteraction`. Set it to `true` to turn on freehand drawing. This is a new feature.
 
 ## v0.3.2

@@ -1,5 +1,7 @@
 ## v.NEXT
 
+- Add `freehand` attribute and property to `HTMLMapDrawInteraction`. Set it to `true` to turn on freehand drawing. This is a new feature.
+
 ## v0.3.2
 
 - Component constructors are exposed to global so they can be referenced the same way as `HTMLElement` (#6).

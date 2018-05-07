@@ -26,12 +26,14 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
   // @override
   static observedAttributes = concat(HTMLMapInteractionBase.observedAttributes, [
     'source',
+    'freehand',
     'type',
   ]);
 
   // @override
   static attributeToPropertyConverters = merge({}, HTMLMapInteractionBase.attributeToPropertyConverters, {
     'source': commonAttributeToPropertyConverters.string,
+    'freehand': commonAttributeToPropertyConverters.bool,
     'type': commonAttributeToPropertyConverters.string,
   });
 
@@ -107,15 +109,9 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
       newValue = defaultDrawingType;
     }
 
-    const {
-      type,
-      geometryFunction,
-    } = this.constructor.getDrawingOptions(newValue);
+    const drawingOptions = this.constructor.getDrawingOptions(newValue);
 
-    this.updateInteraction({
-      type,
-      geometryFunction,
-    });
+    this.updateInteraction(drawingOptions);
 
     this.flushPropertyToAttribute('type', newValue, true);
 
@@ -127,6 +123,39 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
       composed: false,
       detail: {
         property: 'type',
+        oldValue,
+        newValue,
+      },
+    });
+
+    this.dispatchEvent(event);
+  }
+
+  /**
+   * This is a reflected property.
+   * @property {string} freehand
+   */
+  get freehand () {
+    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('freehand'));
+  }
+  set freehand (val) {
+    const oldValue = this.freehand;
+    const newValue = Boolean(val);
+
+    this.updateInteraction({
+      freehand: newValue,
+    });
+
+    this.flushPropertyToAttribute('freehand', newValue, true);
+
+    const event = new CustomEvent('change:freehand', {
+      bubbles: true,
+      // TODO: Make this cancelable.
+      cancelable: false,
+      scoped: false,
+      composed: false,
+      detail: {
+        property: 'freehand',
         oldValue,
         newValue,
       },

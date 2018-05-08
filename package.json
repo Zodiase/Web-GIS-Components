@@ -57,6 +57,7 @@
     "null-loader": "^0.1.1",
     "openlayers": "^4.4.2",
     "postcss": "^6.0.21",
+    "postcss-loader": "^2.1.5",
     "sinon": "^4.5.0",
     "type-check": "^0.3.2",
     "url-loader": "^1.0.1",

@@ -35,12 +35,14 @@ module.exports = {
         test: /\.css$/,
         use: [
           'css-loader',
+          'postcss-loader',
         ],
       }),
       _.merge({}, globalIncludeExcludeRules, {
         test: /\.less$/,
         use: [
           'css-loader',
+          'postcss-loader',
           {
             loader: 'less-loader',
             options: {

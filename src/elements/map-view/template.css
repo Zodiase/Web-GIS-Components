@@ -3,6 +3,8 @@
 /* Template styles below */
 
 :host {
+  --dock-margin: 0.5em;
+
   /* This custom element should behave like an image. */
   display: inline-block;
   width: 400px;
@@ -38,6 +40,25 @@
   align-items: stretch;
 }
 
+#bottom-dock {
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+#overlays {
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
 /* Flexbox styles */
 
 #wrapper {
@@ -66,7 +87,32 @@
   align-self: auto;
 }
 
+#wrapper > #bottom-dock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  margin: var(--dock-margin);
+}
+
+#wrapper > #overlays {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 #wrapper slot[name="left-dock"]::slotted(*),
 #wrapper slot[name="right-dock"]::slotted(*) {
   flex: 1 0 auto;
+}
+
+#wrapper slot[name="bottom-dock"]::slotted(*) {
+  flex: 0 0 auto;
+
+  position: relative;
+  display: inline-block;
 }

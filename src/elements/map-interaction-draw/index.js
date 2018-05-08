@@ -91,9 +91,8 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
     super();
 
     // Used in constructor of ol.interaction.Interaction.
-    this.olInteractionOptions_ = {
-      type: defaultDrawingType,
-    };
+    this.olInteractionOptions_ = {};
+    this.type = defaultDrawingType;
   }
 
   /**
@@ -105,7 +104,7 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
    * @property {string} type
    */
   get type () {
-    return this.getPropertyValueFromAttribute_(this.constructor.getAttributeNameByPropertyName_('type'));
+    return this.olInteractionOptions_._type;
   }
   set type (val) {
     const oldValue = this.type;
@@ -115,9 +114,19 @@ export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
       newValue = defaultDrawingType;
     }
 
-    const drawingOptions = this.constructor.getDrawingOptions(newValue);
+    // It's necessary to do so like this so `geometryFunction` could be `undefined` and thus be deleted from interaction options.
+    const {
+      type,
+      geometryFunction,
+    } = this.constructor.getDrawingOptions(newValue);
 
-    this.updateInteraction(drawingOptions);
+    this.updateInteraction({
+      // Abstract type.
+      _type: newValue,
+      // Real type for OpenLayers.
+      type,
+      geometryFunction,
+    });
 
     this.flushPropertyToAttribute('type', newValue, true);
 

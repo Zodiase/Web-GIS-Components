@@ -1,5 +1,7 @@
 ## v.NEXT
 
+- Fix the issue where a geometry function would be left over after switching drawing type from, for example, `Box` to `Point` and break the interaction.
+
 ## v0.4.1
 
 - Fix the issue where `freehand` can not be turned back on once turned off.

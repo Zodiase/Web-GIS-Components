@@ -15,8 +15,8 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
   constructor () {
     super();
 
-    // @type {ol.Collection.<ol.control.Control>}
-    this.olControl_ = new this.ol.control.defaults({});
+    // @type {Array.<ol.control.Control>}
+    this.olControls_ = (new this.ol.control.defaults({})).getArray();
   }
 
   /**
@@ -25,7 +25,7 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
 
   // @override
   get controls () {
-    return this.olControl_.getArray();
+    return this.olControls_;
   }
 
   // @override
@@ -33,7 +33,7 @@ export default class HTMLMapDefaultControls extends HTMLMapControlBase {
     super.mapElement = newMapElement;
 
     if (newMapElement) {
-      this.olControl_.getArray().forEach((control) => {
+      this.olControls_.forEach((control) => {
         if (control.getMap() !== newMapElement.olMap) {
           control.setMap(newMapElement.olMap);
         }

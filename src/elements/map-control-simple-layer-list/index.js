@@ -49,7 +49,7 @@ export default class HTMLMapSimpleLayerListControl extends HTMLMapControlBase {
     const shadowRoot = this.controlElement_.attachShadow({mode: 'open'});
     shadowRoot.appendChild(document.importNode(template.content, true));
 
-    // @override
+    // @type {ol.control.Control}
     this.olControl_ = new this.ol.control.Control({
       element: this.controlElement_,
     });

@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.4.2
+
 - Fix the issue where a geometry function would be left over after switching drawing type from, for example, `Box` to `Point` and break the interaction.
 
 ## v0.4.1

@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.5.1
+
 - New helper functions `HTMLMapLayerVector.writeGeometryObject`, `HTMLMapLayerVector.readGeometryObject` and `HTMLMapLayerVector.getExtentFromGeometry`.
 
 ## v0.5.0

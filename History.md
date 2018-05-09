@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.5.2
+
 - New helper functions `HTMLMapLayerVector.createGeometryFromExtent` and `HTMLMapLayerVector.getGeometryFromExtent`.
 
 ## v0.5.1

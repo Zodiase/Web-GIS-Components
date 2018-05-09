@@ -93,6 +93,16 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
   }
 
   /**
+   * Create a geometry instance from an extent.
+   * This does not reproject the coordinates.
+   * @param {ol.Extent} extent
+   * @returns {ol.geom.Geometry}
+   */
+  static createGeometryFromExtent (extent) {
+    return webGisElements.ol.geom.Polygon.fromExtent(extent);
+  }
+
+  /**
    * Convert an Openlayers geometry to its GeoJSON counterpart.
    * @param {ol.geom.Geometry} geometry
    * @param {string} fromProj
@@ -132,6 +142,16 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
     const olGeometry = this.readGeometryObject(geometry, proj, proj);
 
     return olGeometry.getExtent();
+  }
+
+  /**
+   * @param {Array.<number>} extent
+   * @returns {Object}
+   */
+  static getGeometryFromExtent (extent, proj) {
+    const olGeometry = this.createGeometryFromExtent(extent);
+
+    return this.writeGeometryObject(olGeometry, proj, proj);
   }
 
   // @override
@@ -305,7 +325,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    * @returns {ol.geom.Geometry}
    */
   createGeometryFromExtent (extent) {
-    return webGisElements.ol.geom.Polygon.fromExtent(extent);
+    return this.constructor.createGeometryFromExtent(extent);
   }
 
   /**

@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.5.0
+
 - New element `<map-control-scale-line>` for showing a scale line on the map. New demo showing the element positioned in the bottom dock.
 - Fix of the minor issue where `border-radius` doesn't work nicely on the map view; the map canvas inside would leak out.
 - New bottom docking point on the map view. Useful for common elements like scale, legend, attributions, etc.

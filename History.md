@@ -1,5 +1,7 @@
 ## v.NEXT
 
+- New helper functions `HTMLMapLayerVector.writeGeometryObject`, `HTMLMapLayerVector.readGeometryObject` and `HTMLMapLayerVector.getExtentFromGeometry`.
+
 ## v0.5.0
 
 - New element `<map-control-scale-line>` for showing a scale line on the map. New demo showing the element positioned in the bottom dock.

@@ -92,14 +92,56 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
     return geomType in this.geometryFactories;
   }
 
+  /**
+   * Convert an Openlayers geometry to its GeoJSON counterpart.
+   * @param {ol.geom.Geometry} geometry
+   * @param {string} fromProj
+   * @param {string} toProj
+   * @returns {Object}
+   */
+  static writeGeometryObject (geometry, fromProj, toProj) {
+    const format = new webGisElements.ol.format.GeoJSON({
+      defaultDataProjection: toProj,
+      featureProjection: fromProj,
+    });
+
+    return format.writeGeometryObject(geometry);
+  }
+
+  /**
+   * Convert a GeoJSON geometry to its Openlayers counterpart.
+   * @param {Object} geometry
+   * @param {string} fromProj
+   * @param {string} toProj
+   * @returns {ol.geom.Geometry}
+   */
+  static readGeometryObject (geometry, fromProj, toProj) {
+    const format = new webGisElements.ol.format.GeoJSON({
+      defaultDataProjection: fromProj,
+      featureProjection: toProj,
+    });
+
+    return format.readGeometry(geometry);
+  }
+
+  /**
+   * @param {Object} geometry
+   * @returns {Array.<number>}
+   */
+  static getExtentFromGeometry (geometry, proj) {
+    const olGeometry = this.readGeometryObject(geometry, proj, proj);
+
+    return olGeometry.getExtent();
+  }
+
   // @override
   static get layerClass () {
-    return this.ol.layer.Vector;
+    return webGisElements.ol.layer.Vector;
   }
 
   // @override
   static get layerSourceClass () {
-    return this.ol.source.Vector;
+    return webGisElements.ol.source.Vector;
   }
 
   constructor () {
@@ -263,7 +305,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    * @returns {ol.geom.Geometry}
    */
   createGeometryFromExtent (extent) {
-    return this.ol.geom.Polygon.fromExtent(extent);
+    return webGisElements.ol.geom.Polygon.fromExtent(extent);
   }
 
   /**
@@ -273,12 +315,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    * @returns {Object}
    */
   writeGeometryObject (geometry) {
-    const format = new this.ol.format.GeoJSON({
-      defaultDataProjection: this.srcProjection,
-      featureProjection: this.projection,
-    });
-
-    return format.writeGeometryObject(geometry);
+    return this.constructor.writeGeometryObject(geometry, this.projection, this.srcProjection);
   }
 
   /**
@@ -288,12 +325,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    * @returns {ol.geom.Geometry}
    */
   readGeometryObject (geometry) {
-    const format = new this.ol.format.GeoJSON({
-      defaultDataProjection: this.srcProjection,
-      featureProjection: this.projection,
-    });
-
-    return format.readGeometry(geometry);
+    return this.constructor.readGeometryObject(geometry, this.srcProjection, this.projection);
   }
 
   /**
@@ -302,13 +334,13 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    * @param {ol.geom.Geometry|Object} geom
    */
   createFeature (geom) {
-    const olGeom = geom instanceof this.ol.geom.Geometry
+    const olGeom = geom instanceof webGisElements.ol.geom.Geometry
       ? geom
       : this.createGeometry(geom);
 
     this.log_('createFeature', olGeom);
 
-    return new this.ol.Feature({
+    return new webGisElements.ol.Feature({
       geometry: olGeom,
     });
   }
@@ -379,7 +411,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
   toLatLong (obj) {
     switch (true) {
-    case obj instanceof this.ol.Feature:
+    case obj instanceof webGisElements.ol.Feature:
       {
         const geometry = obj.getGeometry();
 
@@ -388,7 +420,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
         }
       }
       break;
-    case obj instanceof this.ol.geom.Geometry:
+    case obj instanceof webGisElements.ol.geom.Geometry:
       obj.transform(this.projection, this.constructor.IOProjection);
       break;
     default:
@@ -404,7 +436,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
    */
   fromLatLong (obj) {
     switch (true) {
-    case obj instanceof this.ol.Feature:
+    case obj instanceof webGisElements.ol.Feature:
       {
         const geometry = obj.getGeometry();
 
@@ -413,7 +445,7 @@ class HTMLMapLayerVector extends HTMLMapLayerBase {
         }
       }
       break;
-    case obj instanceof this.ol.geom.Geometry:
+    case obj instanceof webGisElements.ol.geom.Geometry:
       obj.transform(this.constructor.IOProjection, this.projection);
       break;
     default:

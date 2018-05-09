@@ -1,5 +1,10 @@
 ## v.NEXT
 
+- New element `<map-control-scale-line>` for showing a scale line on the map. New demo showing the element positioned in the bottom dock.
+- Fix of the minor issue where `border-radius` doesn't work nicely on the map view; the map canvas inside would leak out.
+- New bottom docking point on the map view. Useful for common elements like scale, legend, attributions, etc.
+- Elements in the map view will now be visible inside the new overlay container.
+
 ## v0.4.2
 
 - Fix the issue where a geometry function would be left over after switching drawing type from, for example, `Box` to `Point` and break the interaction.

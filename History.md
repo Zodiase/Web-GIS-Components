@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.6.0
+
 - New element `<map-control-mouse-position>` for displaying mouse position.
     - User can specify projection of the displayed coordinates.
     - Color of the text can be styled directly on the control element.

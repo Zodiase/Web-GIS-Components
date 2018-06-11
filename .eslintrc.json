@@ -11,8 +11,7 @@
         "sourceType": "module"
     },
     "globals": {
-        "VERBOSE": false,
-        "ol": false
+        "VERBOSE": false
     },
     "rules": {
         "accessor-pairs": "error",

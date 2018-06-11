@@ -1,5 +1,11 @@
 ## v.NEXT
 
+- New element `<map-control-mouse-position>` for displaying mouse position.
+    - User can specify projection of the displayed coordinates.
+    - Color of the text can be styled directly on the control element.
+    - Precision of the coordinates is locked to be 4 decimals for now. Support for variable precision could be added if there is such a need.
+    - Not much else.
+
 ## v0.5.2
 
 - New helper functions `HTMLMapLayerVector.createGeometryFromExtent` and `HTMLMapLayerVector.getGeometryFromExtent`.

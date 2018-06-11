@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Control Demo: Mouse Position</title>
+  <script src="./lib/proj4-v2.4.3.js"></script>
+  <script src="./lib/proj4-defs.js"></script>
+  <script src="./lib/mapview/web-gis-elements.js"></script>
+  <style>
+    #demo-map {
+      display: block;
+      margin: 0 auto;
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="./">&lt; Back</a>
+
+  <h1>Control Demo: Mouse Position</h1>
+
+  <map-view id="demo-map" basemap="osm" center="-98.8, 38">
+    <map-layer-twms
+      name="twms-topp:states"
+      extent="-125, 24, -66, 50"
+      url="https://ahocevar.com/geoserver/wms"
+      params="LAYERS=topp%3Astates&TILED=true"
+      server-type="geoserver"
+    ></map-layer-twms>
+    <map-layer-group
+      name="group-1"
+    >
+      <map-layer-geojson
+        name="geojson-1"
+        src-json='{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"stroke":"#555555","stroke-width":2,"stroke-opacity":1,"fill":"#555555","fill-opacity":0.5},"geometry":{"type":"Polygon","coordinates":[[[-101.865234375,37.09023980307208],[-92.28515625,40.17887331434696],[-93.69140625,38.47939467327645],[-102.63427734374999,41.83682786072714],[-99.052734375,36.80928470205937],[-103.623046875,38.8225909761771],[-94.63623046875,40.111688665595956],[-100.986328125,42.032974332441405],[-97.119140625,43.58039085560784],[-101.865234375,37.09023980307208]]]}}]}'
+        src-projection="EPSG:4326"
+        projection="EPSG:3857"
+      ></map-layer-geojson>
+      <map-layer-geojson
+        name="geojson-2"
+        src-json='{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-120.41015624999999,43.96119063892024],[-120.32226562500001,39.70718665682654],[-118.037109375,47.39834920035926],[-117.50976562499999,36.94989178681327],[-115.83984375,46.6795944656402],[-114.2578125,35.31736632923788],[-114.08203125,42.48830197960227],[-120.41015624999999,43.96119063892024]]]}}]}'
+        src-projection="EPSG:4326"
+        projection="EPSG:3857"
+      ></map-layer-geojson>
+    </map-layer-group>
+    <map-control-defaults></map-control-defaults>
+    <map-interaction-defaults></map-interaction-defaults>
+    <map-control-mouse-position slot="bottom-dock"></map-control-mouse-position>
+  </map-view>
+
+  <p>The “slot” attribute puts the control element in the proper spot (the bottom dock) in the map view.</p>
+
+</body>
+</html>

@@ -1,1 +1,1 @@
-export const elementName = "map-layer-geojson";
+export const elementName = 'map-layer-geojson';

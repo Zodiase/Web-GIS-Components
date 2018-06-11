@@ -1,1 +1,1 @@
-export const elementName = "map-control-scale-line";
+export const elementName = 'map-control-scale-line';

@@ -1,1 +1,1 @@
-export const elementName = "map-layer-twms";
+export const elementName = 'map-layer-twms';

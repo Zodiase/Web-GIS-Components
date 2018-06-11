@@ -1,1 +1,1 @@
-export const elementName = "map-layer-group";
+export const elementName = 'map-layer-group';

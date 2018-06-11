@@ -1,1 +1,1 @@
-export const elementName = "map-control-defaults";
+export const elementName = 'map-control-defaults';

@@ -1,1 +1,1 @@
-export const elementName = "map-layer-vector";
+export const elementName = 'map-layer-vector';

@@ -1,1 +1,1 @@
-export const elementName = "map-interaction-defaults";
+export const elementName = 'map-interaction-defaults';

@@ -7,6 +7,7 @@ import {
   typeCheck
 } from 'type-check';
 
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   createBooleanPropertyToAttributeConverter,
@@ -94,7 +95,7 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
    * @static
    */
   static get layerClass () {
-    return this.ol.layer.Base;
+    return webGisElements.ol.layer.Base;
   }
 
   /**
@@ -105,7 +106,7 @@ export default class HTMLMapLayerBase extends HTMLMapBaseClass {
    * @static
    */
   static get layerSourceClass () {
-    return this.ol.source.Source;
+    return webGisElements.ol.source.Source;
   }
 
   constructor () {

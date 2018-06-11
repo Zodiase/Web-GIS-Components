@@ -24,11 +24,7 @@ class HTMLMapVectorStyle {
       vertexSize: this.getValidSize_(style.vertexSize),
     };
 
-    this.observable_ = new this.ol.Observable();
-  }
-
-  get ol () {
-    return webGisElements.ol;
+    this.observable_ = new webGisElements.ol.Observable();
   }
 
   get observable () {
@@ -105,7 +101,6 @@ class HTMLMapVectorStyle {
 
   getOlStyle_ () {
     const {
-      ol,
       fill: fillColor,
       strokeColor,
       strokeWidth,
@@ -114,26 +109,26 @@ class HTMLMapVectorStyle {
 
     const olFill = fillColor === 'none'
       ? null
-      : new ol.style.Fill({
+      : new webGisElements.ol.style.Fill({
         color: fillColor,
       });
 
     const olStroke = strokeWidth === 0
       ? null
-      : new ol.style.Stroke({
+      : new webGisElements.ol.style.Stroke({
         color: strokeColor,
         width: strokeWidth,
       });
 
     const olVertexImage = vertexSize === 0
       ? null
-      : new ol.style.Circle({
+      : new webGisElements.ol.style.Circle({
         fill: olFill,
         stroke: olStroke,
         radius: vertexSize,
       });
 
-    const style = new ol.style.Style({
+    const style = new webGisElements.ol.style.Style({
       image: olVertexImage,
       fill: olFill,
       stroke: olStroke,

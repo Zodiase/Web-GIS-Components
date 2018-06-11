@@ -123,11 +123,6 @@ export default class HTMLMapBaseClass extends HTMLElement {
     return this.propertyNameToAttributeNameMapping[propName] || propName;
   }
 
-  // Attach the openlayers library.
-  static get ol () {
-    return webGisElements.ol;
-  }
-
   // Projection used for interfacing values.
   static get IOProjection () {
     return 'EPSG:4326';
@@ -140,7 +135,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {Array.<number>}
    */
   static transformCoord (coord, source, destination) {
-    return this.ol.proj.transform(coord, source, destination);
+    return webGisElements.ol.proj.transform(coord, source, destination);
   }
 
   /**
@@ -184,7 +179,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
       return [...acc, point, ...points];
     }, []);
 
-    const allPointsInDestination = allPoints.map((point) => this.ol.proj.transform(point, source, destination));
+    const allPointsInDestination = allPoints.map((point) => webGisElements.ol.proj.transform(point, source, destination));
 
     // The source data used for aggregation has to contain the head again in the end to prevent overflow.
     const aggSrcData = [...allPointsInDestination, allPointsInDestination[0]];
@@ -232,7 +227,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {boolean}
    */
   static isValidProjection (val) {
-    return this.ol.proj.get(val) !== null;
+    return webGisElements.ol.proj.get(val) !== null;
   }
 
   /**
@@ -251,7 +246,7 @@ export default class HTMLMapBaseClass extends HTMLElement {
    * @returns {ol.Collection.<function>}
    */
   static getLiveChildElementCollection (element, constructor) {
-    const collection = new this.ol.Collection(),
+    const collection = new webGisElements.ol.Collection(),
           updateFunction = this.updateChildElements_.bind(this, element, constructor, collection),
           observer = new MutationObserver(updateFunction);
 
@@ -456,11 +451,6 @@ export default class HTMLMapBaseClass extends HTMLElement {
 
   get connected () {
     return this.connected_;
-  }
-
-  // Attach the openlayers library.
-  get ol () {
-    return webGisElements.ol;
   }
 
   /************************************************************************************************

@@ -16,7 +16,7 @@ export default class HTMLMapLayerGroup extends HTMLMapLayerBase {
 
   // @override
   static get layerClass () {
-    return this.ol.layer.Group;
+    return webGisElements.ol.layer.Group;
   }
 
   /**

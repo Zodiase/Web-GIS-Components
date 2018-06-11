@@ -67,10 +67,6 @@ export default class HTMLMapView extends HTMLMapBaseClass {
   constructor () {
     super();
 
-    const {
-      ol
-    } = this;
-
     const shadowRoot = this.attachShadow({mode: 'open'});
     shadowRoot.appendChild(document.importNode(template.content, true));
 
@@ -84,7 +80,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
 
     // Controls are tied to the map view.
     // @type {ol.Collection.<ol.control.Control>}
-    this.mapControlCollection_ = new ol.Collection();
+    this.mapControlCollection_ = new webGisElements.ol.Collection();
 
     // Control Elements in this map view.
     // @type {ol.Collection.<HTMLMapControlBase>}
@@ -111,14 +107,14 @@ export default class HTMLMapView extends HTMLMapBaseClass {
     });
 
     // Overlays are tied to geolocations.
-    this.mapOverlays_ = new ol.Collection();
+    this.mapOverlays_ = new webGisElements.ol.Collection();
 
     /**
      * Interactions are tied to the map view.
      * Modify its content but don't reassign it.
      * @type {ol.Collection.<ol.interaction.Interaction>}
      */
-    this.mapInteractionCollection_ = new ol.Collection();
+    this.mapInteractionCollection_ = new webGisElements.ol.Collection();
     /**
      * This is a collection for monitoring collections of interactions.
      * An interaction element can have a collection of interactions associated with it.
@@ -127,7 +123,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
      * And release the event listeners when the element is removed.
      * @type {ol.Collection.<HTMLMapInteractionBase>}
      */
-    this.trackedInteractionElementCollection_ = new ol.Collection();
+    this.trackedInteractionElementCollection_ = new webGisElements.ol.Collection();
 
     // When tracked interaction elements change, reload interactions from them into `this.mapInteractionCollection_`.
     this.trackedInteractionElementCollection_.on('change', ({target}) => {
@@ -171,7 +167,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
 
     // This collection holds the child layers so it's easier to do batch updates.
     // @type {ol.Collection.<ol.layer.Base>}
-    this.childMapLayerCollection_ = new ol.Collection();
+    this.childMapLayerCollection_ = new webGisElements.ol.Collection();
 
     // This collection holds the child layer elements.
     // @type {ol.Collection.<HTMLMapLayerBase>}
@@ -185,7 +181,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
     // @type {string}
     this.baseMapName_ = defaultMapType;
     // This collection holds the base map.
-    this.baseMapLayerCollection_ = new ol.Collection([
+    this.baseMapLayerCollection_ = new webGisElements.ol.Collection([
       getBaseMap(this.baseMapName_, this.baseMapCache_)
     ]);
 
@@ -206,19 +202,19 @@ export default class HTMLMapView extends HTMLMapBaseClass {
     this.mapView_ = null;
     this.updateView_();
 
-    this.olMap_ = new ol.Map({
+    this.olMap_ = new webGisElements.ol.Map({
       controls: this.mapControlCollection_,
       interactions: this.mapInteractionCollection_,
       keyboardEventTarget: this.mapElement_,
       layers: [
-        new ol.layer.Group({
+        new webGisElements.ol.layer.Group({
           opacity: 1,
           visible: 1,
           //extent:
           zIndex: 0,
           layers: this.baseMapLayerCollection_
         }),
-        new ol.layer.Group({
+        new webGisElements.ol.layer.Group({
           opacity: 1,
           visible: 1,
           //extent:
@@ -585,7 +581,7 @@ export default class HTMLMapView extends HTMLMapBaseClass {
       zoom: this.mapView_.getZoom(),
     }, options);
 
-    const newView = new this.ol.View(finalOptions);
+    const newView = new webGisElements.ol.View(finalOptions);
 
     this.setView_(newView);
 

@@ -3,6 +3,7 @@ import {
   merge,
 } from 'lodash.local';
 
+import webGisElements from 'namespace';
 import {
   commonAttributeToPropertyConverters,
   createBooleanPropertyToAttributeConverter,
@@ -38,7 +39,7 @@ export default class HTMLMapInteractionBase extends HTMLMapBaseClass {
      * Child classes should not override this property but only modify its content.
      * @type {ol.Collection.<ol.interaction.Interaction>}
      */
-    this.olInteractions_ = new this.ol.Collection();
+    this.olInteractions_ = new webGisElements.ol.Collection();
 
     // Newly added interactions should have consistent active state.
     this.olInteractions_.on('add', (olEvent) => {

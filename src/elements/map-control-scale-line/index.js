@@ -20,7 +20,7 @@ export default class HTMLMapScaleLineControl extends HTMLMapControlBase {
     shadowRoot.appendChild(document.importNode(template.content, true));
 
     // @type {ol.control.Control}
-    this.olControl_ = new this.ol.control.ScaleLine({
+    this.olControl_ = new webGisElements.ol.control.ScaleLine({
       target: this.shadowRoot,
     });
   }

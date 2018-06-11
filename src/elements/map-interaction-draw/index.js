@@ -20,7 +20,14 @@ import {
 
 /**
  * Usage:
- * <HTMLMapDrawInteraction></HTMLMapDrawInteraction>
+ * <HTMLMapDrawInteraction
+ *   // ID of the vector layer to save the drawn features in.
+ *   source="{string}"
+ *   // Whether or not freehand drawing is enabled. Default is false.
+ *   freehand
+ *   // Type of feature to draw. See property names of `validTypes` below for options.
+ *   type="{string}"
+ * ></HTMLMapDrawInteraction>
  */
 export default class HTMLMapDrawInteraction extends HTMLMapInteractionBase {
 

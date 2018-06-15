@@ -7,6 +7,7 @@
     "url": "https://github.com/Zodiase/Web-GIS-Elements.git"
   },
   "scripts": {
+    "prepublish": "npm run build",
     "build": "npm run demo:build && npm run build:dist",
     "build:dev": "webpack --config webpack.dev.js --progress --profile --colors",
     "build:dist": "webpack --config webpack.prod.js --progress --profile --colors",

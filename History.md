@@ -1,5 +1,7 @@
 ## v.NEXT
 
+- Align items in bottom dock by baseline.
+
 ## v0.6.0
 
 - New element `<map-control-mouse-position>` for displaying mouse position.

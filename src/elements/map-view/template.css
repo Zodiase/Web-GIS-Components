@@ -51,7 +51,7 @@
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-content: stretch;
-  align-items: stretch;
+  align-items: baseline;
 }
 
 #overlays {

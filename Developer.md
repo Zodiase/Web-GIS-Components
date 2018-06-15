@@ -7,6 +7,15 @@
 5. Branches should always be squash-merged.
 6. Merged branches should be deleted and **never** re-used.
 
+## Release steps
+
+1. Bump version.
+2. Update history file.
+3. Build distribution files by running `npm run build`.
+4. Commit everything into one release commit, with the version as the commit message.
+5. Tag the commit with the release version.
+6. Publish to NPM by running `npm publish`.
+
 ## Relationship between map and layers
 
 ### How simple can layer elements be?

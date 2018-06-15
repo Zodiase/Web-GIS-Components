@@ -1,5 +1,7 @@
 ## v.NEXT
 
+## v0.6.1
+
 - Align items in bottom dock by baseline.
 
 ## v0.6.0

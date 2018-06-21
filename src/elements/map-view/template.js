@@ -1,5 +1,5 @@
 import createTemplate from 'helpers/createTemplate';
-import templateStyle from './template.css';
+import templateStyle from './template.less';
 import {
   elementName,
 } from './config';

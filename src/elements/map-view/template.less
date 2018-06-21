@@ -1,0 +1,149 @@
+@import '../../../node_modules/openlayers/dist/ol.css';
+
+/* Template styles below */
+
+:host {
+  --dock-margin: 0.5em;
+
+  /* This custom element should behave like an image. */
+  display: inline-block;
+  width: 400px;
+  height: 300px;
+  background-color: gray;
+  border: 1px solid black;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.column-flexbox (@align: left) {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  & when (@align = left) {
+    align-items: flex-start;
+  }
+  & when (@align = right) {
+    align-items: flex-end;
+  }
+}
+
+.row-flexbox (@align: left) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.no-select () {
+  user-select: none;
+}
+
+.dock__common-margin () {
+  margin: var(--dock-margin);
+}
+
+#wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+#left-dock {
+  overflow-x: visible;
+  overflow-y: auto;
+  .column-flexbox(@align: left);
+  .no-select();
+  pointer-events: none;
+}
+#right-dock {
+  overflow-x: visible;
+  overflow-y: auto;
+  .column-flexbox(@align: right);
+  .no-select();
+  pointer-events: none;
+}
+#bottom-dock {
+  overflow: hidden;
+  .row-flexbox(@align: left);
+  .no-select();
+  pointer-events: none;
+}
+
+#overlays {
+  overflow: hidden;
+  .no-select();
+  pointer-events: none;
+}
+
+/* Flexbox styles */
+
+#wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+}
+
+#wrapper > #map {
+  order: 2;
+  flex: 1 1 auto;
+  align-self: auto;
+}
+
+#wrapper > #left-dock {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  .dock__common-margin();
+}
+
+#wrapper > #right-dock {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  .dock__common-margin();
+}
+
+#wrapper > #bottom-dock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  .dock__common-margin();
+}
+
+#wrapper > #overlays {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#wrapper slot[name="left-dock"],
+#wrapper slot[name="right-dock"],
+#wrapper slot[name="bottom-dock"] {
+  &::slotted(*) {
+    position: relative;
+    display: inline-block;
+  }
+}

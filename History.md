@@ -1,5 +1,10 @@
 ## v.NEXT
 
+- Left and right docks are now overlaying the map, same as the bottom dock. 
+    - Items in the left and right docks are aligned to the left and right, respectively.
+    - Items in the docks should have default flex settings, unless otherwise specified.
+    - Dock containers are non-interactable. Some controls would also want this. So there are no explicit settings to force docked items to be interactable. Please explicitly set `pointer-events` if needed.
+
 ## v0.6.1
 
 - Align items in bottom dock by baseline.

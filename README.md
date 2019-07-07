@@ -1,5 +1,7 @@
 # Web GIS Elements
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Zodiase/Web-GIS-Components.svg)](https://greenkeeper.io/)
+
 This project uses [Web Components Technology](https://developer.mozilla.org/en-US/docs/Web/Web_Components) to build a suite of reusable components that can be used as the fundation of Web GIS applications.
 
 See `Developer.md` for implementation decisions and details.
